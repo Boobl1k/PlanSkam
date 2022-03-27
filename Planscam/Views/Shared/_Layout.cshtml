@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@{ var authenticated = User.Identity?.IsAuthenticated ?? false; }
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -25,6 +27,23 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
+                </ul>
+                <ul class="navbar-nav flex-grow-2">
+                    @if (authenticated)
+                    {
+                        <form asp-controller="Auth" asp-action="Logoff">
+                            <input type="submit" value="logoff"/>
+                        </form>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Login">Sign in</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Register">Sign up</a>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
