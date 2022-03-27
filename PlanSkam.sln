@@ -1,8 +1,34 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Planscam", "Planscam\Planscam.csproj", "{C2CB102C-F571-4F91-89A2-2ECDDD15B596}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Planscam.Entities", "Planscam.Entities\Planscam.Entities.csproj", "{C3B6D4A4-FCFA-43EB-9CBF-0BE10E483A65}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Planscam.DataAccess", "Planscam.DataAccess\Planscam.DataAccess.csproj", "{844FC462-207B-482D-A8D9-5DA18505E09E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Planscam.Services", "Planscam.Services\Planscam.Services.csproj", "{A3EFD6DE-D046-4454-91A1-AEA59C41E21B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C2CB102C-F571-4F91-89A2-2ECDDD15B596}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2CB102C-F571-4F91-89A2-2ECDDD15B596}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2CB102C-F571-4F91-89A2-2ECDDD15B596}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2CB102C-F571-4F91-89A2-2ECDDD15B596}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3B6D4A4-FCFA-43EB-9CBF-0BE10E483A65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3B6D4A4-FCFA-43EB-9CBF-0BE10E483A65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3B6D4A4-FCFA-43EB-9CBF-0BE10E483A65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3B6D4A4-FCFA-43EB-9CBF-0BE10E483A65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{844FC462-207B-482D-A8D9-5DA18505E09E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{844FC462-207B-482D-A8D9-5DA18505E09E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{844FC462-207B-482D-A8D9-5DA18505E09E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{844FC462-207B-482D-A8D9-5DA18505E09E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3EFD6DE-D046-4454-91A1-AEA59C41E21B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3EFD6DE-D046-4454-91A1-AEA59C41E21B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3EFD6DE-D046-4454-91A1-AEA59C41E21B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3EFD6DE-D046-4454-91A1-AEA59C41E21B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
