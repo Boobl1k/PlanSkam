@@ -20,6 +20,7 @@ var app = builder.Build();
     .UseHttpsRedirection()
     .UseStaticFiles()
     .UseRouting()
+    .UseAuthentication()
     .UseAuthorization();
 app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
 app.Run();
