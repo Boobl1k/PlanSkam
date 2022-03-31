@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Planscam.DataAccess;
 
@@ -11,9 +12,10 @@ using Planscam.DataAccess;
 namespace Planscam.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220331214246_userPlaylists")]
+    partial class userPlaylists
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,9 +271,6 @@ namespace Planscam.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int>("FavouriteTracksId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -309,8 +308,6 @@ namespace Planscam.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FavouriteTracksId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -353,13 +350,6 @@ namespace Planscam.Migrations
                     b.HasIndex("UsersId");
 
                     b.ToTable("PlaylistUser");
-                });
-
-            modelBuilder.Entity("Planscam.Entities.FavouriteTracks", b =>
-                {
-                    b.HasBaseType("Planscam.Entities.Playlist");
-
-                    b.ToTable("FavouriteTracks");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -450,17 +440,9 @@ namespace Planscam.Migrations
 
             modelBuilder.Entity("Planscam.Entities.User", b =>
                 {
-                    b.HasOne("Planscam.Entities.FavouriteTracks", "FavouriteTracks")
-                        .WithMany()
-                        .HasForeignKey("FavouriteTracksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Planscam.Entities.Picture", "Picture")
                         .WithMany()
                         .HasForeignKey("PictureId");
-
-                    b.Navigation("FavouriteTracks");
 
                     b.Navigation("Picture");
                 });
@@ -492,15 +474,6 @@ namespace Planscam.Migrations
                         .WithMany()
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Planscam.Entities.FavouriteTracks", b =>
-                {
-                    b.HasOne("Planscam.Entities.Playlist", null)
-                        .WithOne()
-                        .HasForeignKey("Planscam.Entities.FavouriteTracks", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618
