@@ -1,0 +1,15 @@
+@using Planscam.Extensions
+@model UserViewModel
+
+@{
+    ViewBag.Title = "Profile editing";
+    Layout = "_Layout";
+}
+
+@using (Html.BeginForm(FormMethod.Post, new {enctype = "multipart/form-data"}))
+{
+    @Html.EditorForModel()
+    @Html.DrawUserAvatar(Model.Picture)
+    <input type="file" name="uploadImage"/>
+    <input type="submit" value="submit"/>
+}

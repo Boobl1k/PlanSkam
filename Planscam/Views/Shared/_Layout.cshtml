@@ -31,6 +31,9 @@
                 <ul class="navbar-nav flex-grow-2">
                     @if (authenticated)
                     {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Profile" asp-action="Index">Profile</a>
+                        </li>
                         <form asp-controller="Auth" asp-action="Logoff">
                             <input type="submit" value="logoff"/>
                         </form>

@@ -31,12 +31,16 @@ public class AuthController : Controller
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
         if (!ModelState.IsValid) return View(model);
+
+        var (name, email, pass) = model;
+
         var user = new User
         {
-            UserName = model.Email,
-            Email = model.Email,
+            UserName = name,
+            Email = email,
+            FavouriteTracks = new FavouriteTracks($"{name}'s favorite tracks")
         };
-        var result = await _userManager.CreateAsync(user, model.Password);
+        var result = await _userManager.CreateAsync(user, pass);
         if (!result.Succeeded)
         {
             foreach (var error in result.Errors)

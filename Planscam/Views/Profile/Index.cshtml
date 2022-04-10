@@ -1,0 +1,11 @@
+@using Planscam.Extensions
+@model UserViewModel
+
+@{
+    ViewBag.Title = Model.Name;
+    Layout = "_Layout";
+}
+
+@Html.DisplayForModel()
+@Html.DrawUserAvatar(Model.Picture)
+@Html.ActionLink("Edit", "Edit")
