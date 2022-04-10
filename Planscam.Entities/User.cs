@@ -8,7 +8,7 @@ public class User : IdentityUser
     public Picture? Picture { get; set; }
 
     [Required]
-    public IQueryable<Playlist>? Playlists { get; set; }
+    public List<Playlist>? Playlists { get; set; }
 
     [Required]
     public FavouriteTracks? FavouriteTracks { get; set; }

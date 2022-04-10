@@ -9,7 +9,7 @@ namespace Planscam.Extensions;
 
 public static class UserManagerExtensions
 {
-    public static async Task<User> GetCurrent<TProperty>(
+    public static async Task<User?> GetCurrent<TProperty>(
         this UserManager<User> userManager,
         ClaimsPrincipal currentClaims,
         AppDbContext appDbContext,

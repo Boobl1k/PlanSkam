@@ -6,7 +6,7 @@ namespace Planscam.Models;
 public class LoginViewModel
 {
     [Required]
-    public string Email { get; set; } = null!;
+    public string UserName { get; set; } = null!;
 
     [Required]
     [DataType(DataType.Password)]

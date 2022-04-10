@@ -1,0 +1,14 @@
+@using Planscam.Extensions
+@model PlaylistsViewModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@Html.DisplayForModel()
+@foreach (var track in Model.Tracks)
+{
+    @Html.DisplayFor(model => track)
+    @Html.DrawSmallTrackPic(track.Picture)
+}

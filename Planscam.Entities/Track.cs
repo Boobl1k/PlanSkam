@@ -9,10 +9,10 @@ public class Track
     public string Name { get; set; } = null!;
 
     [Required]
-    public byte[]? Data { get; set; }
+    public byte[] Data { get; set; } = null!;
     
     [Required]
-    public DateTime Time { get; set; }
+    public TimeSpan Time { get; set; }
     
     public Picture? Picture { get; set; }
     
@@ -20,5 +20,5 @@ public class Track
     public Author? Author { get; set; }
     
     [Required]
-    public IQueryable<Playlist>? Playlists { get; set; }
+    public List<Playlist>? Playlists { get; set; }
 }

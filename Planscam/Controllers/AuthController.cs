@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Planscam.DataAccess;
 using Planscam.Entities;
 using Planscam.Models;
 
@@ -10,13 +9,11 @@ public class AuthController : Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-    private readonly AppDbContext _dataContext;
 
-    public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, AppDbContext dataContext)
+    public AuthController(UserManager<User> userManager, SignInManager<User> signInManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _dataContext = dataContext;
     }
 
     [HttpGet]
@@ -57,10 +54,10 @@ public class AuthController : Controller
     public async Task<IActionResult> Login(LoginViewModel model)
     {
         if (!ModelState.IsValid) return View();
-        var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+        var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
         if (result.Succeeded)
         {
-            Console.WriteLine($"{model.Email} is authenticated");
+            Console.WriteLine($"{model.UserName} is authenticated");
             return !string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl)
                 ? Redirect(model.ReturnUrl)
                 : RedirectToAction("Index", "Home");
@@ -74,7 +71,6 @@ public class AuthController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logoff()
     {
-        Console.WriteLine("aaa\n\n\n\n\n");
         await _signInManager.SignOutAsync();
         return RedirectToAction("Index", "Home");
     }

@@ -12,8 +12,8 @@ public class Playlist
     public Picture? Picture { get; set; }
 
     [Required]
-    public IQueryable<Track>? Tracks { get; set; }
+    public List<Track>? Tracks { get; set; }
 
     [Required]
-    public IQueryable<User>? Users { get; set; }
+    public List<User>? Users { get; set; }
 }
