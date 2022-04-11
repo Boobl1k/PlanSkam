@@ -13,4 +13,5 @@ public class AppDbContext : IdentityDbContext<User>
     public DbSet<Picture> Pictures { get; set; } = null!;
     public DbSet<Playlist> Playlists { get; set; } = null!;
     public DbSet<Track> Tracks { get; set; } = null!;
+    public DbSet<Genre> Genres { get; set; } = null!;
 }

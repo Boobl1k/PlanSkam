@@ -21,4 +21,7 @@ public class Track
     
     [Required]
     public List<Playlist>? Playlists { get; set; }
+    
+    [Required]
+    public Genre? Genre { get; set; }
 }
