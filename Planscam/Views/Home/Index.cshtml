@@ -1,5 +1,27 @@
-﻿@{
+﻿@model HomePageViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
 @Html.DisplayForModel()
+@if (Model.User is {})
+{
+    @Html.DisplayFor(model => model.User)
+    @Html.DisplayFor(model => model.User!.Picture)
+    @Html.DisplayFor(model => model.User!.FavouriteTracks)
+    @Html.DisplayFor(model => model.User!.FavouriteTracks!.Picture)
+    @Html.DisplayFor(model => model.User!.FavouriteTracks!.Tracks)
+    foreach (var track in Model.User!.FavouriteTracks!.Tracks!)
+    {
+        @Html.DisplayFor(_ => track)
+    }
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    @foreach (var playlist in Model.Playlists)
+    {
+        @Html.DisplayFor(_ => playlist)
+    }
+}
