@@ -26,9 +26,20 @@ public class PlaylistsController : PsmControllerBase
             : throw new Exception();
 
     [HttpGet, Route(nameof(FavoriteTracks)), Authorize]
-    public async Task<IActionResult> FavoriteTracks() =>
-        View(GetModel(await DataContext.Users
+    public async Task<IActionResult> FavoriteTracks()
+    {
+        var userId = UserManager.GetUserId(User)!;
+        //для подгрузки картинок нужных треков в оперативу
+        await DataContext.Pictures
+            .Where(picture =>
+                DataContext.Users
+                    .First(user => user.Id == userId)
+                    .FavouriteTracks!.Tracks!
+                    .Any(track => track.Picture == picture))
+            .LoadAsync();
+        return View(GetModel(await DataContext.Users
             .Include(user => user.FavouriteTracks!.Tracks)
             .Include(user => user.FavouriteTracks!.Picture)
-            .FirstAsync(user => user.Id == UserManager.GetUserId(User))));
+            .FirstAsync(user => user.Id == userId)));
+    }
 }

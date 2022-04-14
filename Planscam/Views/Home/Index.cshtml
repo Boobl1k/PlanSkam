@@ -1,4 +1,5 @@
-﻿@model HomePageViewModel
+﻿@using Planscam.Extensions
+@model HomePageViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -10,10 +11,9 @@
     @Html.DisplayFor(model => model.User!.Picture)
     @Html.DisplayFor(model => model.User!.FavouriteTracks)
     @Html.DisplayFor(model => model.User!.FavouriteTracks!.Picture)
-    @Html.DisplayFor(model => model.User!.FavouriteTracks!.Tracks)
     foreach (var track in Model.User!.FavouriteTracks!.Tracks!)
     {
-        @Html.DisplayFor(_ => track)
+        @await Html.PartialAsync("TrackInList", track);
     }
     <br/>
     <br/>
@@ -24,4 +24,5 @@
     {
         @Html.DisplayFor(_ => playlist)
     }
+
 }

@@ -17,21 +17,26 @@ public class HomeController : PsmControllerBase
 
     public async Task<IActionResult> Index()
     {
-        //TODO view
-        var playlists = DataContext.Playlists.Include(playlist => playlist.Picture).ToList();
-        var user = SignInManager.IsSignedIn(User)
-            ? await DataContext.Users
-                .Include(user => user.Picture)
-                .Include(user => user.FavouriteTracks)
-                .Include(user => user.FavouriteTracks!.Picture)
-                .Include(user => user.FavouriteTracks!.Tracks)
-                //.Include(user => user.Playlists)
-                .FirstAsync(user => user.Id == UserManager.GetUserId(User))
-            : null;
+        var userId = UserManager.GetUserId(User)!;
+        await DataContext.Pictures
+            .Where(picture =>
+                DataContext.Users
+                    .First(user => user.Id == userId)
+                    .FavouriteTracks!.Tracks!
+                    .Any(track => track.Picture == picture))
+            .LoadAsync();
         return View(new HomePageViewModel
         {
-            Playlists = playlists,
-            User = user
+            Playlists = DataContext.Playlists.Include(playlist => playlist.Picture).ToList(),
+            User = SignInManager.IsSignedIn(User)
+                ? await DataContext.Users
+                    .Include(user => user.Picture)
+                    .Include(user => user.FavouriteTracks)
+                    .Include(user => user.FavouriteTracks!.Picture)
+                    .Include(user => user.FavouriteTracks!.Tracks)
+                    //.Include(user => user.Playlists) //нинада потому что выше мы уже получили все плейлисты
+                    .FirstAsync(user => user.Id == userId)
+                : null
         });
     }
 
