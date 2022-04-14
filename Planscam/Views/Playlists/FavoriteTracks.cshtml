@@ -1,4 +1,3 @@
-@using Planscam.Extensions
 @model PlaylistsViewModel
 
 @{
@@ -9,6 +8,5 @@
 @Html.DisplayForModel()
 @foreach (var track in Model.Tracks)
 {
-    @Html.DisplayFor(model => track)
-    @Html.DrawSmallTrackPic(track.Picture)
+    @await Html.PartialAsync("TrackInList", track)
 }

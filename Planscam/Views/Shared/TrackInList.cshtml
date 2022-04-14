@@ -4,4 +4,9 @@
 <div>
     @Html.DrawSmallTrackPic(Model.Picture)
     @Html.DisplayForModel()
+    @using (Html.BeginForm("AddTrackToFavourite", "Playlists", FormMethod.Post))
+    {
+        <input type="hidden" name="trackId" value="@Model.Id"/>
+        <input type="submit" value="+"/>
+    }
 </div>
