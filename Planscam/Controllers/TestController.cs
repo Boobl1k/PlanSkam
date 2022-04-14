@@ -5,21 +5,26 @@ using Planscam.Entities;
 
 namespace Planscam.Controllers;
 
-public class TestController : Controller
+public class TestController : PsmControllerBase
 {
-    private readonly AppDbContext _dataContext;
-    private readonly UserManager<User> _userManager;
-
-    public TestController(AppDbContext dataContext, UserManager<User> userManager)
+    public TestController(AppDbContext dataContext, UserManager<User> userManager, SignInManager<User> signInManager) :
+        base(dataContext, userManager, signInManager)
     {
-        _dataContext = dataContext;
-        _userManager = userManager;
     }
 
     public async Task<IActionResult> AddTestEntities()
     {
-        if (_dataContext.Authors.Any())
+        if (DataContext.Authors.Any())
             return Ok();
+        var genrePic = new Picture
+        {
+            Data = Array.Empty<byte>()
+        };
+        var genre = new Genre
+        {
+            Name = "test genre",
+            Picture = genrePic,
+        };
         var authors = new List<Author>();
         for (var i = 0; i < 5; i++)
             authors.Add(new Author {Name = $"Author{i + 1}"});
@@ -30,13 +35,18 @@ public class TestController : Controller
                 Name = $"track{i + 1}",
                 Data = Array.Empty<byte>(),
                 Time = new TimeSpan(0, 1, 20),
-                Author = authors[i / 2]
+                Author = authors[i / 2],
+                Genre = genre
             });
-        await _dataContext.Authors.AddRangeAsync(authors);
-        await _dataContext.SaveChangesAsync();
-        await _dataContext.Tracks.AddRangeAsync(tracks);
-        await _dataContext.SaveChangesAsync();
-        await _userManager.CreateAsync(new User
+        await DataContext.Pictures.AddAsync(genrePic);
+        await DataContext.SaveChangesAsync();
+        await DataContext.Genres.AddAsync(genre);
+        await DataContext.SaveChangesAsync();
+        await DataContext.Authors.AddRangeAsync(authors);
+        await DataContext.SaveChangesAsync();
+        await DataContext.Tracks.AddRangeAsync(tracks);
+        await DataContext.SaveChangesAsync();
+        await UserManager.CreateAsync(new User
         {
             UserName = "qwe",
             Email = "qwe@qwe.qwe",
@@ -45,12 +55,12 @@ public class TestController : Controller
                 Tracks = tracks.GetRange(0, 6)
             }
         }, "qweQWE123!");
-        await _dataContext.Playlists.AddAsync(new Playlist
+        await DataContext.Playlists.AddAsync(new Playlist
         {
             Name = "test playlist",
             Tracks = tracks.GetRange(4, 3)
         });
-        await _dataContext.SaveChangesAsync();
+        await DataContext.SaveChangesAsync();
         return Ok();
     }
 }

@@ -8,15 +8,11 @@ using Planscam.Models;
 
 namespace Planscam.Controllers;
 
-public class PlaylistsController : Controller
+public class PlaylistsController : PsmControllerBase
 {
-    private readonly AppDbContext _dataContext;
-    private readonly UserManager<User> _userManager;
-
-    public PlaylistsController(AppDbContext dataContext, UserManager<User> userManager)
+    public PlaylistsController(AppDbContext dataContext, UserManager<User> userManager,
+        SignInManager<User> signInManager) : base(dataContext, userManager, signInManager)
     {
-        _dataContext = dataContext;
-        _userManager = userManager;
     }
 
     private static PlaylistsViewModel GetModel(User user) =>
@@ -31,8 +27,8 @@ public class PlaylistsController : Controller
 
     [HttpGet, Route(nameof(FavoriteTracks)), Authorize]
     public async Task<IActionResult> FavoriteTracks() =>
-        View(GetModel(await _dataContext.Users
+        View(GetModel(await DataContext.Users
             .Include(user => user.FavouriteTracks!.Tracks)
             .Include(user => user.FavouriteTracks!.Picture)
-            .FirstAsync(user => user.Id == _userManager.GetUserId(User))));
+            .FirstAsync(user => user.Id == UserManager.GetUserId(User))));
 }

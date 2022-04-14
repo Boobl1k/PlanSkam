@@ -1,19 +1,16 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Planscam.DataAccess;
 using Planscam.Entities;
 using Planscam.Models;
 
 namespace Planscam.Controllers;
 
-public class AuthController : Controller
+public class AuthController : PsmControllerBase
 {
-    private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
-
-    public AuthController(UserManager<User> userManager, SignInManager<User> signInManager)
+    public AuthController(AppDbContext dataContext, UserManager<User> userManager, SignInManager<User> signInManager) :
+        base(dataContext, userManager, signInManager)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
     }
 
     [HttpGet]
@@ -37,7 +34,7 @@ public class AuthController : Controller
             Email = email,
             FavouriteTracks = new FavouriteTracks($"{name}'s favorite tracks")
         };
-        var result = await _userManager.CreateAsync(user, pass);
+        var result = await UserManager.CreateAsync(user, pass);
         if (!result.Succeeded)
         {
             foreach (var error in result.Errors)
@@ -45,7 +42,7 @@ public class AuthController : Controller
             return View();
         }
 
-        await _signInManager.SignInAsync(user, false);
+        await SignInManager.SignInAsync(user, false);
         return RedirectToAction("Index", "Home");
     }
 
@@ -54,7 +51,7 @@ public class AuthController : Controller
     public async Task<IActionResult> Login(LoginViewModel model)
     {
         if (!ModelState.IsValid) return View();
-        var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
+        var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
         if (result.Succeeded)
         {
             Console.WriteLine($"{model.UserName} is authenticated");
@@ -71,7 +68,7 @@ public class AuthController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logoff()
     {
-        await _signInManager.SignOutAsync();
+        await SignInManager.SignOutAsync();
         return RedirectToAction("Index", "Home");
     }
 }

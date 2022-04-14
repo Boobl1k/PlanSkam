@@ -8,29 +8,32 @@ using Planscam.Models;
 
 namespace Planscam.Controllers;
 
-public class HomeController : Controller
+public class HomeController : PsmControllerBase
 {
-    private readonly AppDbContext _dataContext;
-    private readonly UserManager<User> _userManager;
-
-    public HomeController(AppDbContext dataContext, UserManager<User> userManager)
+    public HomeController(AppDbContext dataContext, UserManager<User> userManager, SignInManager<User> signInManager) :
+        base(dataContext, userManager, signInManager)
     {
-        _dataContext = dataContext;
-        _userManager = userManager;
     }
 
-    public async Task<IActionResult> Index() => //TODO view
-        View(new HomePageViewModel
-        {
-            Playlists = _dataContext.Playlists.Include(playlist => playlist.Picture).ToList(),
-            User = await _dataContext.Users
+    public async Task<IActionResult> Index()
+    {
+        //TODO view
+        var playlists = DataContext.Playlists.Include(playlist => playlist.Picture).ToList();
+        var user = SignInManager.IsSignedIn(User)
+            ? await DataContext.Users
                 .Include(user => user.Picture)
                 .Include(user => user.FavouriteTracks)
                 .Include(user => user.FavouriteTracks!.Picture)
                 .Include(user => user.FavouriteTracks!.Tracks)
                 //.Include(user => user.Playlists)
-                .FirstAsync(user => user.Id == _userManager.GetUserId(User))
+                .FirstAsync(user => user.Id == UserManager.GetUserId(User))
+            : null;
+        return View(new HomePageViewModel
+        {
+            Playlists = playlists,
+            User = user
         });
+    }
 
     //TODO боюсь это трогать, зачем вообще это нужно?
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
