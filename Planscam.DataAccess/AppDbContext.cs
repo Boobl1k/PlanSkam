@@ -6,7 +6,9 @@ namespace Planscam.DataAccess;
 
 public class AppDbContext : IdentityDbContext<User>
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
+    }
 
     public DbSet<Author> Authors { get; set; } = null!;
     public DbSet<FavouriteTracks> FavouriteTracks { get; set; } = null!;
@@ -14,4 +16,5 @@ public class AppDbContext : IdentityDbContext<User>
     public DbSet<Playlist> Playlists { get; set; } = null!;
     public DbSet<Track> Tracks { get; set; } = null!;
     public DbSet<Genre> Genres { get; set; } = null!;
+    public DbSet<TrackData> TrackDatas { get; set; } = null!;
 }

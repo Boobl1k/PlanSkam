@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Planscam.Entities;
 
@@ -8,8 +9,8 @@ public class Track
     [Required]
     public string Name { get; set; } = null!;
 
-    [Required]
-    public byte[] Data { get; set; } = null!;
+    [Required, ForeignKey("TrackDataId")]
+    public TrackData? Data { get; set; }
     
     [Required]
     public TimeSpan Time { get; set; }

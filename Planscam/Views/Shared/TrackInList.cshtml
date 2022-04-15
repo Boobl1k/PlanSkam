@@ -6,6 +6,7 @@
     @Html.DisplayForModel()
     @using (Html.BeginForm("AddTrackToFavourite", "Tracks", new {trackId = Model.Id}, FormMethod.Post))
     {
+        //TODO вместо формы сделать кнопку которая по ajax попытается добавить трек и покажет результат
         <input type="submit" value="+"/>
     }
 </div>
