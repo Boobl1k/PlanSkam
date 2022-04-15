@@ -1,0 +1,11 @@
+@using Planscam.Extensions
+@model Planscam.Entities.Playlist
+
+@Html.DisplayForModel()
+
+@Html.DrawHugePlaylistPic(Model.Picture)
+
+@foreach (var track in Model.Tracks!)
+{
+    @await Html.PartialAsync("TrackInList", track)
+}

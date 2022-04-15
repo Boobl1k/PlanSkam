@@ -1,0 +1,24 @@
+@using Planscam.Extensions
+@model Planscam.Models.TrackSearchViewModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+
+@using(Html.BeginForm(FormMethod.Post))
+{
+    @Html.EditorForModel()
+    <input type="submit" value="Search"/>
+}
+
+@if (Model is { Result: { } })
+{
+    @Html.DisplayFor(model => model.Result)
+    @Html.DrawSmallPlaylistPic(Model.Result.Picture)
+    @foreach (var track in Model.Result!.Tracks!)
+    {
+        @await Html.PartialAsync("TrackInList", track)
+    }
+}

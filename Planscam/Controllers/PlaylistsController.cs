@@ -16,42 +16,60 @@ public class PlaylistsController : PsmControllerBase
     }
 
     private static PlaylistsViewModel GetModel(Playlist playlist) =>
-        playlist is {Tracks: { }}
+        playlist.Tracks is { }
             ? new PlaylistsViewModel
             {
-                Name = playlist.Name,
-                Picture = playlist.Picture,
-                Tracks = playlist.Tracks
+                Playlist = playlist
             }
-            : throw new Exception(); //TODO
+            : throw new Exception("Include tracks into your playlist");
 
     [HttpGet, Route(nameof(FavoriteTracks)), Authorize]
-    public async Task<IActionResult> FavoriteTracks()
-    {
-        await GetCurrentUserAsync(user => user.FavouriteTracks!.Tracks!, user => user.FavouriteTracks!.Picture!);
-        //для подгрузки картинок нужных треков в оперативу
-        await DataContext.Pictures
-            .Where(picture => CurrentUser!.FavouriteTracks!.Tracks!.Any(track => track.Picture == picture))
-            .LoadAsync();
-        return View(GetModel(CurrentUser!.FavouriteTracks!));
-    }
+    public async Task<IActionResult> FavoriteTracks() =>
+        RedirectToAction("Index", new
+        {
+            playlistId = await DataContext.Users
+                .Where(user => user.Id == UserManager.GetUserId(User))
+                .Select(user => user.FavouriteTracks!.Id)
+                .FirstAsync()
+        });
 
     [HttpGet]
     public async Task<IActionResult> Index(int playlistId)
     {
-        var playlist = await DataContext.Playlists.FirstOrDefaultAsync(playlist => playlist.Id == playlistId);
+        var playlist = await DataContext.Playlists
+            .Include(playlist => playlist.Picture)
+            .Include(playlist => playlist.Tracks)
+            .FirstOrDefaultAsync(playlist => playlist.Id == playlistId);
         if (playlist is null) return BadRequest();
+        await DataContext.Pictures
+            .Where(picture => DataContext.Playlists
+                .First(playlist1 => playlist1.Id == playlistId).Tracks!.Any(track => track.Picture == picture))
+            .LoadAsync();
         return View(GetModel(playlist));
     }
 
-    [HttpGet, Authorize]
+    [HttpPost, Authorize]
     public async Task<IActionResult> AddTrackToFavourite(int trackId)
     {
         var track = await DataContext.Tracks.Where(track => track.Id == trackId).FirstOrDefaultAsync();
         if (track is null) return BadRequest();
-        var user = await base.GetCurrentUserAsync(user => user.FavouriteTracks!.Tracks!);
+        var user = await base.GetCurrentUserAsync(user => user.FavouriteTracks!);
+        //TODO спросить у тимера
+        if (DataContext.Tracks
+            .Where(track1 =>
+                DataContext.Users
+                    .First(user1 => user1 == user).FavouriteTracks!.Tracks!
+                    .Contains(track1))
+            .Contains(track))
+            return BadRequest();
         user.FavouriteTracks!.Tracks!.Add(track);
-        DataContext.Users.Update(user);
+        await DataContext.SaveChangesAsync();
         return Ok();
     }
+
+    [HttpGet]
+    public async Task<IActionResult> All() =>
+        View(await DataContext.Playlists
+            .Where(playlist => DataContext.FavouriteTracks.All(tracks => tracks != playlist))
+            .ToListAsync());
 }

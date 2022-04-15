@@ -8,12 +8,7 @@
 {
     @Html.DisplayFor(model => model.User)
     @Html.DisplayFor(model => model.User!.Picture)
-    @Html.DisplayFor(model => model.User!.FavouriteTracks)
-    @Html.DisplayFor(model => model.User!.FavouriteTracks!.Picture)
-    foreach (var track in Model.User!.FavouriteTracks!.Tracks!)
-    {
-        @await Html.PartialAsync("TrackInList", track);
-    }
+    @await Html.PartialAsync("PlaylistFull", Model.User.FavouriteTracks)
     <br/>
     <br/>
     <br/>
@@ -21,7 +16,6 @@
     <br/>
     @foreach (var playlist in Model.Playlists)
     {
-        @Html.DisplayFor(_ => playlist)
+        @(await Html.PartialAsync("PlaylistInList", playlist))
     }
-
 }
