@@ -48,25 +48,6 @@ public class PlaylistsController : PsmControllerBase
         return View(GetModel(playlist));
     }
 
-    [HttpPost, Authorize]
-    public async Task<IActionResult> AddTrackToFavourite(int trackId)
-    {
-        var track = await DataContext.Tracks.Where(track => track.Id == trackId).FirstOrDefaultAsync();
-        if (track is null) return BadRequest();
-        var user = await base.GetCurrentUserAsync(user => user.FavouriteTracks!);
-        //TODO спросить у тимера
-        if (DataContext.Tracks
-            .Where(track1 =>
-                DataContext.Users
-                    .First(user1 => user1 == user).FavouriteTracks!.Tracks!
-                    .Contains(track1))
-            .Contains(track))
-            return BadRequest();
-        user.FavouriteTracks!.Tracks!.Add(track);
-        await DataContext.SaveChangesAsync();
-        return Ok();
-    }
-
     [HttpGet]
     public async Task<IActionResult> All() =>
         View(await DataContext.Playlists

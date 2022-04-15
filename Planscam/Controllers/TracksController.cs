@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,5 +34,18 @@ public class TracksController : PsmControllerBase
         };
         
         return View(model);
+    }
+    
+    [HttpPost, Authorize]
+    public async Task<IActionResult> AddTrackToFavourite(int trackId)
+    {
+        var track = await DataContext.Tracks.Where(track => track.Id == trackId).FirstOrDefaultAsync();
+        if (track is null ||
+            (await base.GetCurrentUserAsync(user => user.FavouriteTracks!.Tracks!))
+            .FavouriteTracks!.Tracks!.Contains(track))
+            return BadRequest();
+        CurrentUser!.FavouriteTracks!.Tracks!.Add(track);
+        await DataContext.SaveChangesAsync();
+        return Ok();
     }
 }

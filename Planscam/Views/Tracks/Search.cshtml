@@ -15,10 +15,5 @@
 
 @if (Model is { Result: { } })
 {
-    @Html.DisplayFor(model => model.Result)
-    @Html.DrawSmallPlaylistPic(Model.Result.Picture)
-    @foreach (var track in Model.Result!.Tracks!)
-    {
-        @await Html.PartialAsync("TrackInList", track)
-    }
+    @await Html.PartialAsync("PlaylistFull", Model.Result)
 }
