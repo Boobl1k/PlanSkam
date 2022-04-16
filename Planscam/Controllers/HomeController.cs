@@ -16,31 +16,20 @@ public class HomeController : PsmControllerBase
     {
     }
 
-    public async Task<IActionResult> Index()
-    {
-        var userId = UserManager.GetUserId(User)!;
-        await DataContext.Pictures
-            .Where(picture =>
-                DataContext.Users
-                    .First(user => user.Id == userId)
-                    .FavouriteTracks!.Tracks!
-                    .Any(track => track.Picture == picture))
-            .LoadAsync();
-        SetCurrentUrl();
-        return View(new HomePageViewModel
+    public async Task<IActionResult> Index() =>
+        View(new HomePageViewModel
         {
-            Playlists = DataContext.Playlists.Include(playlist => playlist.Picture).ToList(),
+            Playlists = DataContext.Playlists.Include(playlist => playlist.Picture).AsNoTracking().ToList(),
             User = SignInManager.IsSignedIn(User)
                 ? await DataContext.Users
                     .Include(user => user.Picture)
                     .Include(user => user.FavouriteTracks)
                     .Include(user => user.FavouriteTracks!.Picture)
-                    .Include(user => user.FavouriteTracks!.Tracks)
-                    //.Include(user => user.Playlists) //нинада потому что выше мы уже получили все плейлисты
-                    .FirstAsync(user => user.Id == userId)
+                    .Include(user => user.FavouriteTracks!.Tracks)!
+                    .ThenInclude(track => track.Picture)
+                    .FirstAsync(user => user.Id == UserManager.GetUserId(User))
                 : null
         });
-    }
 
     //TODO боюсь это трогать, зачем вообще это нужно?
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
