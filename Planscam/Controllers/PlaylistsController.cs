@@ -45,6 +45,7 @@ public class PlaylistsController : PsmControllerBase
             .Where(picture => DataContext.Playlists
                 .First(playlist1 => playlist1.Id == playlistId).Tracks!.Any(track => track.Picture == picture))
             .LoadAsync();
+        SetCurrentUrl();
         return View(GetModel(playlist));
     }
 

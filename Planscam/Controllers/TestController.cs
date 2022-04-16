@@ -33,7 +33,10 @@ public class TestController : PsmControllerBase
             tracks.Add(new Track
             {
                 Name = $"track{i + 1}",
-                Data = new TrackData(),
+                Data = new TrackData
+                {
+                    Data = Array.Empty<byte>()
+                },
                 Time = new TimeSpan(0, 1, 20),
                 Author = authors[i / 2],
                 Genre = genre

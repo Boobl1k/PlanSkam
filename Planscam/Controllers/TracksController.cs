@@ -37,7 +37,7 @@ public class TracksController : PsmControllerBase
     }
     
     [HttpPost, Authorize]
-    public async Task<IActionResult> AddTrackToFavourite(int trackId)
+    public async Task<IActionResult> AddTrackToFavourite(int trackId, string returnUrl)
     {
         var track = await DataContext.Tracks.Where(track => track.Id == trackId).FirstOrDefaultAsync();
         if (track is null ||
@@ -46,6 +46,8 @@ public class TracksController : PsmControllerBase
             return BadRequest();
         CurrentUser!.FavouriteTracks!.Tracks!.Add(track);
         await DataContext.SaveChangesAsync();
-        return Ok();
+        return !string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)
+            ? Redirect(returnUrl)
+            : RedirectToAction("Index", "Home");
     }
 }

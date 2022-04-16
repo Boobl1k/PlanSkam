@@ -27,4 +27,7 @@ public abstract class PsmControllerBase : Controller
         UserManager = userManager;
         SignInManager = signInManager;
     }
+
+    protected void SetCurrentUrl() => 
+        ViewBag.ReturnUrl = HttpContext.GetCurrentUrl();
 }

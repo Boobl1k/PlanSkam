@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,7 @@ public class HomeController : PsmControllerBase
                     .FavouriteTracks!.Tracks!
                     .Any(track => track.Picture == picture))
             .LoadAsync();
+        SetCurrentUrl();
         return View(new HomePageViewModel
         {
             Playlists = DataContext.Playlists.Include(playlist => playlist.Picture).ToList(),
