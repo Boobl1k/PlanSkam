@@ -13,12 +13,18 @@ public abstract class PsmControllerBase : Controller
     protected readonly UserManager<User> UserManager;
     protected readonly SignInManager<User> SignInManager;
 
+    private User? _currentUser;
+
     /// <summary>
-    /// Инициализируется при вызове метода <see cref="GetCurrentUserAsync"/>
+    /// Инициализируется при вызове метода <see cref="GetCurrentUserAsync()"/>
     /// </summary>
-    protected User? CurrentUser { get; private set; }
-    protected async Task<User> GetCurrentUserAsync(params Expression<Func<User, object>>[] includeExpressions) => 
-        CurrentUser ??= await DataContext.GetCurrentUserAsync(UserManager, User, includeExpressions);
+    protected User CurrentUser => _currentUser ?? GetCurrentUserAsync().Result;
+
+    protected async Task<User> GetCurrentUserAsync() =>
+        _currentUser ??= await UserManager.GetUserAsync(User);
+
+    protected async Task<User> GetCurrentUserAsync(params Expression<Func<User, object>>[] includeExpressions) =>
+        _currentUser ??= await DataContext.GetCurrentUserAsync(UserManager, User, includeExpressions);
 
     protected PsmControllerBase(AppDbContext dataContext, UserManager<User> userManager,
         SignInManager<User> signInManager)
@@ -28,6 +34,6 @@ public abstract class PsmControllerBase : Controller
         SignInManager = signInManager;
     }
 
-    protected void SetCurrentUrl() => 
-        ViewBag.ReturnUrl = HttpContext.GetCurrentUrl();
+    protected bool IsLocalUrl(string? url) =>
+        !string.IsNullOrEmpty(url) && Url.IsLocalUrl(url);
 }

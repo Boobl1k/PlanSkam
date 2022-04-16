@@ -29,6 +29,7 @@ public class PlaylistsController : PsmControllerBase
         {
             playlistId = await DataContext.Users
                 .Where(user => user.Id == UserManager.GetUserId(User))
+                .AsNoTracking()
                 .Select(user => user.FavouriteTracks!.Id)
                 .FirstAsync()
         });
@@ -39,13 +40,14 @@ public class PlaylistsController : PsmControllerBase
         var playlist = await DataContext.Playlists
             .Include(playlist => playlist.Picture)
             .Include(playlist => playlist.Tracks)
+            .AsNoTracking()
             .FirstOrDefaultAsync(playlist => playlist.Id == playlistId);
         if (playlist is null) return BadRequest();
         await DataContext.Pictures
             .Where(picture => DataContext.Playlists
                 .First(playlist1 => playlist1.Id == playlistId).Tracks!.Any(track => track.Picture == picture))
+            .AsNoTracking()
             .LoadAsync();
-        SetCurrentUrl();
         return View(GetModel(playlist));
     }
 
@@ -54,4 +56,31 @@ public class PlaylistsController : PsmControllerBase
         View(await DataContext.Playlists
             .Where(playlist => DataContext.FavouriteTracks.All(tracks => tracks != playlist))
             .ToListAsync());
+
+    [HttpGet]
+    public async Task<IActionResult> LikePlaylist(int playlistId, string returnUrl)
+    {
+        var playlist = await DataContext.Playlists
+            .AsNoTracking()
+            .FirstOrDefaultAsync(playlist => playlist.Id == playlistId);
+        if (playlist is null)
+            return BadRequest();
+        (await GetCurrentUserAsync(user => user.Playlists!.Where(_ => false))).Playlists!.Add(playlist);
+        await DataContext.SaveChangesAsync();
+        return IsLocalUrl(returnUrl)
+            ? Redirect(returnUrl)
+            : RedirectToAction("Index", new {playlistId});
+    }
+
+    [HttpGet, Authorize]
+    public async Task<IActionResult> Liked()
+    {
+        await GetCurrentUserAsync(user => user.Playlists!);
+        await DataContext.Pictures
+            .Where(picture => CurrentUser.Playlists!.Select(playlist => playlist.Picture).Contains(picture))
+            .AsNoTracking()
+            .LoadAsync();
+        DataContext.Update(CurrentUser);
+        return View(CurrentUser);
+    }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +26,7 @@ public class HomeController : PsmControllerBase
                     .Include(user => user.FavouriteTracks!.Picture)
                     .Include(user => user.FavouriteTracks!.Tracks)!
                     .ThenInclude(track => track.Picture)
+                    .AsNoTracking()
                     .FirstAsync(user => user.Id == UserManager.GetUserId(User))
                 : null
         });

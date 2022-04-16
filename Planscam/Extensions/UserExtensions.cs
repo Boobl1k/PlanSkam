@@ -7,6 +7,7 @@ using Planscam.Entities;
 
 namespace Planscam.Extensions;
 
+//TODO это говнокод, необходимо снести к херам
 public static class UserExtensions
 {
     public static async Task<User> GetCurrentUserAsync(
@@ -14,19 +15,19 @@ public static class UserExtensions
         UserManager<User> userManager,
         ClaimsPrincipal currentClaims,
         params Expression<Func<User, object>>[] includeExpressions) =>
-        await userManager.GetUserByIdOrCurrentAsync(default, currentClaims, appDbContext, includeExpressions);
+        await appDbContext.GetUserByIdOrCurrentAsync(default, currentClaims, userManager, includeExpressions);
 
     public static async Task<User> GetUserByIdAsync(
         this AppDbContext appDbContext,
         string? id,
         params Expression<Func<User, object>>[] includeExpressions) =>
-        await GetUserByIdOrCurrentAsync(default, id, default, appDbContext, includeExpressions);
+        await appDbContext.GetUserByIdOrCurrentAsync(id, default, default, includeExpressions);
 
     private static async Task<User> GetUserByIdOrCurrentAsync(
-        this UserManager<User>? userManager,
+        this AppDbContext appDbContext,
         string? id,
         ClaimsPrincipal? currentClaims,
-        AppDbContext appDbContext,
+        UserManager<User>? userManager,
         params Expression<Func<User, object>>[] includeExpressions) =>
         await includeExpressions
             .Aggregate(appDbContext.Users as IQueryable<User>, (current, includeExpression) =>

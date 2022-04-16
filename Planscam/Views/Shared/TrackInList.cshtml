@@ -4,7 +4,8 @@
 <div>
     @Html.DrawSmallTrackPic(Model.Picture)
     @Html.DisplayForModel()
-    @using (Html.BeginForm("AddTrackToFavourite", "Tracks", new {trackId = Model.Id, returnUrl = ViewBag.ReturnUrl}, FormMethod.Post))
+    @using (Html.BeginForm("AddTrackToFavourite", "Tracks",
+        new {trackId = Model.Id, returnUrl = Context.GetCurrentUrl()}, FormMethod.Post))
     {
         //TODO вместо формы сделать кнопку которая по ajax попытается добавить трек и покажет результат
         <input type="submit" value="+"/>
