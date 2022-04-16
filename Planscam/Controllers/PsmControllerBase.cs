@@ -1,9 +1,7 @@
-using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Planscam.DataAccess;
 using Planscam.Entities;
-using Planscam.Extensions;
 
 namespace Planscam.Controllers;
 
@@ -15,16 +13,19 @@ public abstract class PsmControllerBase : Controller
 
     private User? _currentUser;
 
-    /// <summary>
-    /// Инициализируется при вызове метода <see cref="GetCurrentUserAsync()"/>
-    /// </summary>
-    protected User CurrentUser => _currentUser ?? GetCurrentUserAsync().Result;
+    protected User CurrentUser
+    {
+        get => _currentUser ??= UserManager.GetUserAsync(User).Result;
+        set => _currentUser = value;
+    }
 
-    protected async Task<User> GetCurrentUserAsync() =>
-        _currentUser ??= await UserManager.GetUserAsync(User);
+    private string? _currentUserId;
 
-    protected async Task<User> GetCurrentUserAsync(params Expression<Func<User, object>>[] includeExpressions) =>
-        _currentUser ??= await DataContext.GetCurrentUserAsync(UserManager, User, includeExpressions);
+    protected string CurrentUserId =>
+        _currentUserId ??= UserManager.GetUserId(User);
+
+    protected IQueryable<User> CurrentUserQueryable =>
+        DataContext.Users.Where(user => user.Id == CurrentUserId);
 
     protected PsmControllerBase(AppDbContext dataContext, UserManager<User> userManager,
         SignInManager<User> signInManager)

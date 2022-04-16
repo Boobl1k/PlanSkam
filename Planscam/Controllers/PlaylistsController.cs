@@ -27,8 +27,7 @@ public class PlaylistsController : PsmControllerBase
     public async Task<IActionResult> FavoriteTracks() =>
         RedirectToAction("Index", new
         {
-            playlistId = await DataContext.Users
-                .Where(user => user.Id == UserManager.GetUserId(User))
+            playlistId = await CurrentUserQueryable
                 .AsNoTracking()
                 .Select(user => user.FavouriteTracks!.Id)
                 .FirstAsync()
@@ -57,15 +56,16 @@ public class PlaylistsController : PsmControllerBase
             .Where(playlist => DataContext.FavouriteTracks.All(tracks => tracks != playlist))
             .ToListAsync());
 
-    [HttpGet]
+    [HttpGet, Authorize]
     public async Task<IActionResult> LikePlaylist(int playlistId, string returnUrl)
     {
         var playlist = await DataContext.Playlists
             .AsNoTracking()
             .FirstOrDefaultAsync(playlist => playlist.Id == playlistId);
-        if (playlist is null)
-            return BadRequest();
-        (await GetCurrentUserAsync(user => user.Playlists!.Where(_ => false))).Playlists!.Add(playlist);
+        if (playlist is null) return BadRequest();
+        (await CurrentUserQueryable
+            .Include(user => user.Playlists!.Where(_ => false))
+            .FirstAsync()).Playlists!.Add(playlist);
         await DataContext.SaveChangesAsync();
         return IsLocalUrl(returnUrl)
             ? Redirect(returnUrl)
@@ -75,12 +75,14 @@ public class PlaylistsController : PsmControllerBase
     [HttpGet, Authorize]
     public async Task<IActionResult> Liked()
     {
-        await GetCurrentUserAsync(user => user.Playlists!);
+        CurrentUser = await CurrentUserQueryable
+            .Include(user => user.Playlists!)
+            .AsNoTracking()
+            .FirstAsync();
         await DataContext.Pictures
             .Where(picture => CurrentUser.Playlists!.Select(playlist => playlist.Picture).Contains(picture))
             .AsNoTracking()
             .LoadAsync();
-        DataContext.Update(CurrentUser);
         return View(CurrentUser);
     }
 }

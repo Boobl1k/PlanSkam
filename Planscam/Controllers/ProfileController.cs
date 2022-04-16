@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Planscam.DataAccess;
 using Planscam.Entities;
 using Planscam.Extensions;
@@ -18,22 +19,40 @@ public class ProfileController : PsmControllerBase
     private static UserViewModel GetModel(User user) =>
         new() {Id = user.Id, Name = user.UserName, Email = user.Email, Picture = user.Picture};
 
+    //я тут ультанул
     [HttpGet]
     public async Task<IActionResult> Index(string? id) =>
-        View(GetModel(id is { }
-            ? await DataContext.GetUserByIdAsync(id, user => user.Picture!)
-            : await DataContext.GetCurrentUserAsync(UserManager, User, user => user.Picture!)));
+        (id, SignInManager.IsSignedIn(User),
+                id is { }
+                    ? await DataContext.Users
+                        .Where(user => user.Id == id)
+                        .Include(user => user.Picture)
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync()
+                    : null) switch
+            {
+                (null, false, _) => Unauthorized(),
+                (null, true, _) => View(
+                    GetModel(await CurrentUserQueryable
+                        .Include(user => user.Picture)
+                        .AsNoTracking()
+                        .FirstAsync())),
+                ({ }, _, var userById) => userById is { } ? View(GetModel(userById)) : NotFound()
+            };
 
     [HttpGet, Authorize]
     public async Task<IActionResult> Edit() =>
-        View(GetModel(await DataContext.GetCurrentUserAsync(UserManager, User, user => user.Picture!)));
+        View(GetModel(await CurrentUserQueryable
+            .Include(user => user.Picture)
+            .AsNoTracking()
+            .FirstAsync()));
 
     [HttpPost, Authorize]
     public async Task<IActionResult> Edit(UserViewModel model, IFormFile? uploadImage)
     {
         var user = uploadImage is { }
-            ? await DataContext.GetCurrentUserAsync(UserManager, User)
-            : await DataContext.GetCurrentUserAsync(UserManager, User, user => user.Picture!);
+            ? await CurrentUserQueryable.FirstAsync()
+            : await CurrentUserQueryable.Include(user => user.Picture).FirstAsync();
         if (uploadImage is { })
             user.Picture = uploadImage.ToPicture();
         user.UserName = model.Name;

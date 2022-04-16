@@ -32,19 +32,20 @@ public class TracksController : PsmControllerBase
             Picture = tracks.Select(track => track.Picture).FirstOrDefault(picture => picture != null),
             Tracks = await tracks.ToListAsync()
         };
-        
         return View(model);
     }
-    
+
     [HttpPost, Authorize]
     public async Task<IActionResult> AddTrackToFavourite(int trackId, string? returnUrl)
     {
         var track = await DataContext.Tracks.Where(track => track.Id == trackId).FirstOrDefaultAsync();
-        if (track is null ||
-            (await base.GetCurrentUserAsync(user => user.FavouriteTracks!.Tracks!))
-            .FavouriteTracks!.Tracks!.Contains(track))
-            return BadRequest();
-        CurrentUser!.FavouriteTracks!.Tracks!.Add(track);
+        if (track is null) return BadRequest(); //TODO
+        CurrentUser = await CurrentUserQueryable
+            .Include(user =>
+                user.FavouriteTracks!.Tracks!.Where(track1 => track1.Id == trackId))
+            .FirstAsync();
+        if (CurrentUser.FavouriteTracks!.Tracks!.Contains(track)) return BadRequest(); //TODO
+        CurrentUser.FavouriteTracks!.Tracks!.Add(track);
         await DataContext.SaveChangesAsync();
         return IsLocalUrl(returnUrl)
             ? Redirect(returnUrl!)

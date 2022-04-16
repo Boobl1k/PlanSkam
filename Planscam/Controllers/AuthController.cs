@@ -25,9 +25,7 @@ public class AuthController : PsmControllerBase
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
         if (!ModelState.IsValid) return View(model);
-
         var (name, email, pass) = model;
-
         var user = new User
         {
             UserName = name,
@@ -51,15 +49,9 @@ public class AuthController : PsmControllerBase
     public async Task<IActionResult> Login(LoginViewModel model)
     {
         if (!ModelState.IsValid) return View();
-        var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
-        if (result.Succeeded)
-        {
-            Console.WriteLine($"{model.UserName} is authenticated");
-            return !string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl)
-                ? Redirect(model.ReturnUrl)
-                : RedirectToAction("Index", "Home");
-        }
-
+        if ((await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false))
+            .Succeeded)
+            return IsLocalUrl(model.ReturnUrl) ? Redirect(model.ReturnUrl!) : RedirectToAction("Index", "Home");
         ModelState.AddModelError(string.Empty, "wrong email or password");
         return View();
     }
