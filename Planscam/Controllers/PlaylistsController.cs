@@ -41,7 +41,7 @@ public class PlaylistsController : PsmControllerBase
             .Include(playlist => playlist.Tracks)
             .AsNoTracking()
             .FirstOrDefaultAsync(playlist => playlist.Id == playlistId);
-        if (playlist is null) return BadRequest();
+        if (playlist is null) return NotFound();
         await DataContext.Pictures
             .Where(picture => DataContext.Playlists
                 .First(playlist1 => playlist1.Id == playlistId).Tracks!.Any(track => track.Picture == picture))
@@ -56,6 +56,7 @@ public class PlaylistsController : PsmControllerBase
             .Where(playlist => DataContext.FavouriteTracks.All(tracks => tracks != playlist))
             .ToListAsync());
 
+    //TODO вызовы этого должны быть через ajax, и метод должен возвращать json с инфой об успешности
     [HttpGet, Authorize]
     public async Task<IActionResult> LikePlaylist(int playlistId, string returnUrl)
     {
