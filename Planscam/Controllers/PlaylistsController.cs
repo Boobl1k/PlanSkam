@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Planscam.DataAccess;
 using Planscam.Entities;
-using Planscam.Models;
 
 namespace Planscam.Controllers;
 
@@ -15,62 +14,76 @@ public class PlaylistsController : PsmControllerBase
     {
     }
 
-    private static PlaylistsViewModel GetModel(Playlist playlist) =>
-        playlist.Tracks is { }
-            ? new PlaylistsViewModel
-            {
-                Playlist = playlist
-            }
-            : throw new Exception("Include tracks into your playlist");
-
     [HttpGet, Route(nameof(FavoriteTracks)), Authorize]
     public async Task<IActionResult> FavoriteTracks() =>
         RedirectToAction("Index", new
         {
-            playlistId = await CurrentUserQueryable
+            Id = await CurrentUserQueryable
                 .AsNoTracking()
                 .Select(user => user.FavouriteTracks!.Id)
                 .FirstAsync()
         });
 
     [HttpGet]
-    public async Task<IActionResult> Index(int playlistId)
+    public async Task<IActionResult> Index(int id)
     {
+        //TODO по хорошему надо найти способ сделать это одним запросом, как я понимаю это делается с помощью хранимых процедур
         var playlist = await DataContext.Playlists
             .Include(playlist => playlist.Picture)
-            .Include(playlist => playlist.Tracks)
+            .Include(playlist => playlist.Tracks)!
+            .ThenInclude(track => track.Picture)
             .AsNoTracking()
-            .FirstOrDefaultAsync(playlist => playlist.Id == playlistId);
+            .Select(PlaylistSetIsLikedExpression)
+            .FirstOrDefaultAsync(playlist => playlist.Id == id);
         if (playlist is null) return NotFound();
-        await DataContext.Pictures
-            .Where(picture => DataContext.Playlists
-                .First(playlist1 => playlist1.Id == playlistId).Tracks!.Any(track => track.Picture == picture))
+        playlist.Tracks = await DataContext.Tracks
+            .Where(track => playlist.Tracks!.Contains(track))
+            //.Include(track => track.Picture)
             .AsNoTracking()
-            .LoadAsync();
-        return View(GetModel(playlist));
+            .Select(TrackSetIsLikedExpression)
+            .ToListAsync();
+        return View(playlist);
     }
 
     [HttpGet]
     public async Task<IActionResult> All() =>
         View(await DataContext.Playlists
             .Where(playlist => DataContext.FavouriteTracks.All(tracks => tracks != playlist))
+            .Include(playlist => playlist.Picture)
+            .AsNoTracking()
+            .Select(PlaylistSetIsLikedExpression)
             .ToListAsync());
 
     //TODO вызовы этого должны быть через ajax, и метод должен возвращать json с инфой об успешности
-    [HttpGet, Authorize]
-    public async Task<IActionResult> LikePlaylist(int playlistId, string returnUrl)
+    [HttpPost, Authorize]
+    public async Task<IActionResult> LikePlaylist(int id, string? returnUrl)
     {
         var playlist = await DataContext.Playlists
             .AsNoTracking()
-            .FirstOrDefaultAsync(playlist => playlist.Id == playlistId);
+            .FirstOrDefaultAsync(playlist => playlist.Id == id);
         if (playlist is null) return BadRequest();
         (await CurrentUserQueryable
             .Include(user => user.Playlists!.Where(_ => false))
             .FirstAsync()).Playlists!.Add(playlist);
         await DataContext.SaveChangesAsync();
         return IsLocalUrl(returnUrl)
-            ? Redirect(returnUrl)
-            : RedirectToAction("Index", new {playlistId});
+            ? Redirect(returnUrl!)
+            : RedirectToAction("Index", new {id});
+    }
+
+    //TODO ajax
+    [HttpPost, Authorize]
+    public async Task<IActionResult> UnlikePlaylist(int id, string? returnUrl)
+    {
+        CurrentUser = await CurrentUserQueryable
+            .Include(user => user.Playlists!.Where(playlist => playlist.Id == id))
+            .FirstAsync();
+        if (!CurrentUser.Playlists!.Any()) return BadRequest();
+        CurrentUser.Playlists!.Clear();
+        await DataContext.SaveChangesAsync();
+        return IsLocalUrl(returnUrl)
+            ? Redirect(returnUrl!)
+            : RedirectToAction("Index", new {id});
     }
 
     [HttpGet, Authorize]
@@ -78,12 +91,10 @@ public class PlaylistsController : PsmControllerBase
     {
         CurrentUser = await CurrentUserQueryable
             .Include(user => user.Playlists!)
+            .ThenInclude(playlist => playlist.Picture)
             .AsNoTracking()
             .FirstAsync();
-        await DataContext.Pictures
-            .Where(picture => CurrentUser.Playlists!.Select(playlist => playlist.Picture).Contains(picture))
-            .AsNoTracking()
-            .LoadAsync();
+        CurrentUser.Playlists!.ForEach(playlist => playlist.IsLiked = true);
         return View(CurrentUser);
     }
 }

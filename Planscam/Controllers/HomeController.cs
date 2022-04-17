@@ -15,21 +15,31 @@ public class HomeController : PsmControllerBase
     {
     }
 
-    public async Task<IActionResult> Index() =>
-        View(new HomePageViewModel
+    public async Task<IActionResult> Index()
+    {
+        var playlists = await DataContext.Playlists
+            .Include(playlist => playlist.Picture)
+            .AsNoTracking()
+            .ToListAsync();
+        if (SignInManager.IsSignedIn(User)) return View(new HomePageViewModel {Playlists = playlists});
+        CurrentUser = await CurrentUserQueryable
+            .Include(user => user.Picture)
+            .Include(user => user.FavouriteTracks)
+            .Include(user => user.FavouriteTracks!.Picture)
+            .AsNoTracking()
+            .FirstAsync();
+        CurrentUser.FavouriteTracks!.Tracks = DataContext.Tracks
+            .Where(track => track.Playlists!.Contains(CurrentUser.FavouriteTracks!))
+            .Include(track => track.Picture)
+            .Select(TrackSetIsLikedExpression)
+            .AsNoTracking()
+            .ToList();
+        return View(new HomePageViewModel
         {
-            Playlists = DataContext.Playlists.Include(playlist => playlist.Picture).AsNoTracking().ToList(),
-            User = SignInManager.IsSignedIn(User)
-                ? await DataContext.Users
-                    .Include(user => user.Picture)
-                    .Include(user => user.FavouriteTracks)
-                    .Include(user => user.FavouriteTracks!.Picture)
-                    .Include(user => user.FavouriteTracks!.Tracks)!
-                    .ThenInclude(track => track.Picture)
-                    .AsNoTracking()
-                    .FirstAsync(user => user.Id == UserManager.GetUserId(User))
-                : null
+            Playlists = playlists,
+            User = CurrentUser
         });
+    }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error() =>

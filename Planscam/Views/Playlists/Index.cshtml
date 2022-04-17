@@ -1,8 +1,9 @@
-@model PlaylistsViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model Planscam.Entities.Playlist
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = Model.Name;
     Layout = "_Layout";
 }
 
-@await Html.PartialAsync("PlaylistFull", Model.Playlist)
+@await Html.PartialAsync("PlaylistFull", Model)

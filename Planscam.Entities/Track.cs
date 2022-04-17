@@ -25,4 +25,7 @@ public class Track
     
     [Required]
     public Genre? Genre { get; set; }
+    
+    [NotMapped]
+    public bool? IsLiked { get; set; }
 }

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Planscam.Entities;
 
@@ -16,4 +17,7 @@ public class Playlist
 
     [Required]
     public List<User>? Users { get; set; }
+
+    [NotMapped]
+    public bool? IsLiked { get; set; }
 }

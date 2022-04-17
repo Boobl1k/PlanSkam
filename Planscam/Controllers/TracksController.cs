@@ -30,20 +30,24 @@ public class TracksController : PsmControllerBase
         {
             Name = $"Search result, query: '{model.Query}'",
             Picture = tracks.Select(track => track.Picture).FirstOrDefault(picture => picture != null),
-            Tracks = await tracks.ToListAsync()
+            Tracks = await tracks
+                .Include(track => track.Picture)
+                .Include(track => track.Author)
+                .Select(TrackSetIsLikedExpression)
+                .ToListAsync()
         };
         return View(model);
     }
 
     //TODO вызовы этого должны быть через ajax, и метод должен возвращать json с инфой об успешности
     [HttpPost, Authorize]
-    public async Task<IActionResult> AddTrackToFavourite(int trackId, string? returnUrl)
+    public async Task<IActionResult> AddTrackToFavourite(int id, string? returnUrl)
     {
-        var track = await DataContext.Tracks.Where(track => track.Id == trackId).FirstOrDefaultAsync();
+        var track = await DataContext.Tracks.Where(track => track.Id == id).FirstOrDefaultAsync();
         if (track is null) return BadRequest();
         CurrentUser = await CurrentUserQueryable
             .Include(user =>
-                user.FavouriteTracks!.Tracks!.Where(track1 => track1.Id == trackId))
+                user.FavouriteTracks!.Tracks!.Where(track1 => track1.Id == id))
             .FirstAsync();
         if (CurrentUser.FavouriteTracks!.Tracks!.Contains(track)) return BadRequest();
         CurrentUser.FavouriteTracks!.Tracks!.Add(track);
@@ -51,5 +55,21 @@ public class TracksController : PsmControllerBase
         return IsLocalUrl(returnUrl)
             ? Redirect(returnUrl!)
             : RedirectToAction("Index", "Home");
+    }
+
+    [HttpPost, Authorize]
+    public async Task<IActionResult> RemoveTrackFromFavourite(int id, string? returnUrl)
+    {
+        var favTracks = await DataContext.Users
+            .Where(user => user.Id == CurrentUserId)
+            .Include(user => user.FavouriteTracks!.Tracks!.Where(track => track.Id == id))
+            .Select(user => user.FavouriteTracks!)
+            .FirstAsync();
+        if (!favTracks.Tracks!.Any()) return BadRequest();
+        favTracks.Tracks!.Remove(favTracks.Tracks.First());
+        await DataContext.SaveChangesAsync();
+        return IsLocalUrl(returnUrl)
+            ? Redirect(returnUrl!)
+            : RedirectToAction("Index", "Playlists", new {favTracks.Id});
     }
 }

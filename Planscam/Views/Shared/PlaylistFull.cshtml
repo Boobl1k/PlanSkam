@@ -9,3 +9,13 @@
 {
     @await Html.PartialAsync("TrackInList", track)
 }
+
+@using (Model.IsLiked!.Value
+    ? Html.BeginForm("UnlikePlaylist", "Playlists", FormMethod.Post)
+    : Html.BeginForm("LikePlaylist", "Playlists", FormMethod.Post))
+{
+    @Html.HiddenFor(model => model.Id)
+    var returnUrl = Context.GetCurrentUrl();
+    @Html.HiddenFor(_ => returnUrl)
+    <input type="submit" value="@(Model.IsLiked.Value ? "---" : "+++")"/>
+}

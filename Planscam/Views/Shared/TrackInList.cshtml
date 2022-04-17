@@ -4,10 +4,17 @@
 <div>
     @Html.DrawSmallTrackPic(Model.Picture)
     @Html.DisplayForModel()
-    @using (Html.BeginForm("AddTrackToFavourite", "Tracks",
-        new {trackId = Model.Id, returnUrl = Context.GetCurrentUrl()}, FormMethod.Post))
+    @using (Model.IsLiked!.Value
+        ? Html.BeginForm("RemoveTrackFromFavourite", "Tracks", FormMethod.Post)
+        : Html.BeginForm("AddTrackToFavourite", "Tracks", FormMethod.Post))
     {
+        var id = Model.Id;
+        Console.WriteLine(id);
+        <input name="Id" type="hidden" value="@Model.Id.ToString()">
+        var returnUrl = Context.GetCurrentUrl();
+        @Html.HiddenFor(_ => returnUrl)
+
         //TODO вместо формы сделать кнопку которая по ajax попытается добавить трек и покажет результат
-        <input type="submit" value="+"/>
+        <input type="submit" value="@(Model.IsLiked.Value ? "-" : "+")"/>
     }
 </div>

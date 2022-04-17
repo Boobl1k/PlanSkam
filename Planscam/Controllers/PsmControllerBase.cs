@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Planscam.DataAccess;
@@ -13,6 +14,9 @@ public abstract class PsmControllerBase : Controller
 
     private User? _currentUser;
 
+    /// <summary>
+    /// при первом получении долбит бд
+    /// </summary>
     protected User CurrentUser
     {
         get => _currentUser ??= UserManager.GetUserAsync(User).Result;
@@ -21,6 +25,9 @@ public abstract class PsmControllerBase : Controller
 
     private string? _currentUserId;
 
+    /// <summary>
+    /// работает быстро
+    /// </summary>
     protected string CurrentUserId =>
         _currentUserId ??= UserManager.GetUserId(User);
 
@@ -37,4 +44,33 @@ public abstract class PsmControllerBase : Controller
 
     protected bool IsLocalUrl(string? url) =>
         !string.IsNullOrEmpty(url) && Url.IsLocalUrl(url);
+
+    //выглядит как говнокод, но так будет только 1 запрос к базе
+    protected Expression<Func<Playlist, Playlist>> PlaylistSetIsLikedExpression =>
+        playlist => new Playlist
+        {
+            Id = playlist.Id,
+            Name = playlist.Name,
+            Picture = playlist.Picture,
+            Tracks = playlist.Tracks,
+            Users = playlist.Users,
+            IsLiked = SignInManager.IsSignedIn(User) ? playlist.Users!.Any(user => user.Id == CurrentUserId) : null
+        };
+
+    protected Expression<Func<Track, Track>> TrackSetIsLikedExpression =>
+        track => new Track
+        {
+            Id = track.Id,
+            Name = track.Name,
+            Data = track.Data,
+            Time = track.Time,
+            Picture = track.Picture,
+            Author = track.Author,
+            Playlists = track.Playlists,
+            Genre = track.Genre,
+            IsLiked = SignInManager.IsSignedIn(User)
+                ? DataContext.Users
+                    .Any(user => user.Id == CurrentUserId && user.FavouriteTracks!.Tracks!.Contains(track))
+                : null
+        };
 }
