@@ -21,6 +21,6 @@ jobs:
     - name: FTP deploy
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
       with:
-        server: planscam.somee.com/www.planscam.somee.com
+        server: planscam.somee.com
         username: erererererer123
         password: ${{ secrets.ftp_password }}
