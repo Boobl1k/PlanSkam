@@ -16,6 +16,17 @@ services.AddIdentity<User, IdentityRole>()
 services.AddControllersWithViews();
 
 var app = builder.Build();
+
+#region migrations
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
+
+#endregion
+
 (app.Environment.IsDevelopment() ? app : app.UseExceptionHandler("/Home/Error").UseHsts())
     .UseHttpsRedirection()
     .UseStaticFiles()
