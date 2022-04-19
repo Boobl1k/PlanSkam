@@ -26,3 +26,4 @@ jobs:
         username: erererererer123
         password: ${{ secrets.ftp_password }}
         server-dir: /www.planscam.somee.com/
+        local-dir: /Planscam/bin/Release/net6.0/publish/
