@@ -18,7 +18,6 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build -c Release --no-restore
-    - uses: actions/checkout@v2
     - name: FTP deploy
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
       with:
