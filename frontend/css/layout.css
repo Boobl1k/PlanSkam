@@ -105,12 +105,10 @@ body {
     background-color: #1f1f1ff0;
 }
 
-.player {
-    height: var(--playerHeight);
-    background-color: #0f0f0ff0;
+.playerContainer {
+    position: relative;
+    display: flex;
 }
-
-
 
 .logospan {
     font-family: 'Raleway', sans-serif;
@@ -136,7 +134,7 @@ body {
     justify-content: start;
     align-items: center;
     font-weight: 400;
-    font-size: 24px;
+    font-size: 18px;
     text-decoration: none;
     color: #ffffff;
     transition: color var(--animationSpeed), text-shadow var(--animationSpeed), box-shadow var(--animationSpeed), background-color var(--animationSpeed);
@@ -195,7 +193,7 @@ body {
     justify-content: start;
     align-items: center;
     font-weight: 400;
-    font-size: 24px;
+    font-size: 18px;
     text-decoration: none;
     color: #ffffff;
     transition: color var(--animationSpeed), text-shadow var(--animationSpeed), box-shadow var(--animationSpeed), background-color var(--animationSpeed);
@@ -203,8 +201,8 @@ body {
 
 .menuPlaylistImg {
     border-radius: 10%;
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     transition: box-shadow var(--animationSpeed);
 }
 
