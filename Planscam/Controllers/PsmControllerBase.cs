@@ -59,8 +59,10 @@ public abstract class PsmControllerBase : Controller
             IsLiked = SignInManager.IsSignedIn(User) ? playlist.Users!.Any(user => user.Id == CurrentUserId) : null
         };
 
+    private Expression<Func<Track, Track>>? _trackSetIsLikedExpression;
+
     protected Expression<Func<Track, Track>> TrackSetIsLikedExpression =>
-        track => new Track
+        _trackSetIsLikedExpression ??= track => new Track
         {
             Id = track.Id,
             Name = track.Name,
