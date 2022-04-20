@@ -31,8 +31,10 @@ public abstract class PsmControllerBase : Controller
     protected string CurrentUserId =>
         _currentUserId ??= UserManager.GetUserId(User);
 
+    private IQueryable<User>? _currentUserQueryable;
+
     protected IQueryable<User> CurrentUserQueryable =>
-        DataContext.Users.Where(user => user.Id == CurrentUserId);
+        _currentUserQueryable ??= DataContext.Users.Where(user => user.Id == CurrentUserId);
 
     protected PsmControllerBase(AppDbContext dataContext, UserManager<User> userManager,
         SignInManager<User> signInManager)

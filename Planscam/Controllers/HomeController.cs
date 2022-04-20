@@ -21,7 +21,7 @@ public class HomeController : PsmControllerBase
             .Include(playlist => playlist.Picture)
             .AsNoTracking()
             .ToListAsync();
-        if (SignInManager.IsSignedIn(User)) return View(new HomePageViewModel {Playlists = playlists});
+        if (!SignInManager.IsSignedIn(User)) return View(new HomePageViewModel {Playlists = playlists});
         CurrentUser = await CurrentUserQueryable
             .Include(user => user.Picture)
             .Include(user => user.FavouriteTracks)
@@ -31,7 +31,6 @@ public class HomeController : PsmControllerBase
         CurrentUser.FavouriteTracks!.Tracks = DataContext.Tracks
             .Where(track => track.Playlists!.Contains(CurrentUser.FavouriteTracks!))
             .Include(track => track.Picture)
-            .Select(TrackSetIsLikedExpression)
             .AsNoTracking()
             .ToList();
         return View(new HomePageViewModel
