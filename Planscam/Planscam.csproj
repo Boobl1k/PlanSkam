@@ -19,4 +19,8 @@
       <ProjectReference Include="..\Planscam.DataAccess\Planscam.DataAccess.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Views\Studio\Index.cshtml" />
+    </ItemGroup>
+
 </Project>

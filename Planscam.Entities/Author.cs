@@ -8,6 +8,9 @@ public class Author
 
     [Required]
     public string Name { get; set; } = null!;
-    
+
     public Picture? Picture { get; set; }
+
+    [Required]
+    public User? User { get; set; }
 }

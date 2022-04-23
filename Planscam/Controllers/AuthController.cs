@@ -63,4 +63,7 @@ public class AuthController : PsmControllerBase
         await SignInManager.SignOutAsync();
         return RedirectToAction("Index", "Home");
     }
+
+    [HttpGet]
+    public IActionResult AccessDenied() => View();
 }

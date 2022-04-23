@@ -15,17 +15,33 @@ services.AddIdentity<User, IdentityRole>()
 
 services.AddControllersWithViews();
 
+services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = new PathString("/Auth/Login");
+    options.AccessDeniedPath = new PathString("/Auth/AccessDenied");//TODO
+});
+
 var app = builder.Build();
 
-#region migrations
 
 using (var scope = app.Services.CreateScope())
 {
+    #region migrations
+
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
+
+    #endregion
+
+    #region roles
+
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    if (!roleManager.Roles.Any())
+        await roleManager.CreateAsync(new IdentityRole("Author"));
+
+    #endregion
 }
 
-#endregion
 
 (app.Environment.IsDevelopment() ? app : app.UseExceptionHandler("/Home/Error").UseHsts())
     .UseHttpsRedirection()

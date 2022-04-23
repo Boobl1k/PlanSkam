@@ -1,0 +1,12 @@
+@using Planscam.Extensions
+@model DeleteTrackViewModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>Delete?</h2>
+
+@Html.DrawSmallTrackPic(Model.Track.Picture)
+@Html.DisplayForModel()

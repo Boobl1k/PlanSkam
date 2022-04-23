@@ -16,8 +16,12 @@ public class ProfileController : PsmControllerBase
     {
     }
 
-    private static UserViewModel GetModel(User user) =>
-        new() {Id = user.Id, Name = user.UserName, Email = user.Email, Picture = user.Picture};
+    private UserViewModel GetModel(User user) =>
+        new()
+        {
+            Id = user.Id, Name = user.UserName, Email = user.Email, Picture = user.Picture,
+            IsAuthor = User.IsInRole("Author")
+        };
 
     //я тут ультанул
     [HttpGet]
@@ -48,13 +52,13 @@ public class ProfileController : PsmControllerBase
             .FirstAsync()));
 
     [HttpPost, Authorize]
-    public async Task<IActionResult> Edit(UserViewModel model, IFormFile? uploadImage)
+    public async Task<IActionResult> Edit(UserViewModel model)
     {
-        var user = uploadImage is { }
+        var user = model.UploadImage is { }
             ? await CurrentUserQueryable.FirstAsync()
             : await CurrentUserQueryable.Include(user => user.Picture).FirstAsync();
-        if (uploadImage is { })
-            user.Picture = uploadImage.ToPicture();
+        if (model.UploadImage is { })
+            user.Picture = model.UploadImage.ToPicture();
         user.UserName = model.Name;
         await UserManager.UpdateAsync(user);
         model.Picture = user.Picture;

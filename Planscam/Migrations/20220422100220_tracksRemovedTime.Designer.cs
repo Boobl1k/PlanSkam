@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Planscam.DataAccess;
 
@@ -11,9 +12,10 @@ using Planscam.DataAccess;
 namespace Planscam.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220422100220_tracksRemovedTime")]
+    partial class tracksRemovedTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -170,15 +172,9 @@ namespace Planscam.Migrations
                     b.Property<int?>("PictureId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PictureId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Authors");
                 });
@@ -468,15 +464,7 @@ namespace Planscam.Migrations
                         .WithMany()
                         .HasForeignKey("PictureId");
 
-                    b.HasOne("Planscam.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Picture");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Planscam.Entities.Genre", b =>

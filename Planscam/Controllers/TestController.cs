@@ -7,9 +7,13 @@ namespace Planscam.Controllers;
 
 public class TestController : PsmControllerBase
 {
-    public TestController(AppDbContext dataContext, UserManager<User> userManager, SignInManager<User> signInManager) :
+    private readonly RoleManager<IdentityRole> _roleManager;
+
+    public TestController(AppDbContext dataContext, UserManager<User> userManager, SignInManager<User> signInManager,
+        RoleManager<IdentityRole> roleManager) :
         base(dataContext, userManager, signInManager)
     {
+        _roleManager = roleManager;
     }
 
     public async Task<IActionResult> AddTestEntities()
@@ -25,9 +29,17 @@ public class TestController : PsmControllerBase
             Name = "test genre",
             Picture = genrePic,
         };
-        var authors = new List<Author>();
-        for (var i = 0; i < 5; i++)
-            authors.Add(new Author {Name = $"Author{i + 1}"});
+        var user = new User
+        {
+            UserName = "qwe",
+            Email = "qwe@qwe.qwe",
+            FavouriteTracks = new FavouriteTracks("qwe's favorite tracks")
+            {
+                Tracks = new List<Track>()
+            }
+        };
+        await UserManager.CreateAsync(user, "qweQWE123!");
+        var author = new Author {Name = "Author1", User = user};
         var tracks = new List<Track>();
         for (var i = 0; i < 10; i++)
             tracks.Add(new Track
@@ -37,27 +49,20 @@ public class TestController : PsmControllerBase
                 {
                     Data = Array.Empty<byte>()
                 },
-                Time = new TimeSpan(0, 1, 20),
-                Author = authors[i / 2],
+                Author = author,
                 Genre = genre
             });
         await DataContext.Pictures.AddAsync(genrePic);
         await DataContext.SaveChangesAsync();
         await DataContext.Genres.AddAsync(genre);
         await DataContext.SaveChangesAsync();
-        await DataContext.Authors.AddRangeAsync(authors);
+        await DataContext.Authors.AddAsync(author);
         await DataContext.SaveChangesAsync();
         await DataContext.Tracks.AddRangeAsync(tracks);
         await DataContext.SaveChangesAsync();
-        await UserManager.CreateAsync(new User
-        {
-            UserName = "qwe",
-            Email = "qwe@qwe.qwe",
-            FavouriteTracks = new FavouriteTracks("qwe's favorite tracks")
-            {
-                Tracks = tracks.GetRange(0, 6)
-            }
-        }, "qweQWE123!");
+        user.FavouriteTracks.Tracks!.AddRange(tracks.GetRange(0, 6));
+        await DataContext.SaveChangesAsync();
+        await UserManager.AddToRoleAsync(user, "Author");
         await DataContext.Playlists.AddAsync(new Playlist
         {
             Name = "test playlist",

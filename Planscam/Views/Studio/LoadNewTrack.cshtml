@@ -1,0 +1,21 @@
+@model LoadTrackViewModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+
+@using (Html.BeginForm(FormMethod.Post, new {enctype = "multipart/form-data"}))
+{
+    @Html.EditorFor(model => model.Name)
+    <select name="GenreId">
+        @foreach (var genre in Model.Genres!)
+        {
+            <option value="@genre.Id">@genre.Name</option>
+        }
+    </select>
+    <input type="file" name="Image"/>
+    <input type="file" name="Track"/>
+    <input type="submit"/>
+}

@@ -9,12 +9,8 @@ public class UserViewModel
     public string Name { get; set; }
     [HiddenInput] public string Email { get; set; }
     public Picture? Picture { get; set; }
-
-    public void Deconstruct(out string id, out string name, out string email, out Picture? picture)
-    {
-        id = this.Id;
-        name = this.Name;
-        email = this.Email;
-        picture = this.Picture;
-    }
+    
+    public IFormFile? UploadImage { get; set; }
+    
+    public bool IsAuthor { get; set; } = false;
 }

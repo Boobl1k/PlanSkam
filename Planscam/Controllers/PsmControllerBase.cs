@@ -67,7 +67,6 @@ public abstract class PsmControllerBase : Controller
             Id = track.Id,
             Name = track.Name,
             Data = track.Data,
-            Time = track.Time,
             Picture = track.Picture,
             Author = track.Author,
             Playlists = track.Playlists,
