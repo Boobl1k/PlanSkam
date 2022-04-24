@@ -64,17 +64,17 @@ public class StudioController : PsmControllerBase
         return View(model);
     }
 
-    public async Task<Track?> GetOwnTrackById(int trackId, bool includePic = false) =>
+    public async Task<Track?> GetOwnTrackById(int id, bool includePic = false) =>
         await (includePic
                 ? DataContext.Tracks.Include(track => track.Picture)
                 : DataContext.Tracks as IQueryable<Track>)
             .FirstOrDefaultAsync(track =>
-                track.Id == trackId &&
+                track.Id == id &&
                 track.Author == DataContext.Authors.First(author => author.User == CurrentUserQueryable.First()));
 
     [HttpGet]
-    public async Task<IActionResult> DeleteTrack(int trackId, string? returnUrl) =>
-        await GetOwnTrackById(trackId, true) switch
+    public async Task<IActionResult> DeleteTrack(int id, string? returnUrl) =>
+        await GetOwnTrackById(id, true) switch
         {
             { } track => View(new DeleteTrackViewModel
             {
@@ -85,12 +85,14 @@ public class StudioController : PsmControllerBase
         };
 
     [HttpPost]
-    public async Task<IActionResult> DeleteTrackSure(int trackId, string? returnUrl)
+    public async Task<IActionResult> DeleteTrackSure(int id, string? returnUrl)
     {
-        var track = await GetOwnTrackById(trackId);
+        var track = await GetOwnTrackById(id);
         if (track is null) return BadRequest();
         DataContext.Tracks.Remove(track);
         await DataContext.SaveChangesAsync();
-        return IsLocalUrl(returnUrl) ? Redirect();
+        return IsLocalUrl(returnUrl)
+            ? Redirect(returnUrl!)
+            : RedirectToAction("Index");
     }
 }

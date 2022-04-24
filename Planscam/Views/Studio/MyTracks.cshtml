@@ -1,3 +1,4 @@
+@using Planscam.Extensions
 @model List<Planscam.Entities.Track>
 
 @{
@@ -10,4 +11,6 @@
 @foreach (var track in Model)
 {
     @await Html.PartialAsync("Track", track)
+    @Html.ActionLink("Delete", "DeleteTrack", new {returnUrl = Context.GetCurrentUrl(), track.Id})
+    <br/>
 }

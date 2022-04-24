@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Planscam.Entities;
 
 namespace Planscam.Models;
@@ -5,5 +6,5 @@ namespace Planscam.Models;
 public class DeleteTrackViewModel
 {
     public Track Track { get; set; } = null!;
-    public string? ReturnUrl { get; set; }
+    [HiddenInput(DisplayValue = false)] public string? ReturnUrl { get; set; }
 }
