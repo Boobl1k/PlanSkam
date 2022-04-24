@@ -26,23 +26,24 @@ public class ProfileController : PsmControllerBase
     //я тут ультанул
     [HttpGet]
     public async Task<IActionResult> Index(string? id) =>
-        (id, SignInManager.IsSignedIn(User),
-                id is { }
-                    ? await DataContext.Users
-                        .Where(user => user.Id == id)
-                        .Include(user => user.Picture)
-                        .AsNoTracking()
-                        .FirstOrDefaultAsync()
-                    : null) switch
-            {
-                (null, false, _) => Unauthorized(),
-                (null, true, _) => View(
-                    GetModel(await CurrentUserQueryable
-                        .Include(user => user.Picture)
-                        .AsNoTracking()
-                        .FirstAsync())),
-                ({ }, _, var userById) => userById is { } ? View(GetModel(userById)) : NotFound()
-            };
+        (id, SignInManager.IsSignedIn(User)) switch
+        {
+            (null, false) => Unauthorized(),
+            (null, true) => View(GetModel(
+                await CurrentUserQueryable
+                    .Include(user => user.Picture)
+                    .AsNoTracking()
+                    .FirstAsync())),
+            ({ }, _) => await DataContext.Users
+                    .Where(user => user.Id == id)
+                    .Include(user => user.Picture)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync() switch
+                {
+                    { } userById => View(GetModel(userById)),
+                    _ => NotFound()
+                }
+        };
 
     [HttpGet, Authorize]
     public async Task<IActionResult> Edit() =>
