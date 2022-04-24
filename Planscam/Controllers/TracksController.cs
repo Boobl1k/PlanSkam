@@ -16,12 +16,9 @@ public class TracksController : PsmControllerBase
     }
 
     [HttpGet]
-    public IActionResult Search() =>
-        View();
-
-    [HttpPost]
-    public async Task<IActionResult> Search(TrackSearchViewModel model)
+    public async Task<IActionResult> Search(TrackSearchViewModel? model)
     {
+        if (model is null) return View();
         var tracks = DataContext.Tracks
             .Where(model.ByAuthors
                 ? track => track.Author!.Name.Contains(model.Query)
@@ -72,4 +69,18 @@ public class TracksController : PsmControllerBase
             ? Redirect(returnUrl!)
             : RedirectToAction("Index", "Playlists", new {favTracks.Id});
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetWithData(int id) =>
+        await DataContext.Tracks
+                .Include(track => track.Data)
+                .FirstOrDefaultAsync(track => track.Id == id) switch
+            {
+                { } track => Json(new
+                {
+                    track.Id,
+                    track.Data!.Data
+                }),
+                _ => NotFound()
+            };
 }
