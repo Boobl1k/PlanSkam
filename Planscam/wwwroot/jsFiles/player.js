@@ -1,5 +1,6 @@
 const
     artist = document.getElementById('artist'),
+    trackName = document.getElementById('trackName'),
     playButton = document.getElementById('play'),
     audio = document.getElementById('audio'),
     progressBar = document.getElementById('progress'),
@@ -48,6 +49,9 @@ function setPauseIcon() {
     playButton.classList.add('fi-rr-play');
 }
 
+setMute();
+volumeSlider.style.height = `${audio.volume * 100}%`;
+
 function setMute() {
     if (audio.volume == 0)
         muted.style.display = 'flex';
@@ -55,11 +59,6 @@ function setMute() {
         muted.style.display = 'none';
 }
 
-progressContainer.addEventListener('click', setProgress);
-audio.addEventListener('timeupdate', progressBarUpdate);
-audio.addEventListener('play', setPlayIcon);
-audio.addEventListener('pause', setPauseIcon);
-audio.addEventListener('volumechange', setMute);
 
 function setVolume(e) {
     let offset = e.offsetY;
@@ -83,6 +82,17 @@ function hideVolume(e) {
     }
 }
 
+function LoadTrackInPlaylist (track) {
+    audio.src=track.src;
+    artist.innerHTML = track.artist;
+    trackName.innerHTML = track.trackName;
+}
+
+progressContainer.addEventListener('click', setProgress);
+audio.addEventListener('timeupdate', progressBarUpdate);
+audio.addEventListener('play', setPlayIcon);
+audio.addEventListener('pause', setPauseIcon);
+audio.addEventListener('volumechange', setMute);
 volumeContainer.addEventListener('click', setVolume);
 volumeBtn.addEventListener('click', hideVolume);
 

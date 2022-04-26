@@ -2,14 +2,16 @@
 
 @{
     ViewBag.Title = "Sign up";
-    Layout = "_Layout";
+    Layout = "_FormLayout";
 }
 
-<h2>Sign up</h2>
-<form method="post" asp-controller="Auth" asp-action="Register">
+<link href="~/css/form.css" rel="stylesheet">
+<div class="headline">Sign Up</div>
+<form class="form" method="post" asp-controller="Auth" asp-action="Register">
     <div asp-validation-summary="ModelOnly"></div>
     @Html.EditorForModel()
     <div>
         <input type="submit" value="Sign up"/>
     </div>
 </form>
+<a class="authLink" asp-controller="Auth" asp-action="Login">Already have an account?</a>

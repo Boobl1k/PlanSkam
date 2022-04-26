@@ -1,0 +1,47 @@
+﻿<link href="~/css/player.css" rel="stylesheet">
+<div class="player">
+    <audio id="audio" src="~/temp/music1.mp3"></audio>
+    <div class="controls">
+        <i class="prev button fi fi-rr-rewind"></i>
+        <i onclick="play()" id="play" class="button fi fi-rr-pause"></i>
+        <i onclick="testFunc()" class="next button fi fi-rr-forward"></i>
+        <i class="playlist button fi fi-rr-list"></i>
+    </div>
+    <div class="trackInfo">
+        <img class="trackLogo" src="https://lastfm.freetls.fastly.net/i/u/300x300/c6ea5209d93e404433ac90ea875ae867.jpg"
+            alt="playlist logo">
+        <div class="trackSpans">
+            <span id="artist" class="Artist" style="font-weight: 700; font-size: 20px;">
+                Travis Scottina
+            </span>
+            <span class="trackName" style="font-weight: 200; font-size: 16px;">
+                Typoe Jivotnoe
+            </span>
+        </div>
+    </div>
+    <div id="progeressContainer" class="progressContainer">
+        <div id="progressBackground" class="progressBackground">
+            <div id="progress" class="progress glow3" style="width: 0;">
+            </div>
+            <div id="progresss" class="progresss" style="width: 0;">
+            </div>
+        </div>
+    </div>
+    <div class="rightButtons">
+        <i class="like button fi fi-rr-heart"></i>
+        <i class="add button fi fi-rr-plus"></i>
+        <i class="ban button fi fi-rr-ban"></i>
+        <div style="display: relative;">
+            <i id="volumeBtn" class="volume button fi fi-rr-volume">
+                <i id="muted" class="muted fi fi-rr-cross"></i></i>
+            <div id="volumeWindow" class="volumeWindow">
+                <div id="volumeContainer" class="volumeContainer">
+                    <div id="volumeBackground" class="volumeBackground">
+                        <div id="volumeSlider" class="volumeSlider glow3 bcolor3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/jsFiles/player.js"></script>
