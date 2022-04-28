@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Planscam.Entities\Planscam.Entities.csproj" />
+    </ItemGroup>
+
 </Project>

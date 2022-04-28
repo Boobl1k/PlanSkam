@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Planscam.DataAccess\Planscam.DataAccess.csproj" />
+      <ProjectReference Include="..\Planscam.Services\Planscam.Services.csproj" />
     </ItemGroup>
 
     <ItemGroup>

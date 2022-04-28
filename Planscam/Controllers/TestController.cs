@@ -2,18 +2,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Planscam.DataAccess;
 using Planscam.Entities;
+using Planscam.Services;
 
 namespace Planscam.Controllers;
 
 public class TestController : PsmControllerBase
 {
-    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly UsersRepo _usersRepo;
 
     public TestController(AppDbContext dataContext, UserManager<User> userManager, SignInManager<User> signInManager,
-        RoleManager<IdentityRole> roleManager) :
+        UsersRepo usersRepo) :
         base(dataContext, userManager, signInManager)
     {
-        _roleManager = roleManager;
+        _usersRepo = usersRepo;
     }
 
     public async Task<IActionResult> AddTestEntities()
@@ -29,15 +30,8 @@ public class TestController : PsmControllerBase
             Name = "test genre",
             Picture = genrePic,
         };
-        var user = new User
-        {
-            UserName = "qwe",
-            Email = "qwe@qwe.qwe",
-            FavouriteTracks = new FavouriteTracks("qwe's favorite tracks")
-            {
-                Tracks = new List<Track>()
-            }
-        };
+        var user = _usersRepo.CreateNewUser("qwe", "qwe@qwe@qwe");
+        user.FavouriteTracks!.Tracks = new List<Track>();
         await UserManager.CreateAsync(user, "qweQWE123!");
         var author = new Author {Name = "Author1", User = user};
         var tracks = new List<Track>();
@@ -60,7 +54,7 @@ public class TestController : PsmControllerBase
         await DataContext.SaveChangesAsync();
         await DataContext.Tracks.AddRangeAsync(tracks);
         await DataContext.SaveChangesAsync();
-        user.FavouriteTracks.Tracks!.AddRange(tracks.GetRange(0, 6));
+        user.FavouriteTracks.Tracks.AddRange(tracks.GetRange(0, 6));
         await DataContext.SaveChangesAsync();
         await UserManager.AddToRoleAsync(user, "Author");
         await DataContext.Playlists.AddAsync(new Playlist

@@ -3,15 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 using Planscam.DataAccess;
 using Planscam.Entities;
 using Planscam.Models;
+using Planscam.Services;
 
 namespace Planscam.Controllers;
 
 public class AuthController : PsmControllerBase
 {
-    public AuthController(AppDbContext dataContext, UserManager<User> userManager, SignInManager<User> signInManager) :
-        base(dataContext, userManager, signInManager)
-    {
-    }
+    private readonly UsersRepo _usersRepo;
+
+    public AuthController(AppDbContext dataContext, UserManager<User> userManager, SignInManager<User> signInManager,
+        UsersRepo usersRepo) :
+        base(dataContext, userManager, signInManager) =>
+        _usersRepo = usersRepo;
 
     [HttpGet]
     public IActionResult Register() =>
@@ -26,12 +29,7 @@ public class AuthController : PsmControllerBase
     {
         if (!ModelState.IsValid) return View(model);
         var (name, email, pass) = model;
-        var user = new User
-        {
-            UserName = name,
-            Email = email,
-            FavouriteTracks = new FavouriteTracks($"{name}'s favorite tracks")
-        };
+        var user = _usersRepo.CreateNewUser(name, email);
         var result = await UserManager.CreateAsync(user, pass);
         if (!result.Succeeded)
         {

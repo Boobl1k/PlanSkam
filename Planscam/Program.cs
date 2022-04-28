@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Planscam.DataAccess;
 using Planscam.Entities;
+using Planscam.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -12,6 +13,7 @@ services.AddDbContext<AppDbContext>(options =>
         action.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName)));
 services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
+services.AddSingleton<UsersRepo>();
 
 services.AddControllersWithViews();
 
