@@ -18,6 +18,8 @@ public class Playlist
     [Required]
     public List<User>? Users { get; set; }
 
+    public OwnedPlaylists? OwnedBy { get; set; }
+    
     [NotMapped]
     public bool? IsLiked { get; set; }
 }

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Planscam.Entities;
 
-[Table("FavouriteTracks")]
+[Table(nameof(FavouriteTracks))]
 public class FavouriteTracks : Playlist
 {
     public FavouriteTracks() : this("Fav tracks") { }

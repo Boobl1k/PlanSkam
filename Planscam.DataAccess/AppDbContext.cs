@@ -17,4 +17,5 @@ public class AppDbContext : IdentityDbContext<User>
     public DbSet<Track> Tracks { get; set; } = null!;
     public DbSet<Genre> Genres { get; set; } = null!;
     public DbSet<TrackData> TrackDatas { get; set; } = null!;
+    public DbSet<OwnedPlaylists> OwnedPlaylists { get; set; } = null!;
 }

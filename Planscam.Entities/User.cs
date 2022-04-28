@@ -12,4 +12,7 @@ public class User : IdentityUser
 
     [Required]
     public FavouriteTracks? FavouriteTracks { get; set; }
+    
+    [Required]
+    public OwnedPlaylists? OwnedPlaylists { get; set; }
 }
