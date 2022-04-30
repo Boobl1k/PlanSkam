@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Planscam.DataAccess;
 using Planscam.Entities;
 using Planscam.Extensions;
@@ -50,43 +49,25 @@ public abstract class PsmControllerBase : Controller
         !string.IsNullOrEmpty(url) && Url.IsLocalUrl(url);
 
     //выглядит как говнокод, но так будет только 1 запрос к базе
-    //уже не 1
     private Expression<Func<Playlist, Playlist>>? _playlistSetIsLikedAndIsOwnedExpression;
 
-    /// <summary>
-    /// если CurrentUser is not {OwnedPlaylists.Playlists: { }} получает его с базы, то есть отработает 1 доп запрос
-    /// </summary>
-    protected Expression<Func<Playlist, Playlist>> PlaylistSetIsLikedAndIsOwnedExpression
-    {
-        get
+    protected Expression<Func<Playlist, Playlist>> PlaylistSetIsLikedAndIsOwnedExpression =>
+        _playlistSetIsLikedAndIsOwnedExpression ??= playlist => new Playlist
         {
-            //TODO не работает как надо
-            Console.WriteLine("-------------");
-            if (_playlistSetIsLikedAndIsOwnedExpression is { }) return _playlistSetIsLikedAndIsOwnedExpression;
-            if (SignInManager.IsSignedIn(User) && _currentUser is not {OwnedPlaylists.Playlists: { }})
-                CurrentUser = CurrentUserQueryable.Include(user => user.OwnedPlaylists!.Playlists).First();
-            Console.WriteLine("-------------");
-            foreach (var playlist in CurrentUser.OwnedPlaylists.Playlists)
-            {
-                Console.WriteLine($"playlist {playlist.Id} {playlist.Name}");
-            }
-            Console.WriteLine("-------------");
-            return _playlistSetIsLikedAndIsOwnedExpression = playlist => new Playlist
-            {
-                Id = playlist.Id,
-                Name = playlist.Name,
-                Picture = playlist.Picture,
-                Tracks = playlist.Tracks,
-                Users = playlist.Users,
-                IsLiked = SignInManager.IsSignedIn(User)
-                    ? playlist.Users!.Any(user => user == CurrentUser)
-                    : null,
-                IsOwned = SignInManager.IsSignedIn(User) 
-                    ? CurrentUser.OwnedPlaylists!.Playlists!.Any(playlist1 => playlist1.Id == playlist.Id)
-                    : null
-            };
-        }
-    }
+            Id = playlist.Id,
+            Name = playlist.Name,
+            Picture = playlist.Picture,
+            Tracks = playlist.Tracks,
+            Users = playlist.Users,
+            IsLiked = SignInManager.IsSignedIn(User)
+                ? playlist.Users!.Any(user => user.Id == CurrentUserId)
+                : null,
+            IsOwned = SignInManager.IsSignedIn(User)
+                ? CurrentUserQueryable
+                    .Select(user => user.OwnedPlaylists!.Playlists!)
+                    .Any(playlists => playlists.Any(playlist1 => playlist1 == playlist))
+                : null
+        };
 
     private Expression<Func<Track, Track>>? _trackSetIsLikedExpression;
 
