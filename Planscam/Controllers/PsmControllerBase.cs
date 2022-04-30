@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Planscam.DataAccess;
 using Planscam.Entities;
+using Planscam.Extensions;
 
 namespace Planscam.Controllers;
 
@@ -76,4 +77,8 @@ public abstract class PsmControllerBase : Controller
                     .Any(user => user.Id == CurrentUserId && user.FavouriteTracks!.Tracks!.Contains(track))
                 : null
         };
+
+    [NonAction]
+    protected new IActionResult Unauthorized() =>
+        RedirectToAction("Login", "Auth", new {returnUrl = HttpContext.GetCurrentUrl()});
 }
