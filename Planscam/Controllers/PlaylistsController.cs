@@ -127,11 +127,12 @@ public class PlaylistsController : PsmControllerBase
         return RedirectToAction("Index", new {playlist.Id});
     }
 
-    [HttpGet, Authorize]//TODO не проверено
+    [HttpGet, Authorize]
     public async Task<IActionResult> Delete(int id, string? returnUrl) =>
         await DataContext.Playlists
             .AnyAsync(playlist =>
-                playlist.Id == id && CurrentUserQueryable.First().OwnedPlaylists!.Playlists!.Contains(playlist))
+                playlist.Id == id && CurrentUserQueryable.Select(user => user.OwnedPlaylists!.Playlists!)
+                    .Any(playlists => playlists.Contains(playlist)))
             ? View(new DeletePlaylistViewModel
             {
                 Id = id,
@@ -139,12 +140,13 @@ public class PlaylistsController : PsmControllerBase
             })
             : BadRequest();
 
-    [HttpPost, Authorize]//TODO не проверено
+    [HttpPost, Authorize]
     public async Task<IActionResult> DeleteSure(int id, string? returnUrl)
     {
         var playlist = await DataContext.Playlists
             .Where(playlist =>
-                playlist.Id == id && CurrentUserQueryable.First().OwnedPlaylists!.Playlists!.Contains(playlist))
+                playlist.Id == id && CurrentUserQueryable.Select(user => user.OwnedPlaylists!.Playlists!)
+                    .Any(playlists => playlists.Contains(playlist)))
             .Select(playlist => new Playlist {Id = playlist.Id})
             .FirstOrDefaultAsync();
         if (playlist is null) return BadRequest();
