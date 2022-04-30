@@ -28,7 +28,7 @@ public class ProfileController : PsmControllerBase
     public async Task<IActionResult> Index(string? id) =>
         (id, SignInManager.IsSignedIn(User)) switch
         {
-            (null, false) => Unauthorized(),
+            (null, false) => RedirectToAction("Login", "Auth", new {returnUrl = HttpContext.GetCurrentUrl()}),
             (null, true) => View(GetModel(
                 await CurrentUserQueryable
                     .Include(user => user.Picture)

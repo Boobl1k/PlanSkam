@@ -30,7 +30,7 @@ public class TestController : PsmControllerBase
             Name = "test genre",
             Picture = genrePic,
         };
-        var user = _usersRepo.CreateNewUser("qwe", "qwe@qwe@qwe");
+        var user = _usersRepo.CreateNewUser("qwe", "qwe@qwe.qwe");
         user.FavouriteTracks!.Tracks = new List<Track>();
         await UserManager.CreateAsync(user, "qweQWE123!");
         var author = new Author {Name = "Author1", User = user};
