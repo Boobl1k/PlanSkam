@@ -1,0 +1,13 @@
+@model CreatePlaylistViewModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@using (Html.BeginForm("Create", "Playlists", FormMethod.Post, new {enctype = "multipart/form-data"}))
+{
+    @Html.EditorForModel()
+    <input type="file" name="Picture"/>
+    <input type="submit" value="Create"/>
+}

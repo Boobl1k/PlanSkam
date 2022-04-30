@@ -1,0 +1,14 @@
+@model DeletePlaylistViewModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@using (Html.BeginForm("DeleteSure", "Playlists", FormMethod.Post))
+{
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.ReturnUrl)
+    <input type="submit" value="Delete"/>
+}
+<a href="@Model.ReturnUrl">Go back</a>

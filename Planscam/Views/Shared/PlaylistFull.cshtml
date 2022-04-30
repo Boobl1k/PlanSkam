@@ -17,8 +17,17 @@
         : Html.BeginForm("LikePlaylist", "Playlists", FormMethod.Post))
     {
         @Html.HiddenFor(model => model.Id)
-        var returnUrl = Context.GetCurrentUrl();
-        @Html.HiddenFor(_ => returnUrl)
+        @Html.HiddenForReturnUrl(Context)
         <input type="submit" value="@(Model.IsLiked.Value ? "---" : "+++")"/>
+    }
+}
+
+@if (Model.IsOwned is true)
+{
+    @using (Html.BeginForm("Delete", "Playlists", FormMethod.Get))
+    {
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenForReturnUrl(Context)
+        <input type="submit" value="Delete"/>
     }
 }

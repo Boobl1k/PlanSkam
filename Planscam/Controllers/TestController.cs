@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Planscam.DataAccess;
 using Planscam.Entities;
 using Planscam.Services;
@@ -63,6 +64,18 @@ public class TestController : PsmControllerBase
             Tracks = tracks.GetRange(4, 3)
         });
         await DataContext.SaveChangesAsync();
+        return Ok();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Test()
+    {
+        foreach (var playlist in CurrentUserQueryable.Include(user => user.OwnedPlaylists.Playlists).First()
+                     .OwnedPlaylists.Playlists)
+        {
+            Console.WriteLine($"playlist {playlist.Id} {playlist.Name}");
+        }
+
         return Ok();
     }
 }

@@ -50,6 +50,7 @@ public abstract class PsmControllerBase : Controller
         !string.IsNullOrEmpty(url) && Url.IsLocalUrl(url);
 
     //выглядит как говнокод, но так будет только 1 запрос к базе
+    //уже не 1
     private Expression<Func<Playlist, Playlist>>? _playlistSetIsLikedAndIsOwnedExpression;
 
     /// <summary>
@@ -59,9 +60,17 @@ public abstract class PsmControllerBase : Controller
     {
         get
         {
+            //TODO не работает как надо
+            Console.WriteLine("-------------");
             if (_playlistSetIsLikedAndIsOwnedExpression is { }) return _playlistSetIsLikedAndIsOwnedExpression;
             if (SignInManager.IsSignedIn(User) && _currentUser is not {OwnedPlaylists.Playlists: { }})
                 CurrentUser = CurrentUserQueryable.Include(user => user.OwnedPlaylists!.Playlists).First();
+            Console.WriteLine("-------------");
+            foreach (var playlist in CurrentUser.OwnedPlaylists.Playlists)
+            {
+                Console.WriteLine($"playlist {playlist.Id} {playlist.Name}");
+            }
+            Console.WriteLine("-------------");
             return _playlistSetIsLikedAndIsOwnedExpression = playlist => new Playlist
             {
                 Id = playlist.Id,
@@ -73,7 +82,7 @@ public abstract class PsmControllerBase : Controller
                     ? playlist.Users!.Any(user => user == CurrentUser)
                     : null,
                 IsOwned = SignInManager.IsSignedIn(User) 
-                    ? CurrentUser.OwnedPlaylists!.Playlists!.Contains(playlist)
+                    ? CurrentUser.OwnedPlaylists!.Playlists!.Any(playlist1 => playlist1.Id == playlist.Id)
                     : null
             };
         }

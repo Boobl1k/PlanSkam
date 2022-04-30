@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Planscam.DataAccess;
 using Planscam.Entities;
+using Planscam.Extensions;
+using Planscam.Models;
 
 namespace Planscam.Controllers;
 
@@ -96,5 +98,60 @@ public class PlaylistsController : PsmControllerBase
             .FirstAsync();
         CurrentUser.Playlists!.ForEach(playlist => playlist.IsLiked = true);
         return View(CurrentUser);
+    }
+
+    [HttpGet, Authorize]
+    public IActionResult Create() =>
+        View();
+
+    [HttpPost, Authorize]
+    public async Task<IActionResult> Create(CreatePlaylistViewModel model)
+    {
+        if (!ModelState.IsValid) return View();
+        var playlist = new Playlist
+        {
+            Name = model.Name,
+            Picture = model.Picture.ToPicture(),
+            Users = new List<User> {CurrentUser}
+        };
+        CurrentUser = await CurrentUserQueryable
+            .Include(user => user.OwnedPlaylists!.Playlists)
+            .Select(user => new User
+            {
+                Id = user.Id,
+                OwnedPlaylists = user.OwnedPlaylists
+            })
+            .FirstAsync();
+        CurrentUser.OwnedPlaylists!.Playlists!.Add(playlist);
+        await DataContext.SaveChangesAsync();
+        return RedirectToAction("Index", new {playlist.Id});
+    }
+
+    [HttpGet, Authorize]//TODO не проверено
+    public async Task<IActionResult> Delete(int id, string? returnUrl) =>
+        await DataContext.Playlists
+            .AnyAsync(playlist =>
+                playlist.Id == id && CurrentUserQueryable.First().OwnedPlaylists!.Playlists!.Contains(playlist))
+            ? View(new DeletePlaylistViewModel
+            {
+                Id = id,
+                ReturnUrl = returnUrl
+            })
+            : BadRequest();
+
+    [HttpPost, Authorize]//TODO не проверено
+    public async Task<IActionResult> DeleteSure(int id, string? returnUrl)
+    {
+        var playlist = await DataContext.Playlists
+            .Where(playlist =>
+                playlist.Id == id && CurrentUserQueryable.First().OwnedPlaylists!.Playlists!.Contains(playlist))
+            .Select(playlist => new Playlist {Id = playlist.Id})
+            .FirstOrDefaultAsync();
+        if (playlist is null) return BadRequest();
+        DataContext.Playlists.Remove(playlist);
+        await DataContext.SaveChangesAsync();
+        return IsLocalUrl(returnUrl)
+            ? Redirect(returnUrl!)
+            : RedirectToAction("Liked");
     }
 }
