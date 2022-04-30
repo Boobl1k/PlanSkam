@@ -32,8 +32,8 @@ public class PlaylistsController : PsmControllerBase
             .Include(playlist => playlist.Picture)
             .Include(playlist => playlist.Tracks)!
             .ThenInclude(track => track.Picture)
+            .Select(PlaylistSetIsLikedAndIsOwnedExpression)
             .AsNoTracking()
-            .Select(PlaylistSetIsLikedExpression)
             .FirstOrDefaultAsync(playlist => playlist.Id == id);
         if (playlist is null) return NotFound();
         playlist.Tracks = await DataContext.Tracks
@@ -51,7 +51,7 @@ public class PlaylistsController : PsmControllerBase
             .Where(playlist => DataContext.FavouriteTracks.All(tracks => tracks != playlist))
             .Include(playlist => playlist.Picture)
             .AsNoTracking()
-            .Select(PlaylistSetIsLikedExpression)
+            .Select(PlaylistSetIsLikedAndIsOwnedExpression)
             .ToListAsync());
 
     //TODO вызовы этого должны быть через ajax, и метод должен возвращать json с инфой об успешности

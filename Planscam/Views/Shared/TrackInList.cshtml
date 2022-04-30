@@ -10,8 +10,6 @@
             ? Html.BeginForm("RemoveTrackFromFavourite", "Tracks", FormMethod.Post)
             : Html.BeginForm("AddTrackToFavourite", "Tracks", FormMethod.Post))
         {
-            var id = Model.Id;
-            Console.WriteLine(id);
             <input name="Id" type="hidden" value="@Model.Id.ToString()">
             var returnUrl = Context.GetCurrentUrl();
             @Html.HiddenFor(_ => returnUrl)

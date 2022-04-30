@@ -22,4 +22,7 @@ public class Playlist
     
     [NotMapped]
     public bool? IsLiked { get; set; }
+    
+    [NotMapped]
+    public bool? IsOwned { get; set; }
 }
