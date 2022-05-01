@@ -20,6 +20,9 @@ public class Playlist
 
     public OwnedPlaylists? OwnedBy { get; set; }
     
+    [Required]
+    public bool IsAlbum { get; set; }
+    
     [NotMapped]
     public bool? IsLiked { get; set; }
     
