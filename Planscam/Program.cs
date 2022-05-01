@@ -14,6 +14,7 @@ services.AddDbContext<AppDbContext>(options =>
 services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
 services.AddSingleton<UsersRepo>();
+services.AddScoped<PlaylistsRepo>();
 
 services.AddControllersWithViews();
 

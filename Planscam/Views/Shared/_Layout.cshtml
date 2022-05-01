@@ -1,5 +1,6 @@
-﻿@{ var authenticated = User.Identity?.IsAuthenticated ?? false; }
-
+﻿@using Planscam.Services
+@{ var authenticated = User.Identity?.IsAuthenticated ?? false; }
+@inject PlaylistsRepo PlaylistsRepo
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,16 +57,22 @@
                 <span class="headline">
                     Your Playlists
                 </span>
-                <div class="menuPlaylistsContainer">
-                    <div class="menuPlaylists">
-                        <a class="menuPlaylistElement" href="google.com">
-                            <img class="menuPlaylistImg"
-                                src="https://lastfm.freetls.fastly.net/i/u/300x300/c6ea5209d93e404433ac90ea875ae867.jpg"
-                                alt="playlist logo">
-                            6ix9ine (-)
-                        </a>
+                @if (authenticated)
+                {
+                    <div class="menuPlaylistsContainer">
+                        <div class="menuPlaylists">
+                            @foreach (var playlist in await PlaylistsRepo.GetLikedPlaylists(User))
+                            {
+                                <a class="menuPlaylistElement" href="google.com">
+                                    <img class="menuPlaylistImg"
+                                         src="https://lastfm.freetls.fastly.net/i/u/300x300/c6ea5209d93e404433ac90ea875ae867.jpg"
+                                         alt="playlist logo">
+                                    6ix9ine (-)
+                                </a>
+                            }
+                        </div>
                     </div>
-                </div>
+                }
             </div>
             <div class="pageContainer">
                 @RenderBody();
