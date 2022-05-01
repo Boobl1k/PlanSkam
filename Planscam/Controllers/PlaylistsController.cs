@@ -156,4 +156,25 @@ public class PlaylistsController : PsmControllerBase
             ? Redirect(returnUrl!)
             : RedirectToAction("Liked");
     }
+
+    //TODO ajax
+    [HttpPost, Authorize]
+    public async Task<IActionResult> AddTrackToPlaylist(int playlistId, int trackId, string returnUrl)
+    {
+        var playlist = await DataContext.Playlists
+            .Include(playlist => playlist.Tracks)
+            .FirstOrDefaultAsync(playlist => playlist.Id == playlistId);
+        if (playlist is null
+            || playlist.Tracks!.Any(t => t.Id == trackId) //не добавлен ли уже этот трек в плейлист
+            || !CurrentUserQueryable
+                .Select(user => user.OwnedPlaylists!.Playlists!)
+                .Any(playlists => playlists.Contains(playlist)) //принадлежит ли плейлист юзеру
+            || DataContext.Tracks.FirstOrDefault(t => t.Id == trackId) is not { } track) //существует ли трек
+            return BadRequest();
+        playlist.Tracks!.Add(track);
+        await DataContext.SaveChangesAsync();
+        return IsLocalUrl(returnUrl)
+            ? Redirect(returnUrl)
+            : RedirectToAction("Index", "Tracks", new {Id = trackId});
+    }
 }

@@ -59,6 +59,8 @@ public abstract class PsmControllerBase : Controller
             Picture = playlist.Picture,
             Tracks = playlist.Tracks,
             Users = playlist.Users,
+            OwnedBy = playlist.OwnedBy,
+            IsAlbum = playlist.IsAlbum,
             IsLiked = SignInManager.IsSignedIn(User)
                 ? playlist.Users!.Any(user => user.Id == CurrentUserId)
                 : null,

@@ -10,7 +10,18 @@
 @Html.DisplayFor(model => model.Track)
 @Html.DisplayFor(model => model.Track.Author)
 
-@foreach (var playlist in Model.NotAddedPlaylists)
+@if (Model.NotAddedPlaylists.Count > 0)
 {
-    
+    @using (Html.BeginForm("AddTrackToPlaylist", "Playlists", FormMethod.Post))
+    {
+        @Html.HiddenForReturnUrl(Context)
+        <input type="hidden" name="trackId" value="@Model.Track.Id"/>
+        <select name="playlistId">
+            @foreach (var playlist in Model.NotAddedPlaylists)
+            {
+                <option value="@playlist.Id">@playlist.Name</option>
+            }
+        </select>
+        <input type="submit" value="add track to playlist"/>
+    }
 }

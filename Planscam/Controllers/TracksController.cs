@@ -26,11 +26,14 @@ public class TracksController : PsmControllerBase
                 ? View(new TrackViewModel
                 {
                     Track = track,
-                    NotAddedPlaylists = await CurrentUserQueryable
-                        .Select(user => user.OwnedPlaylists!.Playlists!)
-                        .Where(playlists => !playlists
-                            .Any(playlist => playlist.Tracks!.Contains(track)))
-                        .FirstAsync()
+                    NotAddedPlaylists = await DataContext.Playlists
+                        .Where(playlist =>
+                            CurrentUserQueryable
+                                .Include(user => user.OwnedPlaylists!.Playlists)
+                                .First()
+                                .OwnedPlaylists!.Playlists!.Contains(playlist)
+                            && !playlist.Tracks!.Contains(track))
+                        .ToListAsync()
                 })
                 : NotFound();
 
