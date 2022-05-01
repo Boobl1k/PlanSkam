@@ -1,0 +1,16 @@
+@using Planscam.Extensions
+@model TrackViewModel
+
+@{
+    ViewBag.Title = $"{Model.Track.Author!.Name} - {Model.Track.Name}";
+    Layout = "_Layout";
+}
+
+@Html.DrawHugeTrackPic(Model.Track.Picture)
+@Html.DisplayFor(model => model.Track)
+@Html.DisplayFor(model => model.Track.Author)
+
+@foreach (var playlist in Model.NotAddedPlaylists)
+{
+    
+}

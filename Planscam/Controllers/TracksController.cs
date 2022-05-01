@@ -16,6 +16,25 @@ public class TracksController : PsmControllerBase
     }
 
     [HttpGet]
+    public async Task<IActionResult> Index(int? id) =>
+        id is null
+            ? View()
+            : await DataContext.Tracks
+                .Include(t => t.Picture)
+                .Include(t => t.Author)
+                .FirstOrDefaultAsync(t => t.Id == id) is { } track
+                ? View(new TrackViewModel
+                {
+                    Track = track,
+                    NotAddedPlaylists = await CurrentUserQueryable
+                        .Select(user => user.OwnedPlaylists!.Playlists!)
+                        .Where(playlists => !playlists
+                            .Any(playlist => playlist.Tracks!.Contains(track)))
+                        .FirstAsync()
+                })
+                : NotFound();
+
+    [HttpGet]
     public async Task<IActionResult> Search(TrackSearchViewModel? model)
     {
         if (model is null || !ModelState.IsValid) return View();
