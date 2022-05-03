@@ -1,12 +1,21 @@
 @using Planscam.Extensions
-@model Planscam.Entities.Track
+@model TrackViewModel
 
 <div>
-    @Html.DrawSmallTrackPic(Model.Picture)
+    <button onclick="GetPlaylistData()">
+        @Html.DrawSmallTrackPic(Model.Picture)
+    </button>
+    <script>
+        async function GetPlaylistData(){
+            let t = await (await fetch('https://localhost:7256/Playlists/GetData?id=@Model.PlaylistId')).json();
+            alert(t.id);
+            
+        }
+    </script>
     @Html.DisplayForModel()
-    @if (Model.IsLiked is { })
+    @if (Model.IsLiked is { } isLiked)
     {
-        @using (Model.IsLiked.Value
+        @using (isLiked
             ? Html.BeginForm("RemoveTrackFromFavourite", "Tracks", FormMethod.Post)
             : Html.BeginForm("AddTrackToFavourite", "Tracks", FormMethod.Post))
         {

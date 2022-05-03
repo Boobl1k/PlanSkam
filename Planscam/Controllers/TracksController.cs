@@ -23,7 +23,7 @@ public class TracksController : PsmControllerBase
                 .Include(t => t.Picture)
                 .Include(t => t.Author)
                 .FirstOrDefaultAsync(t => t.Id == id) is { } track
-                ? View(new TrackViewModel
+                ? View(new TrackIndexViewModel
                 {
                     Track = track,
                     NotAddedPlaylists = await DataContext.Playlists

@@ -16,6 +16,7 @@
 {
     @foreach (var track in Model.Result.Tracks!)
     {
-        @await Html.PartialAsync("TrackInList", track)
+        @await Html.PartialAsync("TrackInList", new TrackViewModel
+        {Picture = track.Picture, Name = track.Name, Id = track.Id, IsLiked = track.IsLiked, PlaylistId = 0})
     }
 }
