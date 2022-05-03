@@ -177,4 +177,24 @@ public class PlaylistsController : PsmControllerBase
             ? Redirect(returnUrl)
             : RedirectToAction("Index", "Tracks", new {Id = trackId});
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetData(int id) =>
+        await DataContext.Playlists
+                .Include(playlist => playlist.Tracks)
+                .Select(playlist => new
+                {
+                    playlist.Id,
+                    playlist.Name,
+                    tracks = playlist.Tracks!.Select(track => new
+                    {
+                        track.Id,
+                        track.Name
+                    })
+                })
+                .FirstOrDefaultAsync(playlist => playlist.Id == id) switch
+            {
+                { } playlist => Json(playlist),
+                _ => NotFound()
+            };
 }

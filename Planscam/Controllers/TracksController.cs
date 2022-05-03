@@ -96,13 +96,14 @@ public class TracksController : PsmControllerBase
     public async Task<IActionResult> GetWithData(int id) =>
         await DataContext.Tracks
                 .Include(track => track.Data)
-                .FirstOrDefaultAsync(track => track.Id == id) switch
-            {
-                { } track => Json(new
+                .Select(track => new
                 {
                     track.Id,
                     track.Data!.Data
-                }),
+                })
+                .FirstOrDefaultAsync(track => track.Id == id) switch
+            {
+                { } track => Json(track),
                 _ => NotFound()
             };
 }
