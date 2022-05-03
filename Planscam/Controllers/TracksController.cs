@@ -93,13 +93,17 @@ public class TracksController : PsmControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetWithData(int id) =>
+    public async Task<IActionResult> GetTrackData(int id) =>
         await DataContext.Tracks
                 .Include(track => track.Data)
                 .Select(track => new
                 {
-                    track.Id,
-                    track.Data!.Data
+                    Id = track.Id,
+                    Author = track.Author!.Name,
+                    Name = track.Name,
+                    IsLiked = track.IsLiked,
+                    Picture = track.Picture!.Data,
+                    Data = track.Data!.Data
                 })
                 .FirstOrDefaultAsync(track => track.Id == id) switch
             {

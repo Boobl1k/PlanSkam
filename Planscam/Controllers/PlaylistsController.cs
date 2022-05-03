@@ -188,8 +188,7 @@ public class PlaylistsController : PsmControllerBase
                     playlist.Name,
                     tracks = playlist.Tracks!.Select(track => new
                     {
-                        track.Id,
-                        track.Name
+                        Id = track.Id
                     })
                 })
                 .FirstOrDefaultAsync(playlist => playlist.Id == id) switch
