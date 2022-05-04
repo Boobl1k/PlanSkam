@@ -45,7 +45,7 @@ public class TracksController : PsmControllerBase
             .Where(model.ByAuthors
                 ? track => track.Author!.Name.Contains(model.Query)
                 : track => track.Name.Contains(model.Query))
-            .Skip(10 * model.Page - 1)
+            .Skip(10 * (model.Page - 1))
             .Take(10);
         var tracksList = await tracks
             .Include(track => track.Picture)
@@ -56,7 +56,7 @@ public class TracksController : PsmControllerBase
             var likedTrackIds = await CurrentUserQueryable
                 .Select(user => user.FavouriteTracks!.Tracks!.Select(track => track.Id).ToList())
                 .FirstAsync();
-            foreach (var track in tracksList) 
+            foreach (var track in tracksList)
                 track.IsLiked = false;
             foreach (var trackId in likedTrackIds)
                 if (tracksList.Find(t => t.Id == trackId) is { } track)
