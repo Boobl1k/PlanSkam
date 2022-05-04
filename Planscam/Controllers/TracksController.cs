@@ -45,15 +45,27 @@ public class TracksController : PsmControllerBase
             .Where(model.ByAuthors
                 ? track => track.Author!.Name.Contains(model.Query)
                 : track => track.Name.Contains(model.Query));
+        var tracksList = await tracks
+            .Include(track => track.Picture)
+            .Include(track => track.Author)
+            .ToListAsync();
+        if (SignInManager.IsSignedIn(User))
+        {
+            var likedTrackIds = await CurrentUserQueryable
+                .Select(user => user.FavouriteTracks!.Tracks!.Select(track => track.Id).ToList())
+                .FirstAsync();
+            foreach (var track in tracksList) 
+                track.IsLiked = false;
+            foreach (var trackId in likedTrackIds)
+                if (tracksList.Find(t => t.Id == trackId) is { } track)
+                    track.IsLiked = true;
+        }
+
         model.Result = new Playlist
         {
             Name = $"Search result, query: '{model.Query}'",
             Picture = tracks.Select(track => track.Picture).FirstOrDefault(picture => picture != null),
-            Tracks = await tracks
-                .Include(track => track.Picture)
-                .Include(track => track.Author)
-                .Select(TrackSetIsLikedExpression)
-                .ToListAsync()
+            Tracks = tracksList
         };
         return View(model);
     }

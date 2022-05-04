@@ -84,8 +84,8 @@ public abstract class PsmControllerBase : Controller
             Playlists = track.Playlists,
             Genre = track.Genre,
             IsLiked = SignInManager.IsSignedIn(User)
-                ? DataContext.Users
-                    .Any(user => user.Id == CurrentUserId && user.FavouriteTracks!.Tracks!.Contains(track))
+                ? CurrentUserQueryable
+                    .Any(user => user.FavouriteTracks!.Tracks!.Contains(track))
                 : null
         };
 
