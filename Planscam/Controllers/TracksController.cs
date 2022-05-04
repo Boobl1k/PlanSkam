@@ -41,10 +41,14 @@ public class TracksController : PsmControllerBase
     public async Task<IActionResult> Search(TrackSearchViewModel? model)
     {
         if (model is null || !ModelState.IsValid) return View();
+        if (model.Page == 0)
+            model.Page = 1;
         var tracks = DataContext.Tracks
             .Where(model.ByAuthors
                 ? track => track.Author!.Name.Contains(model.Query)
-                : track => track.Name.Contains(model.Query));
+                : track => track.Name.Contains(model.Query))
+            .Skip(10 * model.Page - 1)
+            .Take(10);
         var tracksList = await tracks
             .Include(track => track.Picture)
             .Include(track => track.Author)
