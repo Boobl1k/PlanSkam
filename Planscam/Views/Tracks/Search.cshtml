@@ -8,6 +8,7 @@
 
 @using (Html.BeginForm(FormMethod.Get))
 {
+    <input type="hidden" name="page" value="1">
     @Html.EditorFor(model => model.Query)
     <input type="submit" value="Search"/>
 }
