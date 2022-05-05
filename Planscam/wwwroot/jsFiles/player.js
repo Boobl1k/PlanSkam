@@ -6,6 +6,7 @@ const artist = document.getElementById('artist'),
     progressBar = document.getElementById('progress'),
     progressContainer = document.getElementById('progeressContainer'),
     muted = document.getElementById('muted'),
+    likeBtn = document.getElementById('likeBtn'),
     volumeBtn = document.getElementById('volumeBtn'),
     volumeWindow = document.getElementById('volumeWindow'),
     volumeContainer = document.getElementById('volumeContainer'),
@@ -18,7 +19,7 @@ function play() {
         audio.pause();
 }
 
-function sendAjax(responseType, req, func) {
+function sendAjax(requestType, responseType, req, func) {
     request = new XMLHttpRequest();
     request.responseType = responseType;
     request.onreadystatechange = function () {
@@ -26,7 +27,7 @@ function sendAjax(responseType, req, func) {
             func();
         }
     };
-    request.open("GET", req);
+    request.open(requestType, req);
     request.send();
 }
 
@@ -104,14 +105,39 @@ function hideVolume(e) {
 }
 
 
+function setFavourite(isLiked) {
+    if (isLiked) {
+        likeBtn.IsLiked = true;
+        likeBtn.classList.remove('fi-rr-heart');
+        likeBtn.classList.add('fi-sr-heart');
+    }
+    else {
+        likeBtn.IsLiked = false;
+        likeBtn.classList.remove('fi-sr-heart');
+        likeBtn.classList.add('fi-rr-heart');
+    }
+}
+
+function trackToFavourite() {
+    if (likeBtn.IsLiked)
+        sendAjax("POST", 'json', `/Tracks/RemoveTrackToFavourite/${id}`, function () {
+            setFavourite(false);
+        });
+    else
+        sendAjax("POST", 'json', `/Tracks/AddTrackToFavourite/${id}`, function () {
+            setFavourite(true);
+        });
+}
+
 function loadPlaylist(id) {
-    sendAjax('json', `/Playlists/GetData/${id}`, function () {
+    sendAjax("GET", 'json', `/Playlists/GetData/${id}`, function () {
         localStorage.playlist = JSON.stringify(request.response);
     });
 }
 
 function afterLoadTrack(track) {
     artist.innerHTML = track.author;
+    setFavourite(track.IsLiked);
     trackName.innerHTML = track.name;
     audio.src = 'data:audio/mp3;base64,' + track.data;
     trackLogo.src = 'data:image/jpg;base64,' + track.picture;
@@ -119,27 +145,27 @@ function afterLoadTrack(track) {
 }
 
 function loadTrack(id) {
-    sendAjax('json', `/Tracks/GetTrackData/${id}`, function () {
+    sendAjax("GET", 'json', `/Tracks/GetTrackData/${id}`, function () {
         afterLoadTrack(request.response);
     });
 }
 
 function loadPage(controller, method, query) {
-    sendAjax('document', `/${controller}/${method}/${query}`, function () {
+    sendAjax("GET", 'document', `/${controller}/${method}/${query}`, function () {
         page = document.getElementById('page');
         page.innerHTML = request.response.body.innerHTML;
     });
 }
 
 function loadPage(controller, method) {
-    sendAjax('document', `/${controller}/${method}`, function () {
+    sendAjax("GET", 'document', `/${controller}/${method}`, function () {
         page = document.getElementById('page');
         page.innerHTML = request.response.body.innerHTML;
     });
 }
 
 function loadPage(uri) {
-    sendAjax('document', uri, function () {
+    sendAjax("GET", 'document', uri, function () {
         page = document.getElementById('page');
         page.innerHTML = request.response.body.innerHTML;
     });
