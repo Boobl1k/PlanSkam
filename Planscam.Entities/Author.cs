@@ -13,4 +13,6 @@ public class Author
 
     [Required]
     public User? User { get; set; }
+    
+    public List<Track>? Tracks { get; set; }
 }

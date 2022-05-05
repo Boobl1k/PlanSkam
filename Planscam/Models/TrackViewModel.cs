@@ -8,5 +8,5 @@ public class TrackViewModel
     public string Name { get; set; }
     public int Id { get; set; }
     public bool? IsLiked { get; set; }
-    public int PlaylistId { get; set; }
+    public int? PlaylistId { get; set; }
 }

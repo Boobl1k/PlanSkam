@@ -7,7 +7,7 @@ namespace Planscam.Extensions;
 public static class PicturesHelper
 {
     public static IHtmlContent DrawUserAvatar(this IHtmlHelper helper, Picture? picture, string? @class = default) =>
-        helper.DrawPic(picture, 80, 60, @class);
+        helper.DrawPic(picture, 80, default, @class);
 
     public static IHtmlContent DrawSmallTrackPic(this IHtmlHelper helper, Picture? picture, string? @class = default) =>
         helper.DrawPic(picture, 40, default, @class);
@@ -22,6 +22,10 @@ public static class PicturesHelper
     public static IHtmlContent DrawHugePlaylistPic(this IHtmlHelper helper, Picture? picture,
         string? @class = default) =>
         helper.DrawPic(picture, 700, default, @class);
+
+    public static IHtmlContent DrawSmallAuthorPic(this IHtmlHelper helper, Picture? picture,
+        string? @class = default) =>
+        helper.DrawPic(picture, 50, default, @class);
 
     private static IHtmlContent DrawPic(this IHtmlHelper helper, Picture? picture, int x, int? y = default,
         string? @class = default) =>

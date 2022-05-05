@@ -40,7 +40,7 @@ public class TracksController : PsmControllerBase
     [HttpGet]
     public async Task<IActionResult> Search(TrackSearchViewModel? model)
     {
-        if (model is null || !ModelState.IsValid) return View();
+        if (model is null || !ModelState.IsValid) return View(model);
         var tracks = DataContext.Tracks
             .Where(model.ByAuthors
                 ? track => track.Author!.Name.Contains(model.Query)

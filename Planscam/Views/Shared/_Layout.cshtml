@@ -41,6 +41,10 @@
                     <i class="fi fi-rr-search"></i>
                     Search
                 </a>
+                <a class="menuElement" asp-controller="Authors" asp-action="Search">
+                    <i class="fi fi-rr-search"></i>
+                    Search authors
+                </a>
                 <a class="menuElement" asp-controller="Playlists" asp-action="Liked">
                     <i class="fi fi-rr-indent"></i>
                     My libary
@@ -84,12 +88,12 @@
             </div>
             <div class="pageContainer">
                 <div class="page">
-                    @RenderBody();
+                    @RenderBody()
                 </div>
             </div>
         </div>
         <div class="playerContainer">
-            @await Html.PartialAsync("~/Views/Shared/Player.cshtml");
+            @await Html.PartialAsync("~/Views/Shared/Player.cshtml")
         </div>
     </div>
 </body>

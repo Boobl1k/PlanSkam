@@ -1,10 +1,10 @@
-@model Planscam.Models.TrackSearchViewModel
+@using Planscam.Extensions
+@model Planscam.Models.AuthorsSearchViewModel
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Authors search";
     Layout = "_Layout";
 }
-
 
 @using (Html.BeginForm(FormMethod.Get))
 {
@@ -14,21 +14,22 @@
 
 @if (Model is { Result: { } })
 {
-    @foreach (var track in Model.Result.Tracks!)
+    @foreach (var author in Model.Result)
     {
-        @await Html.PartialAsync("TrackInList", new TrackViewModel
-        {Picture = track.Picture, Name = track.Name, Id = track.Id, IsLiked = track.IsLiked, PlaylistId = null})
+        <a asp-action="Index" asp-route-id="@author.Id">
+            @Html.DrawSmallAuthorPic(author.Picture)
+            @Html.DisplayFor(_ => author.Name)
+        </a>
     }
-    
+
     @using (Html.BeginForm(FormMethod.Get))
     {
         @Html.HiddenFor(model => model.Query)
-        @Html.HiddenFor(model => model.ByAuthors)
         @if (Model.Page != 1)
         {
             <input type="submit" name="page" value="@(Model.Page - 1)"/>
         }
-        @if (Model.Result.Tracks!.Any())
+        @if (Model.Result.Any())
         {
             <input type="submit" name="page" value="@(Model.Page + 1)"/>
         }
