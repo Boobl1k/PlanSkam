@@ -40,6 +40,8 @@ function prevTrack() {
 }
 
 function nextTrackEnded() {
+    playButton.classList.remove('fi-rr-play');
+    playButton.classList.add('fi-rr-pause');
     nextTrack();
 }
 
@@ -47,7 +49,7 @@ function nextTrack() {
     localStorage.nowPlayed = parseInt(localStorage.nowPlayed) + 1;
     if (localStorage.nowPlayed >= JSON.parse(localStorage.playlist).tracks.length)
         localStorage.nowPlayed = 0;
-    loadTrack(JSON.parse(localStorage.playlist).tracks[localStorage.nowPlayed].id);
+    loadTrackAndPlay(JSON.parse(localStorage.playlist).tracks[localStorage.nowPlayed].id);
 }
 
 function progressBarUpdate() {
@@ -120,7 +122,7 @@ function setFavourite(isLiked) {
 
 function trackToFavourite() {
     if (likeBtn.IsLiked)
-        sendAjax("POST", 'json', `/Tracks/RemoveTrackToFavourite/${JSON.parse(localStorage.playlist).tracks[localStorage.nowPlayed].id}`, function () {
+        sendAjax("POST", 'json', `/Tracks/RemoveTrackFromFavourite/${JSON.parse(localStorage.playlist).tracks[localStorage.nowPlayed].id}`, function () {
             setFavourite(false);
         });
     else
@@ -137,7 +139,7 @@ function loadPlaylist(id) {
 
 function afterLoadTrack(track) {
     artist.innerHTML = track.author;
-    setFavourite(track.IsLiked);
+    setFavourite(track.isLiked);
     trackName.innerHTML = track.name;
     audio.src = 'data:audio/mp3;base64,' + track.data;
     trackLogo.src = 'data:image/jpg;base64,' + track.picture;
@@ -147,6 +149,13 @@ function afterLoadTrack(track) {
 function loadTrack(id) {
     sendAjax("GET", 'json', `/Tracks/GetTrackData/${id}`, function () {
         afterLoadTrack(request.response);
+    });
+}
+
+function loadTrackAndPlay(id) {
+    sendAjax("GET", 'json', `/Tracks/GetTrackData/${id}`, function () {
+        afterLoadTrack(request.response);
+        play();
     });
 }
 
