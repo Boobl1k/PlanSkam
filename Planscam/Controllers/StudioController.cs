@@ -106,4 +106,14 @@ public class StudioController : PsmControllerBase
             ? Redirect(returnUrl!)
             : RedirectToAction("Index");
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Albums() =>
+        View(await CurrentUserQueryable
+            .Select(user => user.OwnedPlaylists!.Playlists!.Where(playlist => playlist.IsAlbum).ToList())
+            .FirstAsync());
+
+    [HttpGet]
+    public IActionResult CreateAlbum() => 
+        View();//todo
 }
