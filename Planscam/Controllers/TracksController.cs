@@ -72,8 +72,8 @@ public class TracksController : PsmControllerBase
         return View(model);
     }
 
-    //TODO вызовы этого должны быть через ajax, и метод должен возвращать json с инфой об успешности
-    [HttpPost, Authorize]
+    //вызовы этого должны быть через ajax, и метод должен возвращать json с инфой об успешности
+    [NonAction, Obsolete("переделано под ajax")] //[HttpPost, Authorize]
     public async Task<IActionResult> AddTrackToFavourite(int id, string? returnUrl)
     {
         var track = await DataContext.Tracks.Where(track => track.Id == id).FirstOrDefaultAsync();
@@ -88,6 +88,21 @@ public class TracksController : PsmControllerBase
         return IsLocalUrl(returnUrl)
             ? Redirect(returnUrl!)
             : RedirectToAction("Index", "Home");
+    }
+
+    [HttpPost, Authorize]
+    public async Task<IActionResult> AddTrackToFavourite(int id)
+    {
+        var track = await DataContext.Tracks.Where(track => track.Id == id).FirstOrDefaultAsync();
+        if (track is null) return BadRequest();
+        CurrentUser = await CurrentUserQueryable
+            .Include(user =>
+                user.FavouriteTracks!.Tracks!.Where(track1 => track1.Id == id))
+            .FirstAsync();
+        if (CurrentUser.FavouriteTracks!.Tracks!.Contains(track)) return BadRequest();
+        CurrentUser.FavouriteTracks!.Tracks!.Add(track);
+        await DataContext.SaveChangesAsync();
+        return Ok();
     }
 
     [HttpPost, Authorize]
