@@ -138,13 +138,13 @@ public class TracksController : PsmControllerBase
     [HttpGet]
     public async Task<IActionResult> GetTrackData(int id) =>
         await DataContext.Tracks
-                .Include(track => track.Data)
                 .Select(track => new
                 {
                     track.Id,
                     Author = track.Author!.Name,
                     track.Name,
-                    track.IsLiked,
+                    IsLiked = CurrentUserQueryable
+                        .Any(user => user.FavouriteTracks!.Tracks!.Contains(track)),
                     Picture = track.Picture!.Data,
                     track.Data!.Data
                 })
