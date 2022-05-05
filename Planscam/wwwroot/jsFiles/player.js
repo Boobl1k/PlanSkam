@@ -107,12 +107,12 @@ function hideVolume(e) {
 
 function setFavourite(isLiked) {
     if (isLiked) {
-        likeBtn.IsLiked = true;
+        likeBtn.IsLiked = isLiked;
         likeBtn.classList.remove('fi-rr-heart');
         likeBtn.classList.add('fi-sr-heart');
     }
     else {
-        likeBtn.IsLiked = false;
+        likeBtn.IsLiked = isLiked;
         likeBtn.classList.remove('fi-sr-heart');
         likeBtn.classList.add('fi-rr-heart');
     }
@@ -120,11 +120,11 @@ function setFavourite(isLiked) {
 
 function trackToFavourite() {
     if (likeBtn.IsLiked)
-        sendAjax("POST", 'json', `/Tracks/RemoveTrackToFavourite/${id}`, function () {
+        sendAjax("POST", 'json', `/Tracks/RemoveTrackToFavourite/${JSON.parse(localStorage.playlist).tracks[localStorage.nowPlayed].id}`, function () {
             setFavourite(false);
         });
     else
-        sendAjax("POST", 'json', `/Tracks/AddTrackToFavourite/${id}`, function () {
+        sendAjax("POST", 'json', `/Tracks/AddTrackToFavourite/${JSON.parse(localStorage.playlist).tracks[localStorage.nowPlayed].id}`, function () {
             setFavourite(true);
         });
 }
