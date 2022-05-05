@@ -87,7 +87,7 @@
                 }
             </div>
             <div class="pageContainer">
-                <div class="page">
+                <div id="page" class="page">
                     @RenderBody()
                 </div>
             </div>
@@ -97,7 +97,6 @@
         </div>
     </div>
 </body>
-<script src="~/jsFiles/player.js"></script>
 @await RenderSectionAsync("Scripts", required: false)
 
 </html>

@@ -6,7 +6,6 @@
     grid-template-columns: 300px 320px 1fr 300px;
     height: var(--playerHeight);
     width: 100%;
-    background-color: #0f0f0ff0;
     bottom: 0px;
 }
 
