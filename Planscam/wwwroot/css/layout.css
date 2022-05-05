@@ -125,11 +125,13 @@ body {
 .page {
     width: 100%;
     position: absolute;
+    color: white;
 }
 
 .playerContainer {
     position: relative;
     display: flex;
+    background-color: #0f0f0ff0;
 }
 
 .logospan {

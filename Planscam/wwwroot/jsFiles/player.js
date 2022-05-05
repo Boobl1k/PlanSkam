@@ -18,12 +18,28 @@ function play() {
         audio.pause();
 }
 
+function sendAjax(responseType, req, func) {
+    request = new XMLHttpRequest();
+    request.responseType = responseType;
+    request.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            func();
+        }
+    };
+    request.open("GET", req);
+    request.send();
+}
+
 function prevTrack() {
     if (localStorage.nowPlayed == '0')
         localStorage.nowPlayed = JSON.parse(localStorage.playlist).tracks.length - 1;
     else
         localStorage.nowPlayed = parseInt(localStorage.nowPlayed) - 1;
     loadTrack(JSON.parse(localStorage.playlist).tracks[localStorage.nowPlayed].id);
+}
+
+function nextTrackEnded() {
+    nextTrack();
 }
 
 function nextTrack() {
@@ -67,67 +83,99 @@ function setVolume(e) {
     if (vol < 0.06)
         vol = 0;
     audio.volume = vol;
+    localStorage.volume = vol;
     volumeSlider.style.height = `${vol * 100}%`;
 }
 
 function hideVolume(e) {
     if (volumeWindow.style.display == 'flex') {
+        clearTimeout(volumeBtn.closeTimeout);
         volumeBtn.style.color = 'white';
         volumeWindow.style.display = 'none';
     }
     else {
         volumeBtn.style.color = '#5800FF';
         volumeWindow.style.display = 'flex';
+        volumeBtn.closeTimeout = setTimeout(function () {
+            volumeBtn.style.color = 'white';
+            volumeWindow.style.display = 'none';
+        }, 2000);
     }
+}
+
+
+function loadPlaylist(id) {
+    sendAjax('json', `/Playlists/GetData/${id}`, function () {
+        localStorage.playlist = JSON.stringify(request.response);
+    });
+}
+
+function afterLoadTrack(track) {
+    artist.innerHTML = track.author;
+    trackName.innerHTML = track.name;
+    audio.src = 'data:audio/mp3;base64,' + track.data;
+    trackLogo.src = 'data:image/jpg;base64,' + track.picture;
+    progressBarUpdate();
+}
+
+function loadTrack(id) {
+    sendAjax('json', `/Tracks/GetTrackData/${id}`, function () {
+        afterLoadTrack(request.response);
+    });
+}
+
+function loadPage(controller, method, query) {
+    sendAjax('document', `/${controller}/${method}/${query}`, function () {
+        page = document.getElementById('page');
+        page.innerHTML = request.response.body.innerHTML;
+    });
+}
+
+function loadPage(controller, method) {
+    sendAjax('document', `/${controller}/${method}`, function () {
+        page = document.getElementById('page');
+        page.innerHTML = request.response.body.innerHTML;
+    });
+}
+
+function loadPage(uri) {
+    sendAjax('document', uri, function () {
+        page = document.getElementById('page');
+        page.innerHTML = request.response.body.innerHTML;
+    });
+}
+
+function setVolumeCloseTimeout() {
+    volumeBtn.closeTimeout = setTimeout(function () {
+        volumeBtn.style.color = 'white';
+        volumeWindow.style.display = 'none';
+    }, 2000);
+}
+
+function clearVolumeCloseTimeout() {
+    clearTimeout(volumeBtn.closeTimeout);
 }
 
 progressContainer.addEventListener('click', setProgress);
 audio.addEventListener('timeupdate', progressBarUpdate);
+audio.addEventListener('ended', nextTrackEnded);
 audio.addEventListener('play', setPlayIcon);
 audio.addEventListener('pause', setPauseIcon);
 audio.addEventListener('volumechange', setMute);
 volumeContainer.addEventListener('click', setVolume);
 volumeBtn.addEventListener('click', hideVolume);
+volumeWindow.addEventListener('mouseenter', clearVolumeCloseTimeout);
+volumeWindow.addEventListener('mouseleave', setVolumeCloseTimeout);
 
-function loadPlaylist(id) {
-    request = new XMLHttpRequest();
-    request.responseType = 'json';
-    request.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200)
-            localStorage.playlist = JSON.stringify(request.response);
-    };
-    request.open("GET", `/Playlists/GetData/${id}`);
-    request.send();
+function initPage() {
+    if (localStorage.playlist == null)
+        loadPlaylist(4);
+
+    localStorage.nowPlayed = 0;
+    loadTrack(JSON.parse(localStorage.playlist).tracks[localStorage.nowPlayed].id);
+    audio.volume = parseFloat(localStorage.volume);
+    setMute();
+    volumeSlider.style.height = `${audio.volume * 100}%`;
 }
-
-function loadTrack(id) {
-    request = new XMLHttpRequest();
-    request.responseType = 'json';
-    request.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            paused = audio.paused;
-            track = request.response;
-            artist.innerHTML = track.author;
-            trackName.innerHTML = track.name;
-            audio.src = 'data:audio/mp3;base64,' + track.data;
-            trackLogo.src = 'data:image/jpg;base64,' + track.picture;
-            play();
-            if (paused)
-                play();
-            progressBarUpdate();
-        }
-    };
-    request.open("GET", `/Tracks/GetTrackData/${id}`);
-    request.send();
-}
-
-//required for init
-if (localStorage.playlist == null)
-    loadPlaylist(4);
-setMute();
-volumeSlider.style.height = `${audio.volume * 100}%`;
-
-localStorage.nowPlayed = 0;
-loadTrack(JSON.parse(localStorage.playlist).tracks[localStorage.nowPlayed].id);
-
+initPage();
 
