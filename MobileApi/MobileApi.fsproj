@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="WeatherForecast.fs" />
+        <Compile Include="Controllers/WeatherForecastController.fs" />
+        <Compile Include="Controllers\AuthController.fs" />
+        <Compile Include="Program.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Planscam.DataAccess\Planscam.DataAccess.csproj" />
+      <ProjectReference Include="..\Planscam.Entities\Planscam.Entities.csproj" />
+      <ProjectReference Include="..\Planscam.Services\Planscam.Services.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.3" />
+    </ItemGroup>
+
+</Project>
