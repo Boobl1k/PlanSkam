@@ -29,22 +29,11 @@ public class PlaylistsController : PsmControllerBase
     [HttpGet]
     public async Task<IActionResult> Index(int id)
     {
-        //TODO по хорошему надо найти способ сделать это одним запросом, как я понимаю это делается с помощью хранимых процедур
-        var playlist = await DataContext.Playlists
-            .Include(playlist => playlist.Picture)
-            .Include(playlist => playlist.Tracks)!
-            .ThenInclude(track => track.Picture)
-            .Select(PlaylistSetIsLikedAndIsOwnedExpression)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(playlist => playlist.Id == id);
-        if (playlist is null) return NotFound();
-        playlist.Tracks = await DataContext.Tracks
-            .Where(track => playlist.Tracks!.Contains(track))
-            //.Include(track => track.Picture)
-            .AsNoTracking()
-            .Select(TrackSetIsLikedExpression)
-            .ToListAsync();
-        return View(playlist);
+        return await _playlistsRepo.GetPlaylistFull(id, User) switch
+            {
+                { } playlist => View(playlist),
+                _ => NotFound()
+            };
     }
 
     [HttpGet]

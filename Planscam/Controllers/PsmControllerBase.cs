@@ -72,24 +72,6 @@ public abstract class PsmControllerBase : Controller
                 : null
         };
 
-    private Expression<Func<Track, Track>>? _trackSetIsLikedExpression;
-
-    protected Expression<Func<Track, Track>> TrackSetIsLikedExpression =>
-        _trackSetIsLikedExpression ??= track => new Track
-        {
-            Id = track.Id,
-            Name = track.Name,
-            Data = track.Data,
-            Picture = track.Picture,
-            Author = track.Author,
-            Playlists = track.Playlists,
-            Genre = track.Genre,
-            IsLiked = SignInManager.IsSignedIn(User)
-                ? CurrentUserQueryable
-                    .Any(user => user.FavouriteTracks!.Tracks!.Contains(track))
-                : null
-        };
-
     [NonAction]
     protected new IActionResult Unauthorized() =>
         RedirectToAction("Login", "Auth", new {returnUrl = HttpContext.GetCurrentUrl()});
