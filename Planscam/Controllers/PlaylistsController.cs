@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.FSharp.Control;
 using Planscam.DataAccess;
 using Planscam.Entities;
 using Planscam.Extensions;
@@ -27,14 +28,12 @@ public class PlaylistsController : PsmControllerBase
         });
 
     [HttpGet]
-    public async Task<IActionResult> Index(int id)
-    {
-        return await _playlistsRepo.GetPlaylistFull(id, User) switch
-            {
-                { } playlist => View(playlist),
-                _ => NotFound()
-            };
-    }
+    public async Task<IActionResult> Index(int id) =>
+        await _playlistsRepo.GetPlaylistFull(id, User) switch
+        {
+            { } playlist => View(playlist),
+            _ => NotFound()
+        };
 
     [HttpGet]
     public async Task<IActionResult> All() =>
@@ -42,11 +41,24 @@ public class PlaylistsController : PsmControllerBase
             .Where(playlist => DataContext.FavouriteTracks.All(tracks => tracks != playlist))
             .Include(playlist => playlist.Picture)
             .AsNoTracking()
-            .Select(PlaylistSetIsLikedAndIsOwnedExpression)
+            .Select(playlist => new Playlist
+            {
+                Id = playlist.Id,
+                Name = playlist.Name,
+                Picture = playlist.Picture,
+                IsAlbum = playlist.IsAlbum,
+                IsLiked = SignInManager.IsSignedIn(User)
+                    ? playlist.Users!.Any(user => user.Id == CurrentUserId)
+                    : null,
+                IsOwned = SignInManager.IsSignedIn(User)
+                    ? CurrentUserQueryable
+                        .Select(user => user.OwnedPlaylists!.Playlists!)
+                        .Any(playlists => playlists.Any(playlist1 => playlist1 == playlist))
+                    : null
+            })
             .ToListAsync());
 
-    //TODO вызовы этого должны быть через ajax, и метод должен возвращать json с инфой об успешности
-    [HttpPost, Authorize]
+    [NonAction, Obsolete("переписано под ajax")] //[HttpPost, Authorize]
     public async Task<IActionResult> LikePlaylist(int id, string? returnUrl)
     {
         var playlist = await DataContext.Playlists
@@ -62,8 +74,13 @@ public class PlaylistsController : PsmControllerBase
             : RedirectToAction("Index", new {id});
     }
 
-    //TODO ajax
     [HttpPost, Authorize]
+    public IActionResult LikePlaylist(int id) =>
+        _playlistsRepo.LikePlaylist(User, id)
+            ? Ok()
+            : BadRequest();
+
+    [NonAction, Obsolete("переписано под ajax")] //[HttpPost, Authorize]
     public async Task<IActionResult> UnlikePlaylist(int id, string? returnUrl)
     {
         CurrentUser = await CurrentUserQueryable
@@ -76,6 +93,12 @@ public class PlaylistsController : PsmControllerBase
             ? Redirect(returnUrl!)
             : RedirectToAction("Index", new {id});
     }
+
+    [HttpPost, Authorize]
+    public IActionResult UnlikePlaylist(int id) =>
+        _playlistsRepo.UnlikePlaylist(User, id)
+            ? Ok()
+            : BadRequest();
 
     [HttpGet, Authorize]
     public async Task<IActionResult> Liked()
