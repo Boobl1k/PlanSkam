@@ -5,25 +5,25 @@ using Microsoft.EntityFrameworkCore;
 using Planscam.DataAccess;
 using Planscam.Entities;
 using Planscam.Extensions;
+using Planscam.FsServices;
 using Planscam.Models;
 
 namespace Planscam.Controllers;
 
 public class PlaylistsController : PsmControllerBase
 {
+    private readonly PlaylistsRepo _playlistsRepo;
+
     public PlaylistsController(AppDbContext dataContext, UserManager<User> userManager,
-        SignInManager<User> signInManager) : base(dataContext, userManager, signInManager)
-    {
-    }
+        SignInManager<User> signInManager, PlaylistsRepo playlistsRepo) :
+        base(dataContext, userManager, signInManager) =>
+        _playlistsRepo = playlistsRepo;
 
     [HttpGet, Route(nameof(FavoriteTracks)), Authorize]
     public async Task<IActionResult> FavoriteTracks() =>
         RedirectToAction("Index", new
         {
-            Id = await CurrentUserQueryable
-                .AsNoTracking()
-                .Select(user => user.FavouriteTracks!.Id)
-                .FirstAsync()
+            Id = await _playlistsRepo.GetFavouriteTracksId(User)
         });
 
     [HttpGet]
@@ -186,10 +186,7 @@ public class PlaylistsController : PsmControllerBase
                 {
                     playlist.Id,
                     playlist.Name,
-                    tracks = playlist.Tracks!.Select(track => new
-                    {
-                        Id = track.Id
-                    })
+                    trackIds = playlist.Tracks!.Select(track => track.Id)
                 })
                 .FirstOrDefaultAsync(playlist => playlist.Id == id) switch
             {

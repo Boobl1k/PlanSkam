@@ -33,10 +33,10 @@ function sendAjax(requestType, responseType, req, func) {
 
 function prevTrack() {
     if (localStorage.nowPlayed == '0')
-        localStorage.nowPlayed = JSON.parse(localStorage.playlist).tracks.length - 1;
+        localStorage.nowPlayed = JSON.parse(localStorage.playlist).trackIds.length - 1;
     else
         localStorage.nowPlayed = parseInt(localStorage.nowPlayed) - 1;
-    loadTrack(JSON.parse(localStorage.playlist).tracks[localStorage.nowPlayed].id);
+    loadTrack(JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]);
 }
 
 function nextTrackEnded() {
@@ -47,9 +47,9 @@ function nextTrackEnded() {
 
 function nextTrack() {
     localStorage.nowPlayed = parseInt(localStorage.nowPlayed) + 1;
-    if (localStorage.nowPlayed >= JSON.parse(localStorage.playlist).tracks.length)
+    if (localStorage.nowPlayed >= JSON.parse(localStorage.playlist).trackIds.length)
         localStorage.nowPlayed = 0;
-    loadTrackAndPlay(JSON.parse(localStorage.playlist).tracks[localStorage.nowPlayed].id);
+    loadTrackAndPlay(JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]);
 }
 
 function progressBarUpdate() {
@@ -122,11 +122,11 @@ function setFavourite(isLiked) {
 
 function trackToFavourite() {
     if (likeBtn.IsLiked)
-        sendAjax("POST", 'json', `/Tracks/RemoveTrackFromFavourite/${JSON.parse(localStorage.playlist).tracks[localStorage.nowPlayed].id}`, function () {
+        sendAjax("POST", 'json', `/Tracks/RemoveTrackFromFavourite/${JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]}`, function () {
             setFavourite(false);
         });
     else
-        sendAjax("POST", 'json', `/Tracks/AddTrackToFavourite/${JSON.parse(localStorage.playlist).tracks[localStorage.nowPlayed].id}`, function () {
+        sendAjax("POST", 'json', `/Tracks/AddTrackToFavourite/${JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]}`, function () {
             setFavourite(true);
         });
 }
@@ -207,7 +207,7 @@ function initPage() {
         loadPlaylist(4);
 
     localStorage.nowPlayed = 0;
-    loadTrack(JSON.parse(localStorage.playlist).tracks[localStorage.nowPlayed].id);
+    loadTrack(JSON.parse(localStorage.playlist).tracksIds[localStorage.nowPlayed]);
     audio.volume = parseFloat(localStorage.volume);
     setMute();
     volumeSlider.style.height = `${audio.volume * 100}%`;

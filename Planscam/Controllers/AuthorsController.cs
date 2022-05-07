@@ -17,15 +17,12 @@ public class AuthorsController : PsmControllerBase
     [HttpGet]
     public async Task<IActionResult> Index(int id) =>
         await DataContext.Authors
-                .Include(a => a.Picture)
-                .Include(a => a.Tracks)
-                .Include(author => author.User!.Playlists!.Where(p => p.IsAlbum))
                 .Select(a => new AuthorPageViewModel
                 {
                     Id = a.Id,
                     Name = a.Name,
                     Picture = a.Picture!,
-                    Albums = a.User!.Playlists!,
+                    Albums = a.User!.Playlists!.Where(p => p.IsAlbum).ToList(),
                     RecentReleases = new Playlist
                     {
                         Name = $"{a.Name}'s last releases",
