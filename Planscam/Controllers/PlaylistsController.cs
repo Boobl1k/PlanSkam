@@ -143,8 +143,7 @@ public class PlaylistsController : PsmControllerBase
                 : RedirectToAction("Liked")
             : BadRequest();
 
-    //TODO ajax
-    [HttpPost, Authorize]
+    [NonAction, Obsolete("переписано под ajax")]//[HttpPost, Authorize]
     public async Task<IActionResult> AddTrackToPlaylist(int playlistId, int trackId, string returnUrl)
     {
         var playlist = await DataContext.Playlists
@@ -163,6 +162,12 @@ public class PlaylistsController : PsmControllerBase
             ? Redirect(returnUrl)
             : RedirectToAction("Index", "Tracks", new {Id = trackId});
     }
+
+    [HttpPost, Authorize]
+    public IActionResult AddTrackToPlaylist(int playlistId, int trackId) =>
+        _playlistsRepo.AddTrackToPlaylist(User, playlistId, trackId)
+        ? BadRequest()
+        : Ok();
 
     [HttpGet]
     public async Task<IActionResult> GetData(int id) =>
