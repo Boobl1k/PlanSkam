@@ -176,19 +176,22 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
             true
 
     member _.AddTrackToPlaylist(userPrincipal, playlistId, trackId) =
-        let playlist = dataContext.Playlists.
-                        .Include(fun p -> p.Tracks)
-                        .FirstOrDefault(fun p -> p.Id = playlistId);
-        if playlist = null 
-            || playlist.Tracks.Any(fun t -> t.Id = trackId) //не добавлен ли уже этот трек в плейлист
-            || !userQueryable(userPrincipal)
-                .Select(fun u -> u.OwnedPlaylists.Playlists)
-                .Any(fun p -> p.Contains(playlist)) then //принадлежит ли плейлист юзеру
-            false
-        else
-            match dataContext.Tracks.FirstOrDefault(t -> t.Id = trackId) with
+        let playlist =
+            dataContext
+                .Playlists
+                .Include(fun p -> p.Tracks)
+                .FirstOrDefault(fun p -> p.Id = playlistId)
+
+        if playlist = null
+           || playlist.Tracks.Any(fun t -> t.Id = trackId) //не добавлен ли уже этот трек в плейлист
+           || userQueryable(userPrincipal)
+               .Select(fun u -> u.OwnedPlaylists.Playlists)
+               .Any(fun p -> p.Contains(playlist)) then //принадлежит ли плейлист юзеру
+            match dataContext.Tracks.FirstOrDefault(fun t -> t.Id = trackId) with
             | null -> false
-            | track -> 
-                playlist.Track.Add(track)
+            | track ->
+                playlist.Tracks.Add(track)
                 dataContext.SaveChanges() |> ignore
                 true
+        else
+            false
