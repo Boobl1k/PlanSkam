@@ -174,7 +174,6 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
             dataContext.Playlists.Remove playlist |> ignore
             dataContext.SaveChanges() |> ignore
             true
-        
 
 
 
@@ -973,3 +972,6 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
 
 
 
+
+
+    member _.Do() = ignore 0
