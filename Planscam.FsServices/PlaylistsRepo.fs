@@ -1,5 +1,6 @@
 namespace Planscam.FsServices
 
+open System.Collections.Generic
 open Microsoft.AspNetCore.Identity
 open Microsoft.EntityFrameworkCore
 open Microsoft.FSharp.Control
@@ -136,3 +137,40 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
             true
         else
             false
+
+    member this.CreatePlaylist(userPrincipal, name, picture) =
+        let user =
+            (query {
+                for user in
+                    userQueryable(userPrincipal)
+                        .Include(fun user -> user.OwnedPlaylists.Playlists) do
+                    select (User(Id = user.Id, OwnedPlaylists = user.OwnedPlaylists))
+             })
+                .First()
+
+        let playlist =
+            Playlist(Name = name, Picture = picture, Users = List<User>())
+
+        playlist.Users.Add user
+        user.OwnedPlaylists.Playlists.Add playlist
+        dataContext.SaveChanges() |> ignore
+        playlist
+
+    member this.DeletePlaylist(userPrincipal, id) =
+        let playlist =
+            dataContext
+                .Playlists
+                .Where(fun playlist ->
+                    playlist.Id = id
+                    && userQueryable(userPrincipal)
+                        .Select(fun user -> user.OwnedPlaylists.Playlists)
+                        .Any(fun playlists -> playlists.Contains(playlist)))
+                .Select(fun playlist -> Playlist(Id = playlist.Id))
+                .FirstOrDefault()
+
+        if playlist = null then
+            false
+        else
+            dataContext.Playlists.Remove playlist |> ignore
+            dataContext.SaveChanges() |> ignore
+            true

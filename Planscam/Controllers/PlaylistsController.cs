@@ -117,27 +117,11 @@ public class PlaylistsController : PsmControllerBase
         View();
 
     [HttpPost, Authorize]
-    public async Task<IActionResult> Create(CreatePlaylistViewModel model)
-    {
-        if (!ModelState.IsValid) return View();
-        var playlist = new Playlist
-        {
-            Name = model.Name,
-            Picture = model.Picture.ToPicture(),
-            Users = new List<User> {CurrentUser}
-        };
-        CurrentUser = await CurrentUserQueryable
-            .Include(user => user.OwnedPlaylists!.Playlists)
-            .Select(user => new User
-            {
-                Id = user.Id,
-                OwnedPlaylists = user.OwnedPlaylists
-            })
-            .FirstAsync();
-        CurrentUser.OwnedPlaylists!.Playlists!.Add(playlist);
-        await DataContext.SaveChangesAsync();
-        return RedirectToAction("Index", new {playlist.Id});
-    }
+    public IActionResult Create(CreatePlaylistViewModel model) =>
+        ModelState.IsValid
+            ? RedirectToAction("Index",
+                new {_playlistsRepo.CreatePlaylist(User, model.Name, model.Picture.ToPicture()).Id})
+            : View();
 
     [HttpGet, Authorize]
     public async Task<IActionResult> Delete(int id, string? returnUrl) =>
@@ -153,21 +137,12 @@ public class PlaylistsController : PsmControllerBase
             : BadRequest();
 
     [HttpPost, Authorize]
-    public async Task<IActionResult> DeleteSure(int id, string? returnUrl)
-    {
-        var playlist = await DataContext.Playlists
-            .Where(playlist =>
-                playlist.Id == id && CurrentUserQueryable.Select(user => user.OwnedPlaylists!.Playlists!)
-                    .Any(playlists => playlists.Contains(playlist)))
-            .Select(playlist => new Playlist {Id = playlist.Id})
-            .FirstOrDefaultAsync();
-        if (playlist is null) return BadRequest();
-        DataContext.Playlists.Remove(playlist);
-        await DataContext.SaveChangesAsync();
-        return IsLocalUrl(returnUrl)
-            ? Redirect(returnUrl!)
-            : RedirectToAction("Liked");
-    }
+    public IActionResult DeleteSure(int id, string? returnUrl) =>
+        _playlistsRepo.DeletePlaylist(User, id)
+            ? IsLocalUrl(returnUrl)
+                ? Redirect(returnUrl!)
+                : RedirectToAction("Liked")
+            : BadRequest();
 
     //TODO ajax
     [HttpPost, Authorize]
