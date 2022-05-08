@@ -21,9 +21,19 @@ public class TracksController : PsmControllerBase
             .Include(t => t.Picture)
             .Include(t => t.Author)
             .FirstOrDefaultAsync(t => t.Id == id) is { } track
-            ? Json(new TrackIndexViewModel
+            ? Json(new
             {
-                Track = track,
+                Track = new
+                {
+                    track.Id,
+                    track.Name,
+                    Author = new
+                    {
+                        track.Author!.Id,
+                         track.Author.Name
+                    },
+                    track.Picture
+                },
                 NotAddedPlaylists = await DataContext.Playlists
                     .Where(playlist =>
                         CurrentUserQueryable
@@ -31,19 +41,24 @@ public class TracksController : PsmControllerBase
                             .First()
                             .OwnedPlaylists!.Playlists!.Contains(playlist)
                         && !playlist.Tracks!.Contains(track))
+                    .Select(playlist => new
+                    {
+                        playlist.Id,
+                        playlist.Name
+                    })
                     .ToListAsync()
             })
             : NotFound();
 
     [HttpGet]
-    public async Task<IActionResult> Search(TrackSearchViewModel model)
+    public async Task<IActionResult> Search(string query, int page, bool byAuthors)
     {
-        if (!ModelState.IsValid) return BadRequest();
+        page = page == 0 ? 1 : page;
         var tracks = DataContext.Tracks
-            .Where(model.ByAuthors
-                ? track => track.Author!.Name.Contains(model.Query)
-                : track => track.Name.Contains(model.Query))
-            .Skip(10 * (model.Page - 1))
+            .Where(byAuthors
+                ? track => track.Author!.Name.Contains(query)
+                : track => track.Name.Contains(query))
+            .Skip(10 * (page - 1))
             .Take(10);
         var tracksList = await tracks
             .Include(track => track.Picture)
@@ -61,13 +76,18 @@ public class TracksController : PsmControllerBase
                     track.IsLiked = true;
         }
 
-        model.Result = new Playlist
+        var result = new
         {
-            Name = $"Search result, query: '{model.Query}'",
-            Picture = tracks.Select(track => track.Picture).FirstOrDefault(picture => picture != null),
-            Tracks = tracksList
+            Name = $"Search result, query: '{query}'",
+            Picture = tracks.Select(track => track.Picture).FirstOrDefault(picture => picture != null)?.Data,
+            Tracks = tracksList.Select(track => new
+            {
+                track.Id,
+                track.Name,
+                track.Picture
+            })
         };
-        return Json(model);
+        return Json(result);
     }
 
     [HttpPost, Authorize]
