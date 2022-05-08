@@ -7,11 +7,6 @@ using Planscam.FsServices;
 
 namespace Planscam.MobileApi;
 
-public class ConnectionStrings
-{
-    public string? MsSqlConnection { get; set; }
-}
-
 public class Program
 {
     public static void Main(string[] args)
