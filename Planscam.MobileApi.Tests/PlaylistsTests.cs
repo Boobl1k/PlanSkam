@@ -25,4 +25,12 @@ public class PlaylistsTests : TestBase
         response.StatusCodeIsOk();
         await WriteResponseToOutput(response);
     }
+
+    [Fact]
+    public async Task GetData()
+    {
+        var response = await Client.GetAsync("Playlists/GetData?id=1");
+        response.StatusCodeIsOk();
+        await WriteResponseToOutput(response);
+    }
 }
