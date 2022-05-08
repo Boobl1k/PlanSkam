@@ -1,8 +1,7 @@
-using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Planscam.MobileApi.Tests;
@@ -23,6 +22,6 @@ public abstract class TestBase
             .CreateClient();
     }
 
-    protected static void StatusCodeIsOk(HttpResponseMessage response) =>
-        Assert.True(response.StatusCode == HttpStatusCode.OK);
+    protected async Task WriteResponseToOutput(HttpResponseMessage response) => 
+        Output.WriteLine(await response.Content.ReadAsStringAsync());
 }

@@ -10,16 +10,22 @@ public class AuthorsTests : TestBase
     public AuthorsTests(ITestOutputHelper output) : base(output)
     {
     }
-    
+
     [Fact]
-    public async Task Test1()
+    public async Task Index()
     {
         var response =
             await Client.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/Authors/Index?id=1"));
 
-        //StatusCodeIsOk(response);
+        response.StatusCodeIsOk();
         Output.WriteLine(await response.Content.ReadAsStringAsync());
     }
 
-    
+    [Fact]
+    public async Task Search()
+    {
+        var response = await Client.GetAsync("/Authors/Search?Query=t");
+        response.StatusCodeIsOk();
+        await WriteResponseToOutput(response);
+    }
 }

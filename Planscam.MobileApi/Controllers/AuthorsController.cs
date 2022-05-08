@@ -36,15 +36,11 @@ public class AuthorsController : PsmControllerBase
             };
 
     [HttpGet]
-    public async Task<IActionResult> Search(AuthorsSearchViewModel? model)
-    {
-        if (model is null || !ModelState.IsValid) return BadRequest();
-        model.Result = await DataContext.Authors
-            .Where(author => author.Name.Contains(model.Query))
-            .Skip(10 * (model.Page - 1))
+    public async Task<IActionResult> Search(string query, int? page) =>
+        Json(await DataContext.Authors
+            .Where(author => author.Name.Contains(query))
+            .Skip(10 * (page ?? 1 - 1))
             .Take(10)
             .Include(author => author.Picture)
-            .ToListAsync();
-        return Json(model);
-    }
+            .ToListAsync());
 }
