@@ -3,16 +3,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Planscam.DataAccess;
 using Planscam.Entities;
+using Planscam.FsServices;
 using Planscam.MobileApi.Models;
 
 namespace Planscam.MobileApi.Controllers;
 
 public class AuthorsController : PsmControllerBase
 {
-    public AuthorsController(AppDbContext dataContext, UserManager<User> userManager, SignInManager<User> signInManager)
-        : base(dataContext, userManager, signInManager)
-    {
-    }
+    private readonly AuthorsRepo _authorsRepo;
+
+    public AuthorsController(AppDbContext dataContext, UserManager<User> userManager, SignInManager<User> signInManager,
+        AuthorsRepo authorsRepo)
+        : base(dataContext, userManager, signInManager) =>
+        _authorsRepo = authorsRepo;
 
     [HttpGet]
     public async Task<IActionResult> Index(int id) =>
@@ -36,11 +39,6 @@ public class AuthorsController : PsmControllerBase
             };
 
     [HttpGet]
-    public async Task<IActionResult> Search(string query, int? page) =>
-        Json(await DataContext.Authors
-            .Where(author => author.Name.Contains(query))
-            .Skip(10 * (page ?? 1 - 1))
-            .Take(10)
-            .Include(author => author.Picture)
-            .ToListAsync());
+    public IActionResult Search(string query, int page) =>
+        Json(_authorsRepo.SearchAuthors(query, page));
 }

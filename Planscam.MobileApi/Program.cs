@@ -25,6 +25,7 @@ public class Program
             .AddEntityFrameworkStores<AppDbContext>();
         services.AddSingleton<UsersRepo>();
         services.AddScoped<PlaylistsRepo>();
+        services.AddScoped<AuthorsRepo>();
 
         var app = builder.Build();
         

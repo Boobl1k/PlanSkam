@@ -16,16 +16,15 @@ public class AuthorsTests : TestBase
     {
         var response =
             await Client.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/Authors/Index?id=1"));
-
-        response.StatusCodeIsOk();
         Output.WriteLine(await response.Content.ReadAsStringAsync());
+        response.StatusCodeIsOk();
     }
 
     [Fact]
     public async Task Search()
     {
         var response = await Client.GetAsync("/Authors/Search?Query=t");
-        response.StatusCodeIsOk();
         await WriteResponseToOutput(response);
+        response.StatusCodeIsOk();
     }
 }
