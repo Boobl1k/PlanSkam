@@ -35,7 +35,6 @@ public class AuthController : PsmControllerBase
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
         if (!ModelState.IsValid) return BadRequest();
@@ -47,7 +46,6 @@ public class AuthController : PsmControllerBase
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logoff()
     {
         await SignInManager.SignOutAsync();

@@ -12,6 +12,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Planscam.FsServices", "Plan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Planscam.MobileApi", "Planscam.MobileApi\Planscam.MobileApi.csproj", "{8B719FE7-3C9C-42DE-87AC-3A42A7CC7884}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Planscam.MobileApi.Tests", "Planscam.MobileApi.Tests\Planscam.MobileApi.Tests.csproj", "{D5C18B24-6749-4CF4-976E-04FBE89799E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{8B719FE7-3C9C-42DE-87AC-3A42A7CC7884}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B719FE7-3C9C-42DE-87AC-3A42A7CC7884}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B719FE7-3C9C-42DE-87AC-3A42A7CC7884}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5C18B24-6749-4CF4-976E-04FBE89799E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5C18B24-6749-4CF4-976E-04FBE89799E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5C18B24-6749-4CF4-976E-04FBE89799E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5C18B24-6749-4CF4-976E-04FBE89799E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
