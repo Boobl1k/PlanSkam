@@ -202,8 +202,8 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
                 where (playlist.Id = id)
 
                 select
-                    struct {| Id = playlist.Id
-                              Name = playlist.Name
-                              TrackIds = playlist.Tracks.Select(fun track -> track.Id) |}
+                    {| Id = playlist.Id
+                       Name = playlist.Name
+                       TrackIds = playlist.Tracks.Select(fun track -> track.Id) |}
          })
             .FirstOrDefault()
