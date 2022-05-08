@@ -187,7 +187,7 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
            || userQueryable(userPrincipal)
                .Select(fun u -> u.OwnedPlaylists.Playlists)
                .Any(fun p -> p.Contains(playlist)) then //принадлежит ли плейлист юзеру
-            match dataContext.Tracks.FirstOrDefault(fun t -> t.Id = trackId) with
+            match dataContext.Tracks.FirstOrDefault(fun t -> t.Id = trackId) with //существует ли трек
             | null -> false
             | track ->
                 playlist.Tracks.Add(track)
@@ -195,3 +195,15 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
                 true
         else
             false
+
+    member _.GetData(id) =
+        (query {
+            for playlist in dataContext.Playlists do
+                where (playlist.Id = id)
+
+                select
+                    struct {| Id = playlist.Id
+                              Name = playlist.Name
+                              TrackIds = playlist.Tracks.Select(fun track -> track.Id) |}
+         })
+            .FirstOrDefault()

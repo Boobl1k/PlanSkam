@@ -170,18 +170,10 @@ public class PlaylistsController : PsmControllerBase
             : Ok();
 
     [HttpGet]
-    public async Task<IActionResult> GetData(int id) =>
-        await DataContext.Playlists
-                .Include(playlist => playlist.Tracks)
-                .Select(playlist => new
-                {
-                    playlist.Id,
-                    playlist.Name,
-                    trackIds = playlist.Tracks!.Select(track => track.Id)
-                })
-                .FirstOrDefaultAsync(playlist => playlist.Id == id) switch
-            {
-                { } playlist => Json(playlist),
-                _ => NotFound()
-            };
+    public IActionResult GetData(int id) =>
+        _playlistsRepo.GetData(id) switch
+        {
+            { } playlist => Json(playlist),
+            _ => NotFound()
+        };
 }
