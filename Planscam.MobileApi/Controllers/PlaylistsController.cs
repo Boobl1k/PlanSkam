@@ -18,7 +18,7 @@ public class PlaylistsController : PsmControllerBase
         base(dataContext, userManager, signInManager) =>
         _playlistsRepo = playlistsRepo;
 
-    [HttpGet, Route(nameof(FavoriteTracks)), OpenIdDictAuthorize]
+    [HttpGet, OpenIdDictAuthorize]
     public async Task<IActionResult> FavoriteTracks() =>
         RedirectToAction("Index", new
         {

@@ -22,6 +22,16 @@ public abstract class TestBase
             .CreateClient();
     }
 
-    protected async Task WriteResponseToOutput(HttpResponseMessage response) => 
+    protected async Task WriteResponseToOutput(HttpResponseMessage response)
+    {
+        Output.WriteLine($"StatusCode : {response.StatusCode}");
         Output.WriteLine(await response.Content.ReadAsStringAsync());
+    }
+
+    protected async Task SimpleTest(string uri)
+    {
+        var response = await Client.GetAsync(uri);
+        await WriteResponseToOutput(response);
+        response.StatusCodeIsOk();
+    }
 }
