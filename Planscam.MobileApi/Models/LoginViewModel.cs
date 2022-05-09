@@ -1,20 +1,15 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Planscam.MobileApi.Models;
 
 public class LoginViewModel
 {
+    [Required] 
+    public string grant_type { get; set; } = null!;
     [Required]
-    public string UserName { get; set; } = null!;
+    public string username { get; set; } = null!;
 
     [Required]
     [DataType(DataType.Password)]
-    public string Password { get; set; } = null!;
-    
-    [Display(Name = "Remember me")]
-    public bool RememberMe { get; set; }
-         
-    [HiddenInput(DisplayValue = false)]
-    public string? ReturnUrl { get; set; }
+    public string password { get; set; } = null!;
 }
