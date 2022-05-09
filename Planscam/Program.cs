@@ -8,9 +8,12 @@ using Planscam.FsServices;
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 
-services.AddDbContext<AppDbContext>(options =>
+services.AddDbContext<AppDbContext>(options=>
+{
     options.UseSqlServer(builder.Configuration.GetConnectionString("MsSqlConnection"), action =>
-        action.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName)));
+        action.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName));
+    options.UseOpenIddict();
+});
 services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
 services.AddSingleton<UsersRepo>();
