@@ -3,7 +3,7 @@ name: codecov
 on: [push]
 
 jobs:
-  build:
+  codecov:
 
     runs-on: ubuntu-latest
     
