@@ -25,18 +25,12 @@ public class AuthController : PsmControllerBase
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
         if (!ModelState.IsValid) return BadRequest();
-        var (name, email, pass) = model;
-        var user = _usersRepo.CreateNewUser(name, email);
-        var result = await UserManager.CreateAsync(user, pass);
-        if (!result.Succeeded)
-        {
-            foreach (var error in result.Errors)
-                ModelState.AddModelError(string.Empty, error.Description);
-            return BadRequest();
-        }
-
-        await SignInManager.SignInAsync(user, false);
-        return RedirectToAction("Index", "Home");
+        var user = _usersRepo.CreateNewUser(model.UserName, model.Email);
+        var result = await UserManager.CreateAsync(user, model.Password);
+        return result.Succeeded
+            ? Ok()
+            : Forbid(new AuthenticationProperties(result.Errors.ToDictionary(_ => string.Empty,
+                error => error.Description)!));
     }
 
     [HttpPost, Consumes("application/x-www-form-urlencoded")]
