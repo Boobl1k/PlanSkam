@@ -29,7 +29,7 @@ public class AuthController : PsmControllerBase
         var result = await UserManager.CreateAsync(user, model.Password);
         return result.Succeeded
             ? Ok()
-            : Forbid(new AuthenticationProperties(result.Errors.ToDictionary(_ => string.Empty,
+            : Forbid(new AuthenticationProperties(result.Errors.ToDictionary(error => error.Code,
                 error => error.Description)!));
     }
 
