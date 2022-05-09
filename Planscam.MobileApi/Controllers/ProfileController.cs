@@ -22,9 +22,9 @@ public class ProfileController : PsmControllerBase
             IsAuthor = User.IsInRole("Author")
         };
 
-    [HttpGet]
+    [HttpGet, OpenIdDictAuthorize, AllowAnonymous]
     public async Task<IActionResult> Index(string? id) =>
-        (id, SignInManager.IsSignedIn(User)) switch
+        (id, IsSignedIn) switch
         {
             (null, false) => Unauthorized(),
             (null, true) => Json(GetModel(
@@ -43,7 +43,7 @@ public class ProfileController : PsmControllerBase
                 }
         };
 
-    [HttpPost, Authorize]
+    [HttpPost, OpenIdDictAuthorize]
     public async Task<IActionResult> Edit(UserViewModel model)
     {
         var user = model.UploadImage is { }

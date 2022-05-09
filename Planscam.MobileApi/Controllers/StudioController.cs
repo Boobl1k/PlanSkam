@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +7,7 @@ using Planscam.MobileApi.Models;
 
 namespace Planscam.MobileApi.Controllers;
 
-[Authorize(Roles = "Author")]
+[OpenIdDictAuthorize(Roles = "Author")]
 public class StudioController : PsmControllerBase
 {
     public StudioController(AppDbContext dataContext, UserManager<User> userManager, SignInManager<User> signInManager)

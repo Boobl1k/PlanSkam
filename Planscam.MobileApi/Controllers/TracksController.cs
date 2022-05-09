@@ -1,10 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Planscam.DataAccess;
 using Planscam.Entities;
-using Planscam.MobileApi.Models;
 
 namespace Planscam.MobileApi.Controllers;
 
@@ -90,7 +88,7 @@ public class TracksController : PsmControllerBase
         return Json(result);
     }
 
-    [HttpPost, Authorize]
+    [HttpPost, OpenIdDictAuthorize]
     public async Task<IActionResult> AddTrackToFavourite(int id)
     {
         var track = await DataContext.Tracks.Where(track => track.Id == id).FirstOrDefaultAsync();
@@ -105,7 +103,7 @@ public class TracksController : PsmControllerBase
         return Ok();
     }
 
-    [HttpPost, Authorize]
+    [HttpPost, OpenIdDictAuthorize]
     public async Task<IActionResult> RemoveTrackFromFavourite(int id)
     {
         var favTracks = await DataContext.Users

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +17,7 @@ public class PlaylistsController : PsmControllerBase
         base(dataContext, userManager, signInManager) =>
         _playlistsRepo = playlistsRepo;
 
-    [HttpGet, Route(nameof(FavoriteTracks)), Authorize]
+    [HttpGet, Route(nameof(FavoriteTracks)), OpenIdDictAuthorize]
     public async Task<IActionResult> FavoriteTracks() =>
         RedirectToAction("Index", new
         {
@@ -56,19 +55,19 @@ public class PlaylistsController : PsmControllerBase
             })
             .ToListAsync());
 
-    [HttpPost, Authorize]
+    [HttpPost, OpenIdDictAuthorize]
     public IActionResult LikePlaylist(int id) =>
         _playlistsRepo.LikePlaylist(User, id)
             ? Ok()
             : BadRequest();
 
-    [HttpPost, Authorize]
+    [HttpPost, OpenIdDictAuthorize]
     public IActionResult UnlikePlaylist(int id) =>
         _playlistsRepo.UnlikePlaylist(User, id)
             ? Ok()
             : BadRequest();
 
-    [HttpGet, Authorize]
+    [HttpGet, OpenIdDictAuthorize]
     public async Task<IActionResult> Liked()
     {
         CurrentUser = await CurrentUserQueryable
@@ -80,20 +79,20 @@ public class PlaylistsController : PsmControllerBase
         return Json(CurrentUser);
     }
 
-    [HttpPost, Authorize]
+    [HttpPost, OpenIdDictAuthorize]
     public IActionResult Create(CreatePlaylistViewModel model) =>
         ModelState.IsValid
             ? RedirectToAction("Index",
                 new {_playlistsRepo.CreatePlaylist(User, model.Name, model.Picture.ToPicture()).Id})
             : BadRequest();
 
-    [HttpPost, Authorize]
+    [HttpPost, OpenIdDictAuthorize]
     public IActionResult DeleteSure(int id) =>
         _playlistsRepo.DeletePlaylist(User, id)
             ? Ok()
             : BadRequest();
 
-    [HttpPost, Authorize]
+    [HttpPost, OpenIdDictAuthorize]
     public IActionResult AddTrackToPlaylist(int playlistId, int trackId) =>
         _playlistsRepo.AddTrackToPlaylist(User, playlistId, trackId)
             ? BadRequest()

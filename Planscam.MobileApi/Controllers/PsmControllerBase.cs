@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using OpenIddict.Validation.AspNetCore;
 using Planscam.DataAccess;
 using Planscam.Entities;
 
@@ -47,4 +48,9 @@ public abstract class PsmControllerBase : ControllerBase
 
     protected static IActionResult Json(object o) =>
         new JsonResult(o);
+
+    private bool? _isSignedIn;
+
+    protected bool IsSignedIn => _isSignedIn ??= User.Identities.Any(i =>
+        i.AuthenticationType == OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
 }
