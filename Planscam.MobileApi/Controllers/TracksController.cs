@@ -62,7 +62,7 @@ public class TracksController : PsmControllerBase
             .Include(track => track.Picture)
             .Include(track => track.Author)
             .ToListAsync();
-        if (SignInManager.IsSignedIn(User))
+        if (IsSignedIn)
         {
             var likedTrackIds = await CurrentUserQueryable
                 .Select(user => user.FavouriteTracks!.Tracks!.Select(track => track.Id).ToList())

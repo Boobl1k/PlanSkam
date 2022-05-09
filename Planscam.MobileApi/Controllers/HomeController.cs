@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Planscam.DataAccess;
@@ -15,14 +16,14 @@ public class HomeController : PsmControllerBase
     }
 
     //todo переписать полностью
-    [HttpGet]
+    [HttpGet, OpenIdDictAuthorize, AllowAnonymous]
     public async Task<IActionResult> Index()
     {
         var playlists = await DataContext.Playlists
             .Include(playlist => playlist.Picture)
             .AsNoTracking()
             .ToListAsync();
-        if (!SignInManager.IsSignedIn(User)) return Json(new HomePageViewModel {Playlists = playlists});
+        if (!IsSignedIn) return Json(new HomePageViewModel {Playlists = playlists});
         CurrentUser = await CurrentUserQueryable
             .Include(user => user.Picture)
             .Include(user => user.FavouriteTracks)

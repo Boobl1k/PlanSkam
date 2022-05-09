@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +33,7 @@ public class PlaylistsController : PsmControllerBase
             _ => NotFound()
         };
 
-    [HttpGet]
+    [HttpGet, OpenIdDictAuthorize, AllowAnonymous]
     public async Task<IActionResult> All() =>
         Json(await DataContext.Playlists
             .Where(playlist => DataContext.FavouriteTracks.All(tracks => tracks != playlist))
@@ -44,10 +45,10 @@ public class PlaylistsController : PsmControllerBase
                 Name = playlist.Name,
                 Picture = playlist.Picture,
                 IsAlbum = playlist.IsAlbum,
-                IsLiked = SignInManager.IsSignedIn(User)
+                IsLiked = IsSignedIn
                     ? playlist.Users!.Any(user => user.Id == CurrentUserId)
                     : null,
-                IsOwned = SignInManager.IsSignedIn(User)
+                IsOwned = IsSignedIn
                     ? CurrentUserQueryable
                         .Select(user => user.OwnedPlaylists!.Playlists!)
                         .Any(playlists => playlists.Any(playlist1 => playlist1 == playlist))
