@@ -184,7 +184,7 @@ function hideAdd(e) {
             addBtn.style.color = 'white';
             addWindow.style.display = 'none';
         }, 2000);
-        sendAjax("GET", 'document', '/Playlists/AddPlayedTrack', function () {
+        sendAjax("GET", 'document', `/Playlists/AddPlayedTrack/${JSON.parse(localStorage.playlist)[localStorage.nowPlayed}`, function () {
             addWindow.innerHTML = request.response.body.innerHTML;
         });
     }
