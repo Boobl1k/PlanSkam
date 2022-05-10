@@ -129,6 +129,7 @@
 
 .addBtnLink:hover {
     color: var(--color3);
+    padding-top: 7px;
 }
 
 
