@@ -13,15 +13,15 @@ Add to playlist:
         {
             <div class="addPlaylistElement">
                 @Html.DrawSmallPlaylistPic(playlist.Picture, "addPlaylistImg")
-                <span onclick="loadPage(@($"Playlists/Index/{playlist.Id}")" style="cursor: pointer;">@playlist.Name</span>
+                <span onclick="loadPage('@($"Playlists/Index/{playlist.Id}')")" style="cursor: pointer;">@playlist.Name</span>
 
                 @if (playlist.IsTrackInPlaylist)
                 {
-                    <i id="addButton@(playlist.Id)" inPlaylist=false; onclick="addToPlaylist(@playlist.Id)" class="button fi fi-rr-plus"></i>
+                    <i id="addButton@(playlist.Id)" inPlaylist="false" onclick="addToPlaylist(@playlist.Id)" class="buttonPlaylist fi fi-rr-plus"></i>
                 }
                 else
                 {
-                    <i id="addButton@(playlist.Id)" inPlaylist=true; onclick="addToPlaylist(@playlist.Id)" class="button fi fi-rr-checked"></i>
+                    <i id="addButton@(playlist.Id)" inPlaylist="true" onclick="addToPlaylist(@playlist.Id)" class="buttonPlaylist fi fi-rr-check"></i>
                 }
             </div>
         }

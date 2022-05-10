@@ -179,13 +179,15 @@ function hideAdd(e) {
     }
     else {
         addBtn.style.color = '#5800FF';
-        addWindow.style.display = 'flex';
-        addBtn.closeTimeout = setTimeout(function () {
-            addBtn.style.color = 'white';
-            addWindow.style.display = 'none';
-        }, 2000);
-        sendAjax("GET", 'document', `/Playlists/AddPlayedTrack/${JSON.parse(localStorage.playlist)[localStorage.nowPlayed}`, function () {
+        addBtn.removeEventListener('click', hideAdd);
+        sendAjax("GET", 'document', `/Playlists/AddPlayedTrack/${JSON.parse(localStorage.playlist)[localStorage.nowPlayed]}`, function () {
             addWindow.innerHTML = request.response.body.innerHTML;
+            addWindow.style.display = 'flex';
+            addBtn.closeTimeout = setTimeout(function () {
+                addBtn.style.color = 'white';
+                addWindow.style.display = 'none';
+            }, 2000);
+            addBtn.addEventListener('click', hideAdd);
         });
     }
 }
@@ -202,12 +204,20 @@ function clearAddCloseTimeout() {
 }
 
 function addToPlaylist(playlistId) {
-    sendAjax("POST", "json", `/Playlists/AddTrackToPlaylist?playlistId=${playlistId}&trackId=${JSON.parse(localStorage.playlist)[localStorage.nowPlayed]}`, function () {
-        btn = document.getElementById(`addButton${playlistId}`);
-        btn.classList.remove("fi-rr-plus");
-        btn.classList.add("fi-rr-check");
-        btn.onclick = null;
-    })
+    btn = document.getElementById(`addButton${playlistId}`);
+    if (btn.getAttribute('inPlaylist') == "true")
+        sendAjax("POST", "json", `/Playlists/RemoveTrackFromPlaylist?playlistId=${playlistId}&trackId=${JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]}`, function () {
+            btn.classList.remove("fi-rr-check");
+            btn.classList.add("fi-rr-plus");
+            btn.setAttribute('inPlaylist', false);
+        })
+    else
+        sendAjax("POST", "json", `/Playlists/AddTrackToPlaylist?playlistId=${playlistId}&trackId=${JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]}`, function () {
+            btn = document.getElementById(`addButton${playlistId}`);
+            btn.classList.remove("fi-rr-plus");
+            btn.classList.add("fi-rr-check");
+            btn.setAttribute('inPlaylist', true);
+        })
 }
 
 progressContainer.addEventListener('click', setProgress);

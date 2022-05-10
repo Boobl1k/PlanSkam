@@ -168,8 +168,8 @@
 
 .addPlaylistImg {
     border-radius: 10%;
-    width: 30px;
-    height: 30px;
+    width: 30px!important;
+    height: 30px!important;
     transition: box-shadow var(--animationSpeed);
 }
 
@@ -181,6 +181,19 @@
 
 .addPlaylistElement:hover>.addPlaylistImg {
     box-shadow: 0 0 10px white;
+}
+
+.buttonPlaylist {
+    display: flex;
+    border-radius: 50%;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+}
+
+.buttonPlaylist:hover {
+    text-shadow: 0 0 10px var(--color3);
+    color: var(--color3);
 }
 
 .volume {
