@@ -1,5 +1,5 @@
 @using Planscam.Extensions
-@model List<Planscam.Entities.Playlist>
+@model List<AddPlayedTrackPlaylistViewModel>
 
 @{
     Layout = "";
@@ -14,10 +14,15 @@ Add to playlist:
             <div class="addPlaylistElement">
                 @Html.DrawSmallPlaylistPic(playlist.Picture, "addPlaylistImg")
                 <span onclick="loadPage(@($"Playlists/Index/{playlist.Id}")" style="cursor: pointer;">@playlist.Name</span>
-                <i id="addButton@(playlist.Id)" inPlaylist=false; onclick="addToPlaylist(@playlist.Id)" class="button fi fi-rr-plus"></i>
 
-                
-                <i id="addButton@(playlist.Id)" inPlaylist=true; onclick="addToPlaylist(@playlist.Id)" class="button fi fi-rr-checked"></i>
+                @if (playlist.IsTrackInPlaylist)
+                {
+                    <i id="addButton@(playlist.Id)" inPlaylist=false; onclick="addToPlaylist(@playlist.Id)" class="button fi fi-rr-plus"></i>
+                }
+                else
+                {
+                    <i id="addButton@(playlist.Id)" inPlaylist=true; onclick="addToPlaylist(@playlist.Id)" class="button fi fi-rr-checked"></i>
+                }
             </div>
         }
     </div>

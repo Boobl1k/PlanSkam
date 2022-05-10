@@ -170,8 +170,19 @@ public class PlaylistsController : PsmControllerBase
             : Ok();
 
     [HttpGet, Authorize]
-    public async Task<IActionResult> AddPlayedTrack() =>
-        View(await CurrentUserQueryable.Select(user => user.OwnedPlaylists!.Playlists).FirstAsync());
+    public async Task<IActionResult> AddPlayedTrack(int trackId) =>
+        View(await CurrentUserQueryable
+            .Select(user => user.OwnedPlaylists!.Playlists!
+                .Select(playlist =>
+                    new AddPlayedTrackPlaylistViewModel
+                    {
+                        Id = playlist.Id,
+                        Name = playlist.Name,
+                        Picture = playlist.Picture!,
+                        IsTrackInPlaylist = playlist.Tracks!.Contains(new Track {Id = trackId})
+                    })
+                .ToList())
+            .FirstAsync());
 
     [HttpGet]
     public IActionResult GetData(int id) =>
