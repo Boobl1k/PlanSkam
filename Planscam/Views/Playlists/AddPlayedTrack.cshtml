@@ -1,4 +1,4 @@
-@using Microsoft.AspNetCore.Mvc.Rendering
+@using Planscam.Extensions
 @model List<Planscam.Entities.Playlist>
 
 @{
@@ -13,8 +13,8 @@ Add to playlist:
         {
             <div class="addPlaylistElement">
                 @Html.DrawSmallPlaylistPic(playlist.Picture, "addPlaylistImg")
-                <span onclick="loadPage($'Playlists/Index/{@playlist.Id}')" style="cursor: pointer;">@playlist.Name</span>
-                <i id="addButton{@playlist.Id}" onclick="addToPlaylist(@playlist.Id)" class="button fi fi-rr-plus"></i>
+                <span onclick="loadPage(@($"Playlists/Index/{playlist.Id}")" style="cursor: pointer;">@playlist.Name</span>
+                <i id="addButton@(playlist.Id)" onclick="addToPlaylist(@playlist.Id)" class="button fi fi-rr-plus"></i>
             </div>
         }
     </div>
