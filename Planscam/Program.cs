@@ -20,6 +20,7 @@ services.AddSingleton<UsersRepo>();
 services.AddScoped<PlaylistsRepo>();
 services.AddScoped<AuthorsRepo>();
 
+services.AddCors();
 services.AddControllersWithViews();
 
 services.ConfigureApplicationCookie(options =>
@@ -54,6 +55,7 @@ using (var scope = app.Services.CreateScope())
     .UseHttpsRedirection()
     .UseStaticFiles()
     .UseRouting()
+    .UseCors(builder => builder.AllowAnyOrigin())
     .UseAuthentication()
     .UseAuthorization();
 app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
