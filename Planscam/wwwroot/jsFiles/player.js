@@ -202,8 +202,8 @@ function clearAddCloseTimeout() {
 }
 
 function addToPlaylist(playlistId) {
-    sendAjax("POST", "json", `/Playlists/AddTrackToPlaylist/${playlistId}`, function () {
-        btn = getElementById(`button${playlistId}`);
+    sendAjax("POST", "json", `/Playlists/AddTrackToPlaylist?playlistId=${playlistId}&trackId=${JSON.parse(localStorage.playlist)[localStorage.nowPlayed]}`, function () {
+        btn = document.getElementById(`addButton${playlistId}`);
         btn.classList.remove("fi-rr-plus");
         btn.classList.add("fi-rr-check");
         btn.onclick = null;
