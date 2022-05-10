@@ -169,6 +169,10 @@ public class PlaylistsController : PsmControllerBase
             ? BadRequest()
             : Ok();
 
+    [HttpGet, Authorize]
+    public IActionResult AddPlayedTrack() =>
+        View();
+
     [HttpGet]
     public IActionResult GetData(int id) =>
         _playlistsRepo.GetData(id) switch

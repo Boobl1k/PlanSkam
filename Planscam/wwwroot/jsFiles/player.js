@@ -7,6 +7,8 @@ const artist = document.getElementById('artist'),
     progressContainer = document.getElementById('progeressContainer'),
     muted = document.getElementById('muted'),
     likeBtn = document.getElementById('likeBtn'),
+    addBtn = document.getElementById('addBtn'),
+    addWindow = document.getElementById('addWindow'),
     volumeBtn = document.getElementById('volumeBtn'),
     volumeWindow = document.getElementById('volumeWindow'),
     volumeContainer = document.getElementById('volumeContainer'),
@@ -90,23 +92,6 @@ function setVolume(e) {
     volumeSlider.style.height = `${vol * 100}%`;
 }
 
-function hideVolume(e) {
-    if (volumeWindow.style.display == 'flex') {
-        clearTimeout(volumeBtn.closeTimeout);
-        volumeBtn.style.color = 'white';
-        volumeWindow.style.display = 'none';
-    }
-    else {
-        volumeBtn.style.color = '#5800FF';
-        volumeWindow.style.display = 'flex';
-        volumeBtn.closeTimeout = setTimeout(function () {
-            volumeBtn.style.color = 'white';
-            volumeWindow.style.display = 'none';
-        }, 2000);
-    }
-}
-
-
 function setFavourite(isLiked) {
     if (isLiked) {
         likeBtn.IsLiked = isLiked;
@@ -159,25 +144,20 @@ function loadTrackAndPlay(id) {
     });
 }
 
-function loadPage(controller, method, query) {
-    sendAjax("GET", 'document', `/${controller}/${method}/${query}`, function () {
-        page = document.getElementById('page');
-        page.innerHTML = request.response.body.innerHTML;
-    });
-}
-
-function loadPage(controller, method) {
-    sendAjax("GET", 'document', `/${controller}/${method}`, function () {
-        page = document.getElementById('page');
-        page.innerHTML = request.response.body.innerHTML;
-    });
-}
-
-function loadPage(uri) {
-    sendAjax("GET", 'document', uri, function () {
-        page = document.getElementById('page');
-        page.innerHTML = request.response.body.innerHTML;
-    });
+function hideVolume(e) {
+    if (volumeWindow.style.display == 'flex') {
+        clearTimeout(volumeBtn.closeTimeout);
+        volumeBtn.style.color = 'white';
+        volumeWindow.style.display = 'none';
+    }
+    else {
+        volumeBtn.style.color = '#5800FF';
+        volumeWindow.style.display = 'flex';
+        volumeBtn.closeTimeout = setTimeout(function () {
+            volumeBtn.style.color = 'white';
+            volumeWindow.style.display = 'none';
+        }, 2000);
+    }
 }
 
 function setVolumeCloseTimeout() {
@@ -191,12 +171,54 @@ function clearVolumeCloseTimeout() {
     clearTimeout(volumeBtn.closeTimeout);
 }
 
+function hideAdd(e) {
+    if (addWindow.style.display == 'flex') {
+        clearTimeout(addBtn.closeTimeout);
+        addBtn.style.color = 'white';
+        addWindow.style.display = 'none';
+    }
+    else {
+        addBtn.style.color = '#5800FF';
+        addWindow.style.display = 'flex';
+        addBtn.closeTimeout = setTimeout(function () {
+            addBtn.style.color = 'white';
+            addWindow.style.display = 'none';
+        }, 2000);
+        sendAjax("GET", 'document', '/Playlists/AddPlayedTrack', function () {
+            addWindow.innerHTML = request.response.body.innerHTML;
+        });
+    }
+}
+
+function setAddCloseTimeout() {
+    addBtn.closeTimeout = setTimeout(function () {
+        addBtn.style.color = 'white';
+        addWindow.style.display = 'none';
+    }, 2000);
+}
+
+function clearAddCloseTimeout() {
+    clearTimeout(addBtn.closeTimeout);
+}
+
+function addToPlaylist(playlistId) {
+    sendAjax("POST", "json", `/Playlists/AddTrackToPlaylist/${playlistId}`, function () {
+        btn = getElementById(`button${playlistId}`);
+        btn.classList.remove("fi-rr-plus");
+        btn.classList.add("fi-rr-check");
+        btn.onclick = null;
+    })
+}
+
 progressContainer.addEventListener('click', setProgress);
 audio.addEventListener('timeupdate', progressBarUpdate);
 audio.addEventListener('ended', nextTrackEnded);
 audio.addEventListener('play', setPlayIcon);
 audio.addEventListener('pause', setPauseIcon);
 audio.addEventListener('volumechange', setMute);
+addBtn.addEventListener('click', hideAdd);
+addWindow.addEventListener('mouseenter', clearAddCloseTimeout);
+addWindow.addEventListener('mouseleave', setAddCloseTimeout);
 volumeContainer.addEventListener('click', setVolume);
 volumeBtn.addEventListener('click', hideVolume);
 volumeWindow.addEventListener('mouseenter', clearVolumeCloseTimeout);
@@ -207,7 +229,7 @@ function initPage() {
         loadPlaylist(4);
 
     localStorage.nowPlayed = 0;
-    loadTrack(JSON.parse(localStorage.playlist).tracksIds[localStorage.nowPlayed]);
+    loadTrack(JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]);
     audio.volume = parseFloat(localStorage.volume);
     setMute();
     volumeSlider.style.height = `${audio.volume * 100}%`;

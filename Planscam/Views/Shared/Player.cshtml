@@ -8,7 +8,8 @@
         <i class="playlist button fi fi-rr-list"></i>
     </div>
     <div class="trackInfo">
-        <img id="trackLogo" class="trackLogo" src="https://lastfm.freetls.fastly.net/i/u/300x300/c6ea5209d93e404433ac90ea875ae867.jpg"
+        <img id="trackLogo" class="trackLogo"
+            src="https://lastfm.freetls.fastly.net/i/u/300x300/c6ea5209d93e404433ac90ea875ae867.jpg"
             alt="playlist logo">
         <div class="trackSpans">
             <span id="artist" class="Artist" style="font-weight: 700; font-size: 20px;">
@@ -29,7 +30,13 @@
     </div>
     <div class="rightButtons">
         <i onclick="trackToFavourite()" id="likeBtn" class="like button fi fi-rr-heart"></i>
-        <i class="add button fi fi-rr-plus"></i>
+        
+        <div style="display: relative;">
+            <i id="addBtn" class="add button fi fi-rr-plus"></i>
+            <div id="addWindow" class="addWindow">
+                
+            </div>
+        </div>
         <i class="ban button fi fi-rr-ban"></i>
         <div style="display: relative;">
             <i id="volumeBtn" class="volume button fi fi-rr-volume">

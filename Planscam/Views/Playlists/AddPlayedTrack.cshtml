@@ -1,0 +1,22 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model List<Planscam.Entities.Playlist>
+
+@{
+    Layout = "";
+}
+
+Add to playlist:
+
+<div class="addPlaylistsContainer">
+    <div class="addPlaylists">
+        @foreach (var playlist in Model)
+        {
+            <div class="addPlaylistElement">
+                @Html.DrawSmallPlaylistPic(playlist.Picture, "addPlaylistImg")
+                <span onclick="loadPage($'Playlists/Index/{@playlist.Id}')" style="cursor: pointer;">@playlist.Name</span>
+                <i id="addButton{@playlist.Id}" onclick="addToPlaylist(@playlist.Id)" class="button fi fi-rr-plus"></i>
+            </div>
+        }
+    </div>
+</div>
+<a onclick="loadPage('Playlists/Create')" class="addBtnLink">Create new</a>
