@@ -5,47 +5,34 @@ using Microsoft.EntityFrameworkCore;
 using Planscam.DataAccess;
 using Planscam.Entities;
 using Planscam.Extensions;
+using Planscam.FsServices;
 using Planscam.Models;
 
 namespace Planscam.Controllers;
 
 public class PlaylistsController : PsmControllerBase
 {
+    private readonly PlaylistsRepo _playlistsRepo;
+
     public PlaylistsController(AppDbContext dataContext, UserManager<User> userManager,
-        SignInManager<User> signInManager) : base(dataContext, userManager, signInManager)
-    {
-    }
+        SignInManager<User> signInManager, PlaylistsRepo playlistsRepo) :
+        base(dataContext, userManager, signInManager) =>
+        _playlistsRepo = playlistsRepo;
 
     [HttpGet, Route(nameof(FavoriteTracks)), Authorize]
     public async Task<IActionResult> FavoriteTracks() =>
         RedirectToAction("Index", new
         {
-            Id = await CurrentUserQueryable
-                .AsNoTracking()
-                .Select(user => user.FavouriteTracks!.Id)
-                .FirstAsync()
+            Id = await _playlistsRepo.GetFavouriteTracksId(User)
         });
 
     [HttpGet]
-    public async Task<IActionResult> Index(int id)
-    {
-        //TODO по хорошему надо найти способ сделать это одним запросом, как я понимаю это делается с помощью хранимых процедур
-        var playlist = await DataContext.Playlists
-            .Include(playlist => playlist.Picture)
-            .Include(playlist => playlist.Tracks)!
-            .ThenInclude(track => track.Picture)
-            .Select(PlaylistSetIsLikedAndIsOwnedExpression)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(playlist => playlist.Id == id);
-        if (playlist is null) return NotFound();
-        playlist.Tracks = await DataContext.Tracks
-            .Where(track => playlist.Tracks!.Contains(track))
-            //.Include(track => track.Picture)
-            .AsNoTracking()
-            .Select(TrackSetIsLikedExpression)
-            .ToListAsync();
-        return View(playlist);
-    }
+    public async Task<IActionResult> Index(int id) =>
+        await _playlistsRepo.GetPlaylistFull(id, User) switch
+        {
+            { } playlist => View(playlist),
+            _ => NotFound()
+        };
 
     [HttpGet]
     public async Task<IActionResult> All() =>
@@ -53,11 +40,24 @@ public class PlaylistsController : PsmControllerBase
             .Where(playlist => DataContext.FavouriteTracks.All(tracks => tracks != playlist))
             .Include(playlist => playlist.Picture)
             .AsNoTracking()
-            .Select(PlaylistSetIsLikedAndIsOwnedExpression)
+            .Select(playlist => new Playlist
+            {
+                Id = playlist.Id,
+                Name = playlist.Name,
+                Picture = playlist.Picture,
+                IsAlbum = playlist.IsAlbum,
+                IsLiked = SignInManager.IsSignedIn(User)
+                    ? playlist.Users!.Any(user => user.Id == CurrentUserId)
+                    : null,
+                IsOwned = SignInManager.IsSignedIn(User)
+                    ? CurrentUserQueryable
+                        .Select(user => user.OwnedPlaylists!.Playlists!)
+                        .Any(playlists => playlists.Any(playlist1 => playlist1 == playlist))
+                    : null
+            })
             .ToListAsync());
 
-    //TODO вызовы этого должны быть через ajax, и метод должен возвращать json с инфой об успешности
-    [HttpPost, Authorize]
+    [NonAction, Obsolete("переписано под ajax")] //[HttpPost, Authorize]
     public async Task<IActionResult> LikePlaylist(int id, string? returnUrl)
     {
         var playlist = await DataContext.Playlists
@@ -73,8 +73,13 @@ public class PlaylistsController : PsmControllerBase
             : RedirectToAction("Index", new {id});
     }
 
-    //TODO ajax
     [HttpPost, Authorize]
+    public IActionResult LikePlaylist(int id) =>
+        _playlistsRepo.LikePlaylist(User, id)
+            ? Ok()
+            : BadRequest();
+
+    [NonAction, Obsolete("переписано под ajax")] //[HttpPost, Authorize]
     public async Task<IActionResult> UnlikePlaylist(int id, string? returnUrl)
     {
         CurrentUser = await CurrentUserQueryable
@@ -87,6 +92,12 @@ public class PlaylistsController : PsmControllerBase
             ? Redirect(returnUrl!)
             : RedirectToAction("Index", new {id});
     }
+
+    [HttpPost, Authorize]
+    public IActionResult UnlikePlaylist(int id) =>
+        _playlistsRepo.UnlikePlaylist(User, id)
+            ? Ok()
+            : BadRequest();
 
     [HttpGet, Authorize]
     public async Task<IActionResult> Liked()
@@ -105,27 +116,11 @@ public class PlaylistsController : PsmControllerBase
         View();
 
     [HttpPost, Authorize]
-    public async Task<IActionResult> Create(CreatePlaylistViewModel model)
-    {
-        if (!ModelState.IsValid) return View();
-        var playlist = new Playlist
-        {
-            Name = model.Name,
-            Picture = model.Picture.ToPicture(),
-            Users = new List<User> {CurrentUser}
-        };
-        CurrentUser = await CurrentUserQueryable
-            .Include(user => user.OwnedPlaylists!.Playlists)
-            .Select(user => new User
-            {
-                Id = user.Id,
-                OwnedPlaylists = user.OwnedPlaylists
-            })
-            .FirstAsync();
-        CurrentUser.OwnedPlaylists!.Playlists!.Add(playlist);
-        await DataContext.SaveChangesAsync();
-        return RedirectToAction("Index", new {playlist.Id});
-    }
+    public IActionResult Create(CreatePlaylistViewModel model) =>
+        ModelState.IsValid
+            ? RedirectToAction("Index",
+                new {_playlistsRepo.CreatePlaylist(User, model.Name, model.Picture.ToPicture()).Id})
+            : View();
 
     [HttpGet, Authorize]
     public async Task<IActionResult> Delete(int id, string? returnUrl) =>
@@ -141,24 +136,14 @@ public class PlaylistsController : PsmControllerBase
             : BadRequest();
 
     [HttpPost, Authorize]
-    public async Task<IActionResult> DeleteSure(int id, string? returnUrl)
-    {
-        var playlist = await DataContext.Playlists
-            .Where(playlist =>
-                playlist.Id == id && CurrentUserQueryable.Select(user => user.OwnedPlaylists!.Playlists!)
-                    .Any(playlists => playlists.Contains(playlist)))
-            .Select(playlist => new Playlist {Id = playlist.Id})
-            .FirstOrDefaultAsync();
-        if (playlist is null) return BadRequest();
-        DataContext.Playlists.Remove(playlist);
-        await DataContext.SaveChangesAsync();
-        return IsLocalUrl(returnUrl)
-            ? Redirect(returnUrl!)
-            : RedirectToAction("Liked");
-    }
+    public IActionResult DeleteSure(int id, string? returnUrl) =>
+        _playlistsRepo.DeletePlaylist(User, id)
+            ? IsLocalUrl(returnUrl)
+                ? Redirect(returnUrl!)
+                : RedirectToAction("Liked")
+            : BadRequest();
 
-    //TODO ajax
-    [HttpPost, Authorize]
+    [NonAction, Obsolete("переписано под ajax")] //[HttpPost, Authorize]
     public async Task<IActionResult> AddTrackToPlaylist(int playlistId, int trackId, string returnUrl)
     {
         var playlist = await DataContext.Playlists
@@ -178,22 +163,21 @@ public class PlaylistsController : PsmControllerBase
             : RedirectToAction("Index", "Tracks", new {Id = trackId});
     }
 
+    [HttpPost, Authorize]
+    public IActionResult AddTrackToPlaylist(int playlistId, int trackId) =>
+        _playlistsRepo.AddTrackToPlaylist(User, playlistId, trackId)
+            ? BadRequest()
+            : Ok();
+
+    [HttpGet, Authorize]
+    public IActionResult AddPlayedTrack() =>
+        View();
+
     [HttpGet]
-    public async Task<IActionResult> GetData(int id) =>
-        await DataContext.Playlists
-                .Include(playlist => playlist.Tracks)
-                .Select(playlist => new
-                {
-                    playlist.Id,
-                    playlist.Name,
-                    tracks = playlist.Tracks!.Select(track => new
-                    {
-                        Id = track.Id
-                    })
-                })
-                .FirstOrDefaultAsync(playlist => playlist.Id == id) switch
-            {
-                { } playlist => Json(playlist),
-                _ => NotFound()
-            };
+    public IActionResult GetData(int id) =>
+        _playlistsRepo.GetData(id) switch
+        {
+            { } playlist => Json(playlist),
+            _ => NotFound()
+        };
 }

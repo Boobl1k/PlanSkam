@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Planscam.DataAccess;
@@ -47,47 +46,6 @@ public abstract class PsmControllerBase : Controller
 
     protected bool IsLocalUrl(string? url) =>
         !string.IsNullOrEmpty(url) && Url.IsLocalUrl(url);
-
-    //выглядит как говнокод, но так будет только 1 запрос к базе
-    private Expression<Func<Playlist, Playlist>>? _playlistSetIsLikedAndIsOwnedExpression;
-
-    protected Expression<Func<Playlist, Playlist>> PlaylistSetIsLikedAndIsOwnedExpression =>
-        _playlistSetIsLikedAndIsOwnedExpression ??= playlist => new Playlist
-        {
-            Id = playlist.Id,
-            Name = playlist.Name,
-            Picture = playlist.Picture,
-            Tracks = playlist.Tracks,
-            Users = playlist.Users,
-            OwnedBy = playlist.OwnedBy,
-            IsAlbum = playlist.IsAlbum,
-            IsLiked = SignInManager.IsSignedIn(User)
-                ? playlist.Users!.Any(user => user.Id == CurrentUserId)
-                : null,
-            IsOwned = SignInManager.IsSignedIn(User)
-                ? CurrentUserQueryable
-                    .Select(user => user.OwnedPlaylists!.Playlists!)
-                    .Any(playlists => playlists.Any(playlist1 => playlist1 == playlist))
-                : null
-        };
-
-    private Expression<Func<Track, Track>>? _trackSetIsLikedExpression;
-
-    protected Expression<Func<Track, Track>> TrackSetIsLikedExpression =>
-        _trackSetIsLikedExpression ??= track => new Track
-        {
-            Id = track.Id,
-            Name = track.Name,
-            Data = track.Data,
-            Picture = track.Picture,
-            Author = track.Author,
-            Playlists = track.Playlists,
-            Genre = track.Genre,
-            IsLiked = SignInManager.IsSignedIn(User)
-                ? CurrentUserQueryable
-                    .Any(user => user.FavouriteTracks!.Tracks!.Contains(track))
-                : null
-        };
 
     [NonAction]
     protected new IActionResult Unauthorized() =>

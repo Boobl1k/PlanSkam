@@ -3,18 +3,22 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Planscam.DataAccess;
 using Planscam.Entities;
-using Planscam.Services;
+using Planscam.FsServices;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 
-services.AddDbContext<AppDbContext>(options =>
+services.AddDbContext<AppDbContext>(options=>
+{
     options.UseSqlServer(builder.Configuration.GetConnectionString("MsSqlConnection"), action =>
-        action.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName)));
+        action.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName));
+    options.UseOpenIddict();
+});
 services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
 services.AddSingleton<UsersRepo>();
 services.AddScoped<PlaylistsRepo>();
+services.AddScoped<AuthorsRepo>();
 
 services.AddCors();
 services.AddControllersWithViews();

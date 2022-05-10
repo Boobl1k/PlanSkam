@@ -105,7 +105,7 @@ public class TracksController : PsmControllerBase
         return Ok();
     }
 
-    [HttpPost, Authorize]
+    [NonAction, Obsolete("переделано под ajax")]//[HttpPost, Authorize]
     public async Task<IActionResult> RemoveTrackFromFavourite(int id, string? returnUrl)
     {
         var favTracks = await DataContext.Users
@@ -120,17 +120,31 @@ public class TracksController : PsmControllerBase
             ? Redirect(returnUrl!)
             : RedirectToAction("Index", "Playlists", new {favTracks.Id});
     }
+    
+    [HttpPost, Authorize]
+    public async Task<IActionResult> RemoveTrackFromFavourite(int id)
+    {
+        var favTracks = await DataContext.Users
+            .Where(user => user.Id == CurrentUserId)
+            .Include(user => user.FavouriteTracks!.Tracks!.Where(track => track.Id == id))
+            .Select(user => user.FavouriteTracks!)
+            .FirstAsync();
+        if (!favTracks.Tracks!.Any()) return BadRequest();
+        favTracks.Tracks!.Remove(favTracks.Tracks.First());
+        await DataContext.SaveChangesAsync();
+        return Ok();
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetTrackData(int id) =>
         await DataContext.Tracks
-                .Include(track => track.Data)
                 .Select(track => new
                 {
                     track.Id,
                     Author = track.Author!.Name,
                     track.Name,
-                    track.IsLiked,
+                    IsLiked = CurrentUserQueryable
+                        .Any(user => user.FavouriteTracks!.Tracks!.Contains(track)),
                     Picture = track.Picture!.Data,
                     track.Data!.Data
                 })

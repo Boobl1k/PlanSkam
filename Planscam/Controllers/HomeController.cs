@@ -15,6 +15,7 @@ public class HomeController : PsmControllerBase
     {
     }
 
+    //todo переписать полностью
     public async Task<IActionResult> Index()
     {
         var playlists = await DataContext.Playlists
