@@ -166,8 +166,15 @@ public class PlaylistsController : PsmControllerBase
     [HttpPost, Authorize]
     public IActionResult AddTrackToPlaylist(int playlistId, int trackId) =>
         _playlistsRepo.AddTrackToPlaylist(User, playlistId, trackId)
-            ? BadRequest()
-            : Ok();
+            ? Ok()
+            : BadRequest();
+
+    //todo api
+    [HttpPost, Authorize]
+    public IActionResult RemoveTrackFromPlaylist(int playlistId, int trackId) =>
+        _playlistsRepo.RemoveTrackFromPlaylist(User, playlistId, trackId)
+            ? Ok()
+            : BadRequest();
 
     [HttpGet, Authorize]
     public async Task<IActionResult> AddPlayedTrack(int trackId) =>

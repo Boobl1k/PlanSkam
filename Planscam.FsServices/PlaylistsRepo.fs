@@ -182,8 +182,8 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
                 .Include(fun p -> p.Tracks)
                 .FirstOrDefault(fun p -> p.Id = playlistId)
 
-        if playlist = null
-           || playlist.Tracks.Any(fun t -> t.Id = trackId) //не добавлен ли уже этот трек в плейлист
+        if playlist <> null
+           || playlist.Tracks.All(fun t -> t.Id <> trackId) //не добавлен ли уже этот трек в плейлист
            || userQueryable(userPrincipal)
                .Select(fun u -> u.OwnedPlaylists.Playlists)
                .Any(fun p -> p.Contains(playlist)) then //принадлежит ли плейлист юзеру
@@ -191,6 +191,27 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
             | null -> false
             | track ->
                 playlist.Tracks.Add(track)
+                dataContext.SaveChanges() |> ignore
+                true
+        else
+            false
+
+    member _.RemoveTrackFromPlaylist(userPrincipal, playlistId, trackId) =
+        let playlist =
+            dataContext
+                .Playlists
+                .Include(fun p -> p.Tracks)
+                .FirstOrDefault(fun p -> p.Id = playlistId)
+
+        if playlist <> null
+           || playlist.Tracks.Any(fun t -> t.Id = trackId) //добавлен ли этот трек в плейлист
+           || userQueryable(userPrincipal)
+               .Select(fun u -> u.OwnedPlaylists.Playlists)
+               .Any(fun p -> p.Contains(playlist)) then //принадлежит ли плейлист юзеру
+            match dataContext.Tracks.FirstOrDefault(fun t -> t.Id = trackId) with //существует ли трек
+            | null -> false
+            | track ->
+                playlist.Tracks.Remove(track) |> ignore
                 dataContext.SaveChanges() |> ignore
                 true
         else
