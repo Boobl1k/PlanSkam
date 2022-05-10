@@ -170,7 +170,7 @@ public class PlaylistsController : PsmControllerBase
             : Ok();
 
     [HttpGet, Authorize]
-    public async Task<IActionResult> AddPlayedTrack() => 
+    public async Task<IActionResult> AddPlayedTrack() =>
         View(await CurrentUserQueryable.Select(user => user.OwnedPlaylists!.Playlists).FirstAsync());
 
     [HttpGet]
@@ -180,4 +180,16 @@ public class PlaylistsController : PsmControllerBase
             { } playlist => Json(playlist),
             _ => NotFound()
         };
+
+    [HttpGet]
+    public async Task<IActionResult> IsTrackInPlaylist(int trackId, int playlistId) =>
+        await DataContext.Playlists
+                .Include(p => p.Tracks)
+                .Where(p => p.Id == playlistId)
+                .Select(p => p.Tracks!.Select(t => t.Id))
+                .AsNoTracking()
+                .FirstAsync()
+            is { } trackIds
+            ? Json(trackIds.Contains(trackId))
+            : BadRequest();
 }
