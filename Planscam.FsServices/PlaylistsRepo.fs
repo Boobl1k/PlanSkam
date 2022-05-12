@@ -151,7 +151,6 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
         let playlist =
             Playlist(Name = name, Picture = picture, Users = List<User>())
 
-        playlist.Users.Add user
         user.OwnedPlaylists.Playlists.Add playlist
         dataContext.SaveChanges() |> ignore
         playlist
@@ -181,7 +180,7 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
                 .Playlists
                 .Include(fun p -> p.Tracks)
                 .FirstOrDefault(fun p -> p.Id = playlistId)
-
+        
         if playlist = null
            || playlist.Tracks.Any(fun t -> t.Id = trackId) //не добавлен ли уже этот трек в плейлист
            || true <> userQueryable(userPrincipal)
