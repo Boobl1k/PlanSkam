@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -8,7 +10,9 @@ namespace Planscam.MobileApi.Tests;
 
 public class PlaylistsTests : TestBase
 {
-    public PlaylistsTests(ITestOutputHelper output) : base(output) { }
+    public PlaylistsTests(ITestOutputHelper output) : base(output)
+    {
+    }
 
     [Fact]
     public async Task All() => await SimpleTest("/Playlists/All");
@@ -32,17 +36,15 @@ public class PlaylistsTests : TestBase
     public async Task AddTrackToPlaylist()
     {
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/AddTrackToPlaylist")
+            var request = new HttpRequestMessage(HttpMethod.Post,
+                    "/Playlists/AddTrackToPlaylist?playlistId=31&trackId=7")
                 .AddTokenToHeaders(Client);
-            request.Headers.Add("playlistId", "1");
-            request.Headers.Add("trackId", "7");
             await SimpleTest(request);
         }
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/RemoveTrackFromPlaylist")
+            var request = new HttpRequestMessage(HttpMethod.Post,
+                    "/Playlists/RemoveTrackFromPlaylist?playlistId=31&trackId=7")
                 .AddTokenToHeaders(Client);
-            request.Headers.Add("playlistId", "1");
-            request.Headers.Add("trackId", "7");
             await SimpleTest(request);
         }
     }
