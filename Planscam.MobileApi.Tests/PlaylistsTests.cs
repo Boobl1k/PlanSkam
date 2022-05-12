@@ -1,8 +1,6 @@
-using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -24,25 +22,19 @@ public class PlaylistsTests : TestBase
     [Fact]
     public async Task FavouriteTracks()
     {
-        var token = (string)((dynamic)JsonConvert.DeserializeObject(await GetToken())).access_token;
-        var request = new HttpRequestMessage(HttpMethod.Get, "Playlists/FavoriteTracks");
-        request.Headers.Add("Authorization", $"Bearer {token}");
-        var response = await Client.SendAsync(request);
-        await WriteResponseToOutput(response);
-        response.StatusCodeIsOk();
+        var request = new HttpRequestMessage(HttpMethod.Get, "Playlists/FavoriteTracks")
+            .AddTokenToHeaders(Client, Output);
+        Output.WriteLine(request.Headers.First().Key + " " + request.Headers.First().Value.First());
+        await SimpleTest(request);
     }
 
-    private async Task<string> GetToken()
+    public async Task AddTrackToPlaylist()
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "/Auth/Login");
-        request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
-        {
-            {"grant_type", "password"},
-            {"username", "qwe"},
-            {"password", "qweQWE123!"}
-        });
-        var response = await Client.SendAsync(request);
-        await WriteResponseToOutput(response);
-        return await response.Content.ReadAsStringAsync();
+        var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/AddTrackToPlaylist")
+            .AddTokenToHeaders(Client, Output);
+        request.Headers.Add("playlistId", "1");
+        request.Headers.Add("trackId", "7");
+        await SimpleTest(request);
+        
     }
 }

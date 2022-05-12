@@ -23,17 +23,23 @@ public class AuthTests : TestBase
             {"username", "qwe"},
             {"password", "qweQWE123!"}
         });
-        var response = await Client.SendAsync(request);
-        await WriteResponseToOutput(response);
-        response.StatusCodeIsOk();
+        (await Client.SendAsync(request))
+            .WriteToOutput(Output)
+            .StatusCodeIsOk();
     }
 
     [Fact]
     public async Task Register()
     {
-        var name = string.Empty;
-        for (var i = 0; i < 5; ++i) 
-            name += (char) ('a' + Random.Shared.Next(22));
+        static string GenerateName()
+        {
+            var name = string.Empty;
+            for (var i = 0; i < 5; ++i)
+                name += (char) ('a' + Random.Shared.Next(22));
+            return name;
+        }
+
+        var name = GenerateName();
         var request = new HttpRequestMessage(HttpMethod.Post, "Auth/Register");
         request.Content = new StringContent(JsonConvert.SerializeObject(new
         {
@@ -42,8 +48,8 @@ public class AuthTests : TestBase
             password = "tyuTYU123!",
             passwordConfirm = "tyuTYU123!"
         }), Encoding.UTF8, "application/json");
-        var response = await Client.SendAsync(request);
-        await WriteResponseToOutput(response);
-        response.StatusCodeIsOk();
+        (await Client.SendAsync(request))
+            .WriteToOutput(Output)
+            .StatusCodeIsOk();
     }
 }

@@ -6,39 +6,21 @@ namespace Planscam.MobileApi.Tests;
 
 public class TracksTests : TestBase
 {
-    public TracksTests(ITestOutputHelper output) : base(output)
-    {
-    }
+    public TracksTests(ITestOutputHelper output) : base(output) { }
 
     [Fact]
-    public async Task Index()
-    {
-        var response = await Client.GetAsync("/Tracks/Index?id=1");
-        await WriteResponseToOutput(response);
-        response.StatusCodeIsOk();
-    }
+    public async Task Index() =>
+        await SimpleTest("/Tracks/Index?id=1");
 
     [Fact]
-    public async Task Search_byTracks()
-    {
-        var response = await Client.GetAsync("/Tracks/Search?Query=t&Page=1&byAuthors=false");
-        await WriteResponseToOutput(response);
-        response.StatusCodeIsOk();
-    }
-    
+    public async Task Search_byTracks() =>
+        await SimpleTest("/Tracks/Search?Query=t&Page=1&byAuthors=false");
+
     [Fact]
-    public async Task Search_byAuthors()
-    {
-        var response = await Client.GetAsync("/Tracks/Search?Query=t&Page=1&byAuthors=true");
-        await WriteResponseToOutput(response);
-        response.StatusCodeIsOk();
-    }
-    
+    public async Task Search_byAuthors() =>
+        await SimpleTest("/Tracks/Search?Query=t&Page=1&byAuthors=true");
+
     [Fact]
-    public async Task GetTrackData()
-    {
-        var response = await Client.GetAsync("/Tracks/GetTrackData?id=1");
-        await WriteResponseToOutput(response);
-        response.StatusCodeIsOk();
-    }
+    public async Task GetTrackData() =>
+        await SimpleTest("/Tracks/GetTrackData?id=1");
 }

@@ -14,24 +14,19 @@ public abstract class TestBase
     protected TestBase(ITestOutputHelper output)
     {
         Output = output;
-        var config = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.Test.json").AddEnvironmentVariables().Build();
         Client = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
                 builder.ConfigureAppConfiguration((_, b) =>
                     b.AddJsonFile("appsettings.Test.json")))
             .CreateClient();
     }
 
-    protected async Task WriteResponseToOutput(HttpResponseMessage response)
-    {
-        Output.WriteLine($"StatusCode : {response.StatusCode}");
-        Output.WriteLine(await response.Content.ReadAsStringAsync());
-    }
+    protected async Task SimpleTest(string uri) =>
+        (await Client.GetAsync(uri))
+        .WriteToOutput(Output)
+        .StatusCodeIsOk();
 
-    protected async Task SimpleTest(string uri)
-    {
-        var response = await Client.GetAsync(uri);
-        await WriteResponseToOutput(response);
-        response.StatusCodeIsOk();
-    }
+    protected async Task SimpleTest(HttpRequestMessage request) =>
+        (await Client.SendAsync(request))
+        .WriteToOutput(Output)
+        .StatusCodeIsOk();
 }
