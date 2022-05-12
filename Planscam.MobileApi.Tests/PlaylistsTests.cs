@@ -28,13 +28,22 @@ public class PlaylistsTests : TestBase
         await SimpleTest(request);
     }
 
+    [Fact]
     public async Task AddTrackToPlaylist()
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/AddTrackToPlaylist")
-            .AddTokenToHeaders(Client, Output);
-        request.Headers.Add("playlistId", "1");
-        request.Headers.Add("trackId", "7");
-        await SimpleTest(request);
-        
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/AddTrackToPlaylist")
+                .AddTokenToHeaders(Client);
+            request.Headers.Add("playlistId", "1");
+            request.Headers.Add("trackId", "7");
+            await SimpleTest(request);
+        }
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/RemoveTrackFromPlaylist")
+                .AddTokenToHeaders(Client);
+            request.Headers.Add("playlistId", "1");
+            request.Headers.Add("trackId", "7");
+            await SimpleTest(request);
+        }
     }
 }

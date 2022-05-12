@@ -96,8 +96,14 @@ public class PlaylistsController : PsmControllerBase
     [HttpPost, OpenIdDictAuthorize]
     public IActionResult AddTrackToPlaylist(int playlistId, int trackId) =>
         _playlistsRepo.AddTrackToPlaylist(User, playlistId, trackId)
-            ? BadRequest()
-            : Ok();
+            ? Ok()
+            : BadRequest();
+    
+    [HttpPost, OpenIdDictAuthorize]
+    public IActionResult RemoveTrackFromPlaylist(int playlistId, int trackId) =>
+        _playlistsRepo.RemoveTrackFromPlaylist(User, playlistId, trackId)
+            ? Ok()
+            : BadRequest();
 
     [HttpGet]
     public IActionResult GetData(int id) =>

@@ -182,19 +182,19 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
                 .Include(fun p -> p.Tracks)
                 .FirstOrDefault(fun p -> p.Id = playlistId)
 
-        if playlist <> null
-           || playlist.Tracks.All(fun t -> t.Id <> trackId) //не добавлен ли уже этот трек в плейлист
-           || userQueryable(userPrincipal)
+        if playlist = null
+           || playlist.Tracks.Any(fun t -> t.Id = trackId) //не добавлен ли уже этот трек в плейлист
+           || true <> userQueryable(userPrincipal)
                .Select(fun u -> u.OwnedPlaylists.Playlists)
                .Any(fun p -> p.Contains(playlist)) then //принадлежит ли плейлист юзеру
+           false
+        else
             match dataContext.Tracks.FirstOrDefault(fun t -> t.Id = trackId) with //существует ли трек
             | null -> false
             | track ->
                 playlist.Tracks.Add(track)
                 dataContext.SaveChanges() |> ignore
                 true
-        else
-            false
 
     member _.RemoveTrackFromPlaylist(userPrincipal, playlistId, trackId) =
         let playlist =
@@ -203,19 +203,19 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
                 .Include(fun p -> p.Tracks)
                 .FirstOrDefault(fun p -> p.Id = playlistId)
 
-        if playlist <> null
-           || playlist.Tracks.Any(fun t -> t.Id = trackId) //добавлен ли этот трек в плейлист
-           || userQueryable(userPrincipal)
+        if playlist = null
+           || playlist.Tracks.All(fun t -> t.Id <> trackId) //добавлен ли этот трек в плейлист
+           || true <> userQueryable(userPrincipal)
                .Select(fun u -> u.OwnedPlaylists.Playlists)
                .Any(fun p -> p.Contains(playlist)) then //принадлежит ли плейлист юзеру
+            false
+        else
             match dataContext.Tracks.FirstOrDefault(fun t -> t.Id = trackId) with //существует ли трек
             | null -> false
             | track ->
                 playlist.Tracks.Remove(track) |> ignore
                 dataContext.SaveChanges() |> ignore
                 true
-        else
-            false
 
     member _.GetData(id) =
         (query {
