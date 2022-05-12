@@ -1,8 +1,0 @@
-{
-  "type": "mssql",
-  "host": "planscam.mssql.somee.com",
-  "database": "planscam",
-  "port": 1433,
-  "username": "erererererer123_SQLLogin_1",
-  "password": "2qnmximctf"
-}
