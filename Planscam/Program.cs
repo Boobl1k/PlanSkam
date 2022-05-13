@@ -1,5 +1,7 @@
+using System.IO.Compression;
 using System.Reflection;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Planscam.DataAccess;
 using Planscam.Entities;
@@ -20,6 +22,11 @@ services.AddSingleton<UsersRepo>();
 services.AddScoped<PlaylistsRepo>();
 services.AddScoped<AuthorsRepo>();
 
+services.AddResponseCompression( option => option.EnableForHttps = true);
+services.Configure<BrotliCompressionProviderOptions>(options =>
+{
+    options.Level = CompressionLevel.Fastest;
+});
 services.AddCors();
 services.AddControllersWithViews();
 
@@ -59,4 +66,10 @@ using (var scope = app.Services.CreateScope())
     .UseAuthentication()
     .UseAuthorization();
 app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
-app.Run();
+app.UseResponseCompression();
+app.Run(async context =>
+{
+    string loremIpsum = "Lorem Ipsum";
+    context.Response.ContentType = "text/plain";
+    await context.Response.WriteAsync(loremIpsum);
+});
