@@ -1,5 +1,5 @@
 import {Controller, Get} from "@nestjs/common";
-import {TracksRepository} from "../Repositories/Tracks.repository";
+import {TracksRepository} from "../Data/Repositories/Tracks.repository";
 
 @Controller('tracks')
 export class TracksController{
