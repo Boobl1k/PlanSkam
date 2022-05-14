@@ -1,7 +1,5 @@
 namespace Planscam.FsServices
 
-
-open System.Collections.Generic
 open Microsoft.AspNetCore.Identity
 open Microsoft.EntityFrameworkCore
 open Microsoft.FSharp.Core
@@ -143,33 +141,33 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
             (query {
                 for user in
                     userQueryable(userPrincipal)
-                        .Include(fun user -> user.OwnedPlaylists.Playlists) do
-                    select (User(Id = user.Id, OwnedPlaylists = user.OwnedPlaylists))
+                        .Include(fun user -> user.OwnedPlaylists.Playlists)
+                        .Include(fun user -> user.Playlists) do
+                    select user
              })
                 .First()
 
         let playlist =
-            Playlist(Name = name, Picture = picture, Users = List<User>())
-
+            Playlist(Name = name, Picture = picture)
         user.OwnedPlaylists.Playlists.Add playlist
+        dataContext.SaveChanges() |> ignore
+        user.Playlists.Add playlist
         dataContext.SaveChanges() |> ignore
         playlist
 
     member _.DeletePlaylist(userPrincipal, id) =
-        let playlist =
-            dataContext
-                .Playlists
-                .Where(fun playlist ->
-                    playlist.Id = id
-                    && userQueryable(userPrincipal)
-                        .Select(fun user -> user.OwnedPlaylists.Playlists)
-                        .Any(fun playlists -> playlists.Contains(playlist)))
-                .Select(fun playlist -> Playlist(Id = playlist.Id))
-                .FirstOrDefault()
-
-        if playlist = null then
-            false
-        else
+        match (query{
+                for playlist in dataContext.Playlists do
+                    where(playlist.Id = id &&
+                          (query{
+                              for user in userQueryable userPrincipal do
+                                  where (user.OwnedPlaylists.Playlists.Contains(playlist))
+                          }).Any())
+                    select playlist
+            })
+                .FirstOrDefault() with
+        | null -> false
+        | playlist ->
             dataContext.Playlists.Remove playlist |> ignore
             dataContext.SaveChanges() |> ignore
             true
