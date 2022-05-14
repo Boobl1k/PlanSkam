@@ -1,4 +1,6 @@
+using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.FSharp.Core;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -23,4 +25,19 @@ public class TracksTests : TestBase
     [Fact]
     public async Task GetTrackData() =>
         await SimpleTest("/Tracks/GetTrackData?id=1");
+
+    [Fact]
+    public async Task AddTrackToFavourite()
+    {
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "Tracks/AddTrackToFavourite?id=8")
+                .AddTokenToHeaders(Client, Output);
+            await SimpleTest(request);
+        }
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "Tracks/RemoveTrackFromFavourite?id=8")
+                .AddTokenToHeaders(Client, Output);
+            await SimpleTest(request);
+        }
+    }
 }
