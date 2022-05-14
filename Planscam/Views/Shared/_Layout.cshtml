@@ -67,6 +67,13 @@
                     <i class="fi fi-rr-user"></i>
                     Profile
                 </a>
+                @if (authenticated)
+                {
+                    @using (Html.BeginForm("Logoff", "Auth"))
+                    {
+                        <button type="submit">Logoff</button>
+                    }
+                }
                 <span class="headline">
                     Your Playlists
                 </span>
