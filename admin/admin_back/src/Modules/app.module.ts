@@ -4,6 +4,8 @@ import {AppService} from '../Services/app.service';
 import {TypeOrmModule} from '@nestjs/typeorm'
 import {Track} from "../Data/Entities/Track";
 import {TracksModule} from "./Tracks.Module";
+import {UsersModule} from "./Users.module";
+import {User} from "../Data/Entities/User";
 
 @Module({
     imports: [
@@ -14,9 +16,10 @@ import {TracksModule} from "./Tracks.Module";
             port: 1433,
             username: "erererererer123_SQLLogin_1",
             password: "2qnmximctf",
-            entities: [Track]
+            entities: [Track, User]
         }),
-        TracksModule
+        TracksModule,
+        UsersModule
     ],
     controllers: [AppController],
     providers: [AppService],

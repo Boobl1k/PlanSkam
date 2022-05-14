@@ -13,5 +13,5 @@ export class User {
     FavouriteTracksId: number = 0;
 
     @Column()
-    OwnedPlaylistId: number = 0;
+    OwnedPlaylistsId: number = 0;
 }
