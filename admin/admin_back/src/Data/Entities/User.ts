@@ -1,8 +1,8 @@
 import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
 
 //некоторые столбцы из бд намеренно не перенесены, при необходимости добавить
-@Entity()
-export class AspNetUser {
+@Entity('AspNetUsers')
+export class User {
     @PrimaryGeneratedColumn()
     Id: string;
 

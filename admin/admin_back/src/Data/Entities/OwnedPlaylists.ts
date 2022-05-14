@@ -1,8 +1,6 @@
 import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
 
-//название таблицы не соответствует
-
-@Entity()
+@Entity('OwnedPlaylists')
 export class OwnedPlaylists {
     @PrimaryGeneratedColumn()
     Id: number;

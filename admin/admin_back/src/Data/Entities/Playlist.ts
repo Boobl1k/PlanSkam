@@ -1,6 +1,6 @@
 import {Entity, Column, PrimaryGeneratedColumn, TableForeignKey} from 'typeorm';
 
-@Entity()
+@Entity('Playlists')
 export class Playlist {
     @PrimaryGeneratedColumn()
     Id: number;
