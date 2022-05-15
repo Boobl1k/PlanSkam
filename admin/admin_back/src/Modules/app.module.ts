@@ -6,6 +6,7 @@ import {Track} from "../Data/Entities/Track";
 import {TracksModule} from "./Tracks.Module";
 import {UsersModule} from "./Users.module";
 import {User} from "../Data/Entities/User";
+import {Role} from "../Data/Entities/Role";
 
 @Module({
     imports: [
@@ -16,7 +17,7 @@ import {User} from "../Data/Entities/User";
             port: 1433,
             username: "erererererer123_SQLLogin_1",
             password: "2qnmximctf",
-            entities: [Track, User]
+            entities: [Track, User, Role]
         }),
         TracksModule,
         UsersModule
