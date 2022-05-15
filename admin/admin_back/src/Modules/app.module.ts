@@ -3,10 +3,10 @@ import {AppController} from '../Controllers/app.controller';
 import {AppService} from '../Services/app.service';
 import {TypeOrmModule} from '@nestjs/typeorm'
 import {Track} from "../Data/Entities/Track";
-import {TracksModule} from "./Tracks.Module";
 import {UsersModule} from "./Users.module";
 import {User} from "../Data/Entities/User";
 import {Role} from "../Data/Entities/Role";
+import {Playlist} from "../Data/Entities/Playlist";
 
 @Module({
     imports: [
@@ -17,9 +17,8 @@ import {Role} from "../Data/Entities/Role";
             port: 1433,
             username: "erererererer123_SQLLogin_1",
             password: "2qnmximctf",
-            entities: [Track, User, Role]
+            entities: [Track, Role, User, Playlist]
         }),
-        TracksModule,
         UsersModule
     ],
     controllers: [AppController],

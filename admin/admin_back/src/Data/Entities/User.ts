@@ -1,5 +1,6 @@
-import {Entity, Column, PrimaryColumn, ManyToMany, JoinTable} from 'typeorm';
+import {Entity, Column, PrimaryColumn, ManyToMany, JoinTable, OneToOne, JoinColumn} from 'typeorm';
 import {Role} from "./Role";
+import {Playlist} from "./Playlist";
 
 //некоторые столбцы из бд намеренно не перенесены, при необходимости добавить
 @Entity('AspNetUsers')
@@ -10,13 +11,21 @@ export class User {
     @Column()
     UserName: string;
 
-    @Column()
-    FavouriteTracksId: number;
+    @ManyToMany(() => Playlist, playlist => playlist.Users)
+    @JoinTable({
+        name: "PlaylistUser",
+        joinColumn:{
+            name: "UsersId",
+            referencedColumnName: "Id"
+        },
+        inverseJoinColumn:{
+            name: "PlaylistsId",
+            referencedColumnName: "Id"
+        }
+    })
+    Playlists : Playlist[]
 
-    @Column()
-    OwnedPlaylistsId: number;
-
-    @ManyToMany(() => Role, (role) => role.Users)
+    @ManyToMany(() => Role, role => role.Users)
     @JoinTable({
         name: "AspNetUserRoles",
         joinColumn: {

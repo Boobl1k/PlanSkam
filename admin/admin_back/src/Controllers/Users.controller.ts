@@ -29,4 +29,19 @@ export class UsersController {
             ? "User is not author now"
             : "Error";
     }
+
+    @Get('getFavTracks')
+    async getFavTracks(@Query('id') id: string) {
+        return await this.usersRepo.getFavTracks(id);
+    }
+
+    @Post('addPlaylistToLiked')
+    async addPlaylistToLiked(@Query('userId') userId: string, @Query('playlistId') playlistId: number) {
+        return await this.usersRepo.addPlaylistToLiked(userId, playlistId);
+    }
+    
+    @Post('removePlaylistFromLiked')
+    async removePlaylistFromLiked(@Query('userId') userId: string, @Query('playlistId') playlistId: number){
+        return await this.usersRepo.removePlaylistFromLiked(userId, playlistId);
+    }
 }
