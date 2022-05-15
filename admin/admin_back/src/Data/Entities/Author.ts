@@ -1,16 +1,16 @@
 import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
 
-@Entity()
-export class Track{
+@Entity('Authors')
+export class Author {
     @PrimaryGeneratedColumn()
     Id: number;
-    
+
     @Column()
     Name: string;
-    
+
     @Column()
-    AuthorId: number;
-    
+    PictureId: number;
+
     @Column()
-    TrackDataId: number;
+    UserId: number;
 }

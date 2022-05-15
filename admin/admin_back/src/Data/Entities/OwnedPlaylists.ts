@@ -1,7 +1,7 @@
 import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
 
-@Entity()
-export class TrackData {
+@Entity('OwnedPlaylists')
+export class OwnedPlaylists {
     @PrimaryGeneratedColumn()
     Id: number;
 }

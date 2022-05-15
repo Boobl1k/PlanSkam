@@ -1,7 +1,7 @@
 import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
 
-@Entity()
-export class Author {
+@Entity('Genres')
+export class Genre {
     @PrimaryGeneratedColumn()
     Id: number;
 
@@ -10,7 +10,4 @@ export class Author {
 
     @Column()
     PictureId: number;
-
-    @Column()
-    UserId: number;
 }
