@@ -7,6 +7,7 @@ import {UsersModule} from "./Users.module";
 import {User} from "../Data/Entities/User";
 import {Role} from "../Data/Entities/Role";
 import {Playlist} from "../Data/Entities/Playlist";
+import {PlaylistsModule} from "./Playlists.module";
 
 @Module({
     imports: [
@@ -19,7 +20,8 @@ import {Playlist} from "../Data/Entities/Playlist";
             password: "2qnmximctf",
             entities: [Track, Role, User, Playlist]
         }),
-        UsersModule
+        UsersModule,
+        PlaylistsModule
     ],
     controllers: [AppController],
     providers: [AppService],

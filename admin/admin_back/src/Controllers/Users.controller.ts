@@ -37,11 +37,15 @@ export class UsersController {
 
     @Post('addPlaylistToLiked')
     async addPlaylistToLiked(@Query('userId') userId: string, @Query('playlistId') playlistId: number) {
-        return await this.usersRepo.addPlaylistToLiked(userId, playlistId);
+        return await this.usersRepo.addPlaylistToLiked(userId, playlistId)
+            ? "Playlist added"
+            : "Error";
     }
-    
+
     @Post('removePlaylistFromLiked')
-    async removePlaylistFromLiked(@Query('userId') userId: string, @Query('playlistId') playlistId: number){
-        return await this.usersRepo.removePlaylistFromLiked(userId, playlistId);
+    async removePlaylistFromLiked(@Query('userId') userId: string, @Query('playlistId') playlistId: number) {
+        return await this.usersRepo.removePlaylistFromLiked(userId, playlistId)
+            ? "Playlist removed"
+            : "Error";
     }
 }
