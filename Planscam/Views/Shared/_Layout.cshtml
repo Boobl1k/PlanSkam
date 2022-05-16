@@ -16,7 +16,13 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
+    <link href="~/css/form.css" rel="stylesheet">
     <link href="~/css/layout.css" rel="stylesheet">
+    <link href="~/css/playlist.css" rel="stylesheet">
+    <script src="~/jsFiles/custom-select.js"></script>
+    <script src="~/jsFiles/form.js"></script>
+    <script src="~/jsFiles/inputs.js"></script>
+    <script src="~/jsFiles/playlist.js"></script>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel='stylesheet'
         href='https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css'>
@@ -45,28 +51,28 @@
                     <i class="fi fi-rr-search"></i>
                     Search authors
                 </a>
-                <a class="menuElement" asp-controller="Playlists" asp-action="Liked">
+                <div class="menuElement" onclick="loadPage('Playlists/Liked')">
                     <i class="fi fi-rr-indent"></i>
                     My libary
-                </a>
+                </div>
                 <div class="line glowing2 bcolor2" style="margin: 15px 0;">⠀</div>
-                <a class="menuElement" asp-controller="Studio" asp-action="Index">
+                <div class="menuElement" onclick="loadPage('Studio/Index')">
                     <i class="fi fi-rr-plus"></i>
                     Studio
-                </a>
-                <a class="menuElement" asp-controller="Playlists" asp-action="Create">
+                </div>
+                <div class="menuElement" onclick="loadPage('Playlists/Create')">
                     <i class="fi fi-rr-plus"></i>
                     Create Playlist
-                </a>
-                <a class="menuElement" asp-controller="Playlists" asp-action="FavoriteTracks">
+                </div>
+                <div class="menuElement" onclick="loadPage('Playlists/FavoriteTracks')">
                     <i class="fi fi-rr-grin-hearts"></i>
                     Favorite
-                </a>
+                </div>
                 <div class="line glowing2 bcolor1" style="margin: 15px 0;">⠀</div>
-                <a class="menuElement" asp-controller="Profile" asp-action="Index">
+                <div class="menuElement" onclick="loadPage('Profile/Index')">
                     <i class="fi fi-rr-user"></i>
                     Profile
-                </a>
+                </div>
                 @if (authenticated)
                 {
                     @using (Html.BeginForm("Logoff", "Auth"))
@@ -80,14 +86,16 @@
                 @if (authenticated)
                 {
                     <div class="menuPlaylistsContainer">
-                        <div class="menuPlaylists">
+                        <div id="layoutPlaylists" class="menuPlaylists">
                             @foreach (var playlist in await PlaylistsRepo.GetLikedPlaylists(User))
                             {
-                                <a class="menuPlaylistElement" asp-controller="Playlists" asp-action="Index"
-                            asp-route-id="@playlist.Id">
-                                    @Html.DrawSmallPlaylistPic(playlist.Picture, "menuPlaylistImg")
-                                    @playlist.Name
-                                </a>
+                                <div class="menuPlaylistElementContainer">
+                                    <div class="menuPlaylistElement" onclick="loadPage('@($"Playlists/Index/{playlist.Id}')")">
+                                        @Html.DrawSmallPlaylistPic(playlist.Picture, "menuPlaylistImg")
+                                        @playlist.Name
+                                    </div>
+                                    <i onclick="loadPlaylist(@playlist.Id)" style="font-size: 20px;" class="button fi fi-rr-play"></i>
+                                </div>
                             }
                         </div>
                     </div>
@@ -106,4 +114,5 @@
 </body>
 @await RenderSectionAsync("Scripts", required: false)
 <script src="~/jsFiles/navigator.js"></script>
+
 </html>

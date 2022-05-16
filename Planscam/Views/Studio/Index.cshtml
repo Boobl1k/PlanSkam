@@ -2,10 +2,17 @@
 
 @{
     ViewBag.Title = "title";
-    Layout = "_Layout";
+    Layout = "";
 }
 
-@Html.ActionLink("load new track", "LoadNewTrack")
+<span onclick="loadPage('/Studio/LoadNewTrack/', function() {
+    form();
+    customSelect();
+    imgInput();
+    mp3Input();
+})">
+load new track
+</span>
 @Html.ActionLink("My tracks", "MyTracks")
 @Html.ActionLink("My albums", "Albums")
 @Html.ActionLink("Create album", "CreateAlbum")

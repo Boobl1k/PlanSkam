@@ -1,5 +1,6 @@
 const artist = document.getElementById('artist'),
     trackLogo = document.getElementById('trackLogo'),
+    trackSpans = document.getElementById('trackSpans'),
     trackName = document.getElementById('trackName'),
     playButton = document.getElementById('play'),
     audio = document.getElementById('audio'),
@@ -13,12 +14,30 @@ const artist = document.getElementById('artist'),
     volumeWindow = document.getElementById('volumeWindow'),
     volumeContainer = document.getElementById('volumeContainer'),
     volumeSlider = document.getElementById('volumeSlider');
+var isPlayngnow = false;
 
 function play() {
-    if (audio.paused)
+    if (audio.paused) {
         audio.play();
-    else
+        isPlayngnow = true;
+    }
+    else {
         audio.pause();
+        isPlayngnow = false;
+    }
+}
+
+function getKeyByValue(object, value) {
+    return Object.keys(object).find(key => object[key] === value);
+  }
+
+function playTrackFromPlaylist(playlistId, trackId) {
+    sendAjax("GET", 'json', `/Playlists/GetData/${playlistId}`, function () {
+        localStorage.playlist = JSON.stringify(request.response);
+        localStorage.nowPlayed = getKeyByValue(request.response.trackIds, trackId);
+        loadTrack(JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]);
+        isPlayngnow = true;
+    });
 }
 
 function sendAjax(requestType, responseType, req, func) {
@@ -51,7 +70,7 @@ function nextTrack() {
     localStorage.nowPlayed = parseInt(localStorage.nowPlayed) + 1;
     if (localStorage.nowPlayed >= JSON.parse(localStorage.playlist).trackIds.length)
         localStorage.nowPlayed = 0;
-    loadTrackAndPlay(JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]);
+    loadTrack(JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]);
 }
 
 function progressBarUpdate() {
@@ -119,6 +138,8 @@ function trackToFavourite() {
 function loadPlaylist(id) {
     sendAjax("GET", 'json', `/Playlists/GetData/${id}`, function () {
         localStorage.playlist = JSON.stringify(request.response);
+        localStorage.nowPlayed = 0;
+        loadTrack(JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]);
     });
 }
 
@@ -128,19 +149,16 @@ function afterLoadTrack(track) {
     trackName.innerHTML = track.name;
     audio.src = 'data:audio/mp3;base64,' + track.data;
     trackLogo.src = 'data:image/jpg;base64,' + track.picture;
+    trackLogo.setAttribute("onclick", `loadPage("/Tracks/Index/${track.id}")`);
+    trackSpans.setAttribute("onclick", `loadPage("/Tracks/Index/${track.id}")`);
     progressBarUpdate();
+    if (isPlayngnow)
+        audio.play();
 }
 
 function loadTrack(id) {
     sendAjax("GET", 'json', `/Tracks/GetTrackData/${id}`, function () {
         afterLoadTrack(request.response);
-    });
-}
-
-function loadTrackAndPlay(id) {
-    sendAjax("GET", 'json', `/Tracks/GetTrackData/${id}`, function () {
-        afterLoadTrack(request.response);
-        play();
     });
 }
 
@@ -180,7 +198,7 @@ function hideAdd(e) {
     else {
         addBtn.style.color = '#5800FF';
         addBtn.removeEventListener('click', hideAdd);
-        sendAjax("GET", 'document', `/Playlists/AddPlayedTrack/${JSON.parse(localStorage.playlist)[localStorage.nowPlayed]}`, function () {
+        sendAjax("GET", 'document', `/Playlists/AddPlayedTrack?trackId=${JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]}`, function () {
             addWindow.innerHTML = request.response.body.innerHTML;
             addWindow.style.display = 'flex';
             addBtn.closeTimeout = setTimeout(function () {

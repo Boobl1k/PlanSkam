@@ -2,20 +2,30 @@
 
 @{
     ViewBag.Title = "title";
-    Layout = "_Layout";
+    Layout = "";
 }
 
-
-@using (Html.BeginForm(FormMethod.Post, new {enctype = "multipart/form-data"}))
-{
-    @Html.EditorFor(model => model.Name)
+<form enctype="multipart/form-data" class="form" method="post" style="margin: 30px">
+    @Html.EditorForModel()
+    <div class="custom-select">
     <select name="GenreId">
         @foreach (var genre in Model.Genres!)
         {
             <option value="@genre.Id">@genre.Name</option>
         }
     </select>
-    <input type="file" accept=".jpg" name="Image"/>
-    <input type="file" accept=".mp3" name="Track"/>
-    <input type="submit"/>
-}
+    </div>
+    <div class="fileInputContainer">
+        <input class="fileInput" type="file" accept=".jpg" name="Image" id="imgInput" />
+        <div class="inputLabel" id="imgInputLabel">
+            Picture <i class="fi fi-rr-download"></i>
+        </div>
+    </div>
+    <div class="fileInputContainer">
+        <input class="fileInput" type="file" accept=".mp3" name="Track" id="mp3Input" />
+        <div class="inputLabel" id="mp3InputLabel">
+            MP3 File <i class="fi fi-rr-download"></i>
+        </div>
+    </div>
+    <input type="submit" />
+</form>
