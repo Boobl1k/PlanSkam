@@ -1,20 +1,26 @@
 import {EntityRepository, Repository, getRepository} from "typeorm";
 import {Track} from "../Entities/Track";
-import {Post} from "@nestjs/common";
 import {TrackData} from "../Entities/TrackData";
 
 @EntityRepository(Track)
 export class TracksRepository extends Repository<Track> {
-    @Post('removeTrack')
     async removeTrack(id: number) {
         const track = await this.findOne(id);
-        if(track == null)
+        if (track == null)
             return false;
         await this.remove(track);
         const trackDatasRepo = getRepository(TrackData);
         const trackData = await trackDatasRepo.findOne(track.TrackDataId);
-        if(trackData != null)
+        if (trackData != null)
             await trackDatasRepo.remove(trackData);
         return true;
+    }
+
+    async searchTracks(query: string): Promise<Track[]> {
+        const t = await this.createQueryBuilder("track")
+            .where("track.Name like :q", {q: `%${query}%`})
+            .getMany()
+        console.log(t);
+        return t;
     }
 }

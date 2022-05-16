@@ -12,4 +12,9 @@ export class TracksController {
             ? "Track has been removed"
             : "Error";
     }
+
+    @Get('searchTracks')
+    async searchTracks(@Query('query') query: string) {
+        return await this.tracksRepo.searchTracks(query);
+    }
 }
