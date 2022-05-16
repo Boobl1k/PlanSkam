@@ -12,5 +12,5 @@ export class Author {
     PictureId: number;
 
     @Column()
-    UserId: number;
+    UserId: string;
 }

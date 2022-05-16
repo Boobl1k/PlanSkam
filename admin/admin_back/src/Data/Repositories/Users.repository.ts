@@ -2,6 +2,7 @@ import {EntityRepository, Repository, getRepository} from "typeorm";
 import {User} from "../Entities/User";
 import {Role} from "../Entities/Role";
 import {Playlist} from "../Entities/Playlist";
+import {Author} from "../Entities/Author";
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
@@ -30,9 +31,26 @@ export class UsersRepository extends Repository<User> {
             return false;
         user.Roles.push(role);
         await this.save(user);
+        
+        const authorsRepo = getRepository(Author);
+        const author = await authorsRepo
+            .createQueryBuilder("author")
+            .where("author.UserId = :id", {id})
+            .getOne();
+        if(author == null){
+            await this.createAuthor(user);
+        }
         return true;
     }
 
+    async createAuthor(user : User){
+        const authorsRepo = getRepository(Author);
+        let author = new Author();
+        author.UserId = user.Id;
+        author.Name = user.UserName;
+        await authorsRepo.save(author);
+    }
+    
     async MakeNotAuthor(id: string) {
         const rolesRepo = getRepository(Role);
         const role = await rolesRepo

@@ -8,6 +8,7 @@ import {User} from "../Data/Entities/User";
 import {Role} from "../Data/Entities/Role";
 import {Playlist} from "../Data/Entities/Playlist";
 import {PlaylistsModule} from "./Playlists.module";
+import {Author} from "../Data/Entities/Author";
 
 @Module({
     imports: [
@@ -18,7 +19,7 @@ import {PlaylistsModule} from "./Playlists.module";
             port: 1433,
             username: "erererererer123_SQLLogin_1",
             password: "2qnmximctf",
-            entities: [Track, Role, User, Playlist]
+            entities: [Track, Role, User, Playlist, Author]
         }),
         UsersModule,
         PlaylistsModule
