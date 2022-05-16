@@ -1,9 +1,20 @@
-import {EntityRepository, Repository} from "typeorm";
+import {EntityRepository, Repository, getRepository} from "typeorm";
 import {Track} from "../Entities/Track";
+import {Post} from "@nestjs/common";
+import {TrackData} from "../Entities/TrackData";
 
 @EntityRepository(Track)
 export class TracksRepository extends Repository<Track> {
-    async getAllByAuthorId(id: number) {
-        return 0;
+    @Post('removeTrack')
+    async removeTrack(id: number) {
+        const track = await this.findOne(id);
+        if(track == null)
+            return false;
+        await this.remove(track);
+        const trackDatasRepo = getRepository(TrackData);
+        const trackData = await trackDatasRepo.findOne(track.TrackDataId);
+        if(trackData != null)
+            await trackDatasRepo.remove(trackData);
+        return true;
     }
 }
