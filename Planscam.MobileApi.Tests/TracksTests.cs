@@ -12,7 +12,7 @@ public class TracksTests : TestBase
 
     [Fact]
     public async Task Index() =>
-        await SimpleTest("/Tracks/Index?id=1");
+        await SimpleTest("/Tracks/Index?id=2");
 
     [Fact]
     public async Task Search_byTracks() =>
@@ -24,7 +24,7 @@ public class TracksTests : TestBase
 
     [Fact]
     public async Task GetTrackData() =>
-        await SimpleTest("/Tracks/GetTrackData?id=1");
+        await SimpleTest("/Tracks/GetTrackData?id=2");
 
     [Fact]
     public async Task AddTrackToFavourite()
