@@ -30,12 +30,12 @@ public class TracksTests : TestBase
     public async Task AddTrackToFavourite()
     {
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "Tracks/AddTrackToFavourite?id=8")
+            var request = new HttpRequestMessage(HttpMethod.Post, "Tracks/AddTrackToFavourite?id=9")
                 .AddTokenToHeaders(Client, Output);
             await SimpleTest(request);
         }
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "Tracks/RemoveTrackFromFavourite?id=8")
+            var request = new HttpRequestMessage(HttpMethod.Post, "Tracks/RemoveTrackFromFavourite?id=9")
                 .AddTokenToHeaders(Client, Output);
             await SimpleTest(request);
         }
