@@ -31,26 +31,26 @@ export class UsersRepository extends Repository<User> {
             return false;
         user.Roles.push(role);
         await this.save(user);
-        
+
         const authorsRepo = getRepository(Author);
         const author = await authorsRepo
             .createQueryBuilder("author")
             .where("author.UserId = :id", {id})
             .getOne();
-        if(author == null){
+        if (author == null) {
             await this.createAuthor(user);
         }
         return true;
     }
 
-    async createAuthor(user : User){
+    async createAuthor(user: User) {
         const authorsRepo = getRepository(Author);
         let author = new Author();
         author.UserId = user.Id;
         author.Name = user.UserName;
         await authorsRepo.save(author);
     }
-    
+
     async MakeNotAuthor(id: string) {
         const rolesRepo = getRepository(Role);
         const role = await rolesRepo
@@ -77,22 +77,32 @@ export class UsersRepository extends Repository<User> {
         if (playlist == null)
             return false;
         const user = await this.findOne(userId, {relations: ["Playlists"]});
-        if(user == null)
+        if (user == null)
             return false;
         user.Playlists.push(playlist);
         await this.save(user);
         return true;
     }
-    
+
     async removePlaylistFromLiked(userId: string, playlistId: number) {
         const playlistsRepo = getRepository(Playlist);
         const playlist = await playlistsRepo.findOne(playlistId);
         if (playlist == null)
             return false;
         const user = await this.findOne(userId, {relations: ["Playlists"]});
-        if(user == null)
+        if (user == null)
             return false;
         user.Playlists.splice(user.Playlists.indexOf(playlist), 1);
+        await this.save(user);
+        return true;
+    }
+
+    async changeEmail(userId: string, email: string) {
+        const user = await this.findOne(userId);
+        if (user == null)
+            return false;
+        user.Email = email;
+        user.NormalizedEmail = email.toUpperCase();
         await this.save(user);
         return true;
     }
