@@ -48,4 +48,53 @@ public class PlaylistsTests : TestBase
             await SimpleTest(request);
         }
     }
+
+    [Fact]
+    public async Task LikePlaylist()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/LikePlaylist?id=1")
+            .AddTokenToHeaders(Client, Output);
+        await SimpleTest(request);
+    }
+
+    [Fact]
+    public async Task UnlikePlaylist()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/UnlikePlaylist?id=1")
+            .AddTokenToHeaders(Client, Output);
+        await SimpleTest(request);
+    }
+
+    [Fact]
+    public async Task Liked()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, "/Playlists/Liked?id=1")
+            .AddTokenToHeaders(Client, Output);
+        await SimpleTest(request);
+    }
+
+    [Fact]
+    public async Task Create()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/Create?id=1")
+            .AddTokenToHeaders(Client, Output);
+        await SimpleTest(request);
+    }
+
+    [Fact]
+    public async Task DeleteSure()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, $"/Playlists/DeleteSure?id=1")
+            .AddTokenToHeaders(Client, Output);
+        await SimpleTest(request);
+    }
+
+    [Fact]
+
+    public async Task RemoveTrackFromPlaylist()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/RemoveTrackFromPlaylist")
+            .AddTokenToHeaders(Client, Output);
+        await SimpleTest(request);
+    }
 }

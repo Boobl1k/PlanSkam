@@ -1,3 +1,4 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -11,4 +12,12 @@ public class ProfileTests : TestBase
     [Fact]
     public async Task Index() =>
         await SimpleTest("Profile/Index?id=7f425417-8246-4d8c-b118-10fe2fcf7a9e");
+
+    [Fact]
+    public async Task Edit()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, "/Profile/Edit")
+            .AddTokenToHeaders(Client, Output);
+        await SimpleTest(request);
+    }
 }
