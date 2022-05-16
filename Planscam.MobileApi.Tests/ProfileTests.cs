@@ -16,6 +16,7 @@ public class ProfileTests : TestBase
     [Fact]
     public async Task Edit()
     {
+        //todo тут надо залезть в модель, которую принимает метод, понять что там нужно добавить, и поменять чисто почту
         var request = new HttpRequestMessage(HttpMethod.Post, "/Profile/Edit")
             .AddTokenToHeaders(Client, Output);
         await SimpleTest(request);

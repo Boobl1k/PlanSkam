@@ -29,6 +29,7 @@ public class TracksTests : TestBase
     [Fact]
     public async Task AddTrackToFavourite()
     {
+        //этот хер сам по себе иногда валится, без понятия почему, разберусь позже
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "Tracks/AddTrackToFavourite?id=8")
                 .AddTokenToHeaders(Client, Output);

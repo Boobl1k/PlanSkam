@@ -64,9 +64,9 @@ public class PlaylistsTests : TestBase
     }
 
     [Fact]
-    public async Task Liked()
+    public async Task Liked() //todo тут тест валится по причине того что на тестируемом методе баг, то есть тест хороший
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, "/Playlists/Liked?id=1")
+        var request = new HttpRequestMessage(HttpMethod.Get, "/Playlists/Liked")
             .AddTokenToHeaders(Client, Output);
         await SimpleTest(request);
     }
@@ -85,6 +85,8 @@ public class PlaylistsTests : TestBase
     [Fact]
     public async Task DeleteSure()
     {
+        //todo тут надо с начала создать плейлист запросом /Playlists/Create, получить из ответа айди,
+        //например как сделано в AddTokenToHeaders, и в этом запросе указать этот айди
         var request = new HttpRequestMessage(HttpMethod.Post, $"/Playlists/DeleteSure?id=1")
             .AddTokenToHeaders(Client, Output);
         await SimpleTest(request);
@@ -93,6 +95,7 @@ public class PlaylistsTests : TestBase
     [Fact]
     public async Task RemoveTrackFromPlaylist()
     {
+        //todo тут надо указать айдишники и трека, и плейлиста
         var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/RemoveTrackFromPlaylist")
             .AddTokenToHeaders(Client, Output);
         await SimpleTest(request);
