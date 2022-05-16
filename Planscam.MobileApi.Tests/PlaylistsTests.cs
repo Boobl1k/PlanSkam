@@ -10,9 +10,7 @@ namespace Planscam.MobileApi.Tests;
 
 public class PlaylistsTests : TestBase
 {
-    public PlaylistsTests(ITestOutputHelper output) : base(output)
-    {
-    }
+    public PlaylistsTests(ITestOutputHelper output) : base(output) { }
 
     [Fact]
     public async Task All() => await SimpleTest("/Playlists/All");
@@ -76,8 +74,11 @@ public class PlaylistsTests : TestBase
     [Fact]
     public async Task Create()
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/Create?id=1")
+        var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/Create")
             .AddTokenToHeaders(Client, Output);
+        var content = new MultipartFormDataContent();
+        content.Add(new StringContent("fff"), "Name");
+        request.Content = content;
         await SimpleTest(request);
     }
 
@@ -90,7 +91,6 @@ public class PlaylistsTests : TestBase
     }
 
     [Fact]
-
     public async Task RemoveTrackFromPlaylist()
     {
         var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/RemoveTrackFromPlaylist")
