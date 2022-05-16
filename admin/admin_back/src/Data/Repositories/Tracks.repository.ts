@@ -23,4 +23,13 @@ export class TracksRepository extends Repository<Track> {
         console.log(t);
         return t;
     }
+
+    async changeName(trackId: number, name: string): Promise<boolean> {
+        const track = await this.findOne(trackId);
+        if(track == null)
+            return false;
+        track.Name = name;
+        await this.save(track);
+        return true;
+    }
 }

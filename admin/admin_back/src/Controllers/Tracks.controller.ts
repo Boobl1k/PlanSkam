@@ -17,4 +17,11 @@ export class TracksController {
     async searchTracks(@Query('query') query: string) {
         return await this.tracksRepo.searchTracks(query);
     }
+
+    @Post('changeName')
+    async changeName(@Query('id') id: number, @Query('name') name: string) {
+        return (await this.tracksRepo.changeName(id, name))
+            ? "Name changed to " + name
+            : "Error";
+    }
 }
