@@ -1,6 +1,6 @@
 import {Component} from "react";
 
-export default class aaa extends Component {
+export default class All extends Component {
     constructor(props) {
         super(props);
 
@@ -19,16 +19,33 @@ export default class aaa extends Component {
 
     render() {
         const renderUsers = (users) => {
-            return users.map((user, i) => {
-                return <div>
-                    <p>{user.Id}</p>
-                </div>
-            })
+            return <table>
+                <tr>
+                    <th>Id</th>
+                    <th>UserName</th>
+                    <th>Open</th>
+                </tr>
+                {
+                    users.map(user => {
+                        return <tr>
+                            <td>{user.Id}</td>
+                            <td>{user.UserName}</td>
+                            <td>
+                                <button onClick={function () {
+                                    window.location.assign("http://localhost:3004/user")
+                                }}></button>
+                            </td>
+                        </tr>
+                    })
+                }
+            </table>
         }
+
+        this.click();
 
         return <div>
             {renderUsers(this.state.users)}
-            <button onClick={this.click}>button</button>
+            <button onClick={this.click}>Update</button>
         </div>
     }
 }

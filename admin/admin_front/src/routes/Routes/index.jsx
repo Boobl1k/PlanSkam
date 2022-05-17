@@ -14,6 +14,7 @@ import {
   Grid,
 } from "@material-ui/core";
 import All from "../../pages/Users/all";
+import User from "../../pages/Users/user";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,7 +53,8 @@ function AppRoutes() {
           </GuestRoute>
         }
       />
-      <Route path="/users/all" element={<GuestRoute><All/></GuestRoute>}/>
+      <Route path="/users" element={<GuestRoute><All/></GuestRoute>}/>
+      <Route path="/user" element={<GuestRoute><User/></GuestRoute>}/>
 
       <Route path="/not-found-404" element={<NotFound />} />
       <Route path="*" element={<Navigate to="/not-found-404" />} />

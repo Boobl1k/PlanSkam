@@ -43,7 +43,7 @@ function App() {
             <Button color="inherit" component={Link} to="/">
               Home
             </Button>
-            <Button color="inherit" component={Link} to="/users/all">
+            <Button color="inherit" component={Link} to="/users">
               All users
             </Button>
           </div>
