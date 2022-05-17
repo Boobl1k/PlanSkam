@@ -13,6 +13,7 @@ import {
   Container,
   Grid,
 } from "@material-ui/core";
+import All from "../../pages/Users/all";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,6 +52,7 @@ function AppRoutes() {
           </GuestRoute>
         }
       />
+      <Route path="/users/all" element={<GuestRoute><All/></GuestRoute>}/>
 
       <Route path="/not-found-404" element={<NotFound />} />
       <Route path="*" element={<Navigate to="/not-found-404" />} />
