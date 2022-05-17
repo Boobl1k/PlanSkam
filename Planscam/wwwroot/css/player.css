@@ -20,10 +20,6 @@
     font-size: 34px;
 }
 
-.playlist {
-    font-size: 28px;
-}
-
 .trackInfo {
     display: flex;
     flex-direction: row;

@@ -11,13 +11,17 @@
         @Html.DrawHugePlaylistPic(@Model.Picture, "playlistImage")
         <span class="playlistName">@Model.Name</span>
         <div class="playlistMenuLinks">
-            @if (@Model.IsLiked == true)
+            @if (Model.IsLiked == true)
             {
                 <i onclick="likePlaylist(@Model.Id)" id="likePlaylistBtn" class="link fi fi-rr-check">In favorites</i>
             }
             else
             {
                 <i onclick="likePlaylist(@Model.Id)" id="likePlaylistBtn" class="link fi fi-rr-plus">Add</i>
+            }
+            @if (Model.IsOwned == true)
+            {
+                <i onclick="loadPage(`/Playlists/Edit/${@Model.Id}`)" class="link fi fi-rr-pencil">Edit</i>
             }
         </div>
     </div>

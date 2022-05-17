@@ -95,19 +95,7 @@
                         Your Playlists
                     </span>
                     <div class="menuPlaylistsContainer">
-                        <div id="layoutPlaylists" class="menuPlaylists">
-                            @foreach (var playlist in await PlaylistsRepo.GetLikedPlaylists(User))
-                            {
-                                <div class="menuPlaylistElementContainer">
-                                    <div class="menuPlaylistElement" onclick="loadPage('@($"Playlists/Index/{playlist.Id}')")">
-                                        @Html.DrawSmallPlaylistPic(playlist.Picture, "menuPlaylistImg")
-                                        @playlist.Name
-                                    </div>
-                                    <i onclick="loadPlaylist(@playlist.Id)" style="font-size: 20px;"
-                                class="button fi fi-rr-play"></i>
-                                </div>
-                            }
-                        </div>
+                        @await Html.PartialAsync("~/Views/Playlists/LayoutPlaylist.cshtml", await PlaylistsRepo.GetLikedPlaylists(User))
                     </div>
                 }
                 else
@@ -126,7 +114,7 @@
             </div>
         </div>
         <div class="playerContainer">
-            @await Html.PartialAsync("~/Views/Shared/Player.cshtml")
+            @await Html.PartialAsync("Player.cshtml")
         </div>
     </div>
 </body>

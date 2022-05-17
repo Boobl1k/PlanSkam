@@ -3,6 +3,7 @@ const artist = document.getElementById('artist'),
     trackSpans = document.getElementById('trackSpans'),
     trackName = document.getElementById('trackName'),
     playButton = document.getElementById('play'),
+    playlistBtn = document.getElementById('currentPlaylistBtn'),
     audio = document.getElementById('audio'),
     progressBar = document.getElementById('progress'),
     progressContainer = document.getElementById('progeressContainer'),
@@ -35,8 +36,19 @@ function playTrackFromPlaylist(playlistId, trackId) {
     sendAjax("GET", 'json', `/Playlists/GetData/${playlistId}`, function () {
         localStorage.playlist = JSON.stringify(request.response);
         localStorage.nowPlayed = getKeyByValue(request.response.trackIds, trackId);
-        loadTrack(JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]);
         isPlayngnow = true;
+        loadTrack(JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]);
+    });
+}
+
+function playPlaylist(id) {
+    sendAjax("GET", 'json', `/Playlists/GetData/${id}`, function () {
+        if (request.response.trackIds.length != 0) {
+            localStorage.playlist = JSON.stringify(request.response);
+            localStorage.nowPlayed = 0;
+            isPlayngnow = true;
+            loadTrack(JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]);
+        }
     });
 }
 
@@ -147,6 +159,7 @@ function afterLoadTrack(track) {
     artist.innerHTML = track.author;
     setFavourite(track.isLiked);
     trackName.innerHTML = track.name;
+    playlistBtn.setAttribute("onclick", `loadPage("/Playlists/Index/${JSON.parse(localStorage.playlist).id}")`);
     audio.src = 'data:audio/mp3;base64,' + track.data;
     trackLogo.src = 'data:image/jpg;base64,' + track.picture;
     trackLogo.setAttribute("onclick", `loadPage("/Tracks/Index/${track.id}")`);

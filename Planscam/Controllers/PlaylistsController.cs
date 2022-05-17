@@ -57,6 +57,10 @@ public class PlaylistsController : PsmControllerBase
             })
             .ToListAsync());
 
+    [HttpGet, Authorize]
+    public async Task<IActionResult> LayoutPlaylist() =>
+        View(await _playlistsRepo.GetLikedPlaylists(User));
+
     [HttpPost, Authorize]
     public IActionResult LikePlaylist(int id) =>
         _playlistsRepo.LikePlaylist(User, id)
