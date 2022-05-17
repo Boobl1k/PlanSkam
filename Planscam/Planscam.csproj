@@ -19,7 +19,6 @@
     <ItemGroup>
       <ProjectReference Include="..\Planscam.DataAccess\Planscam.DataAccess.csproj" />
       <ProjectReference Include="..\Planscam.FsServices\Planscam.FsServices.fsproj" />
-      <ProjectReference Include="..\Planscam.Services\Planscam.Services.csproj" />
     </ItemGroup>
 
     <ItemGroup>
