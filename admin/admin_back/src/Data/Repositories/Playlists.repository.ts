@@ -9,8 +9,8 @@ export class PlaylistsRepository extends Repository<Playlist> {
                 "select * from PlaylistUser where PlaylistsId = playlist.Id and UsersId = :userId)", {userId})
             .getMany();
     }
-    
-    async getLikedPlaylists(userId : string) {
+
+    async getLikedPlaylists(userId: string) {
         return await this.createQueryBuilder("playlist")
             .where("playlist.Id in (" +
                 "select PlaylistsId from PlaylistUser where UsersId = :userId)", {userId})

@@ -1,0 +1,127 @@
+.playlistContainer {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    gap: 1px;
+    grid-template-columns: 1fr 1px 1fr;
+}
+
+.playlistInfoContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+.playlistImage {
+    height: 500px!important;
+    width: 500px!important;
+    border-radius: 5px;
+    object-fit: cover;
+    object-position: center;
+    animation: shadow  10s infinite ease-in-out;
+}
+
+.playlistName {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+@keyframes shadow {
+    0% {box-shadow: 10px 5px 40px -25px var(--color2);}
+    33%{box-shadow: 5px 10px 40px -25px var(--color1);}
+    77%{box-shadow: -10px -5px 40px -25px var(--color3);}
+    100% {box-shadow: 10px 5px 40px -25px var(--color2);}
+}
+
+.playlistMenuLinks {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px
+}
+
+.link {
+    display: flex;
+    gap: 5px;
+    transition: all var(--animationSpeed);
+    cursor: pointer;
+}
+
+.link:hover {
+    color: var(--color1);
+    text-shadow: 0 0 10px var(--color1);
+}
+
+.trackListContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.trackList {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+.track {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    height: 40px;
+    transition: all var(--animationSpeed);
+}
+
+.track img,
+.track span {
+    transition: all var(--animationSpeed);
+}
+
+.track:hover {
+    border-radius: 5px;
+    box-shadow: inset 0 0 55px -40px var(--color2);
+    background-color: rgba(0, 0, 0, 0.14);
+}
+
+.track:hover img {
+    box-shadow: 0 0 10px -2px var(--color2);
+}
+
+.track:hover span {
+    text-shadow: 0 0 10px var(--color2);
+    color: var(--color2);
+}
+
+.trackInfo {
+    display: flex;
+    flex-direction: column;
+    transition-property: all;
+    transition: color var(--animationSpeed);
+}
+
+.trackListImage {
+    border-radius: 4%;
+}
+
+.trackListButton {
+    color: white;
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--animationSpeed);
+    cursor: pointer;
+}
+
+.trackListButton:hover {
+    text-shadow: 0 0 10px var(--color2);
+    color: var(--color2);
+}

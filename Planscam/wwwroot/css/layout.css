@@ -97,6 +97,13 @@ body {
     width: 80%;
 }
 
+.lineVertical {
+    align-self: center;
+    justify-self: center;
+    width: 1px;
+    height: 90%;
+}
+
 .layoutGrid {
     display: grid;
     flex-direction: row;
@@ -126,6 +133,7 @@ body {
     width: 100%;
     position: absolute;
     color: white;
+    height: 100%;
 }
 
 .playerContainer {
@@ -214,12 +222,27 @@ body {
     overflow-x:hidden;
 }
 
-.menuPlaylistElement {
-    width: 100%;
+.menuPlaylistElementContainer {
     padding: 12px 40px;
     width: calc(var(--menuWidth) - 80px);
     display: flex;
     flex-direction: row;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 400;
+    font-size: 18px;
+    text-decoration: none;
+    color: #ffffff;
+    transition: color var(--animationSpeed), text-shadow var(--animationSpeed), box-shadow var(--animationSpeed), background-color var(--animationSpeed);
+}
+
+.menuPlaylistElement {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    width: 290px;
+    overflow: hidden;
     gap: 10px;
     justify-content: start;
     align-items: center;
@@ -237,13 +260,17 @@ body {
     transition: box-shadow var(--animationSpeed);
 }
 
-.menuPlaylistElement:hover {
-    color: var(--color1);
-    text-shadow: 0 0 10px var(--color1);
+.menuPlaylistElementContainer:hover {
     box-shadow: inset 33px 0px 10px -30px var(--color1);
 }
 
-.menuPlaylistElement:hover>.menuPlaylistImg {
+.menuPlaylistElementContainer:hover>.menuPlaylistElement {
+    color: var(--color1);
+    text-shadow: 0 0 10px var(--color1);
+}
+
+
+.menuPlaylistElementContainer:hover>.menuPlaylistImg {
     box-shadow: 0 0 10px white;
 }
 

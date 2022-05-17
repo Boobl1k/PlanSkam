@@ -1,6 +1,4 @@
 import {Module} from '@nestjs/common';
-import {AppController} from '../Controllers/app.controller';
-import {AppService} from '../Services/app.service';
 import {TypeOrmModule} from '@nestjs/typeorm'
 import {Track} from "../Data/Entities/Track";
 import {UsersModule} from "./Users.module";
@@ -8,6 +6,10 @@ import {User} from "../Data/Entities/User";
 import {Role} from "../Data/Entities/Role";
 import {Playlist} from "../Data/Entities/Playlist";
 import {PlaylistsModule} from "./Playlists.module";
+import {Author} from "../Data/Entities/Author";
+import {AuthorsModule} from "./Authors.module";
+import {TracksModule} from "./Tracks.module";
+import {TrackData} from "../Data/Entities/TrackData";
 
 @Module({
     imports: [
@@ -18,13 +20,13 @@ import {PlaylistsModule} from "./Playlists.module";
             port: 1433,
             username: "erererererer123_SQLLogin_1",
             password: "2qnmximctf",
-            entities: [Track, Role, User, Playlist]
+            entities: [Track, Role, User, Playlist, Author, TrackData]
         }),
         UsersModule,
-        PlaylistsModule
-    ],
-    controllers: [AppController],
-    providers: [AppService],
+        PlaylistsModule,
+        AuthorsModule,
+        TracksModule
+    ]
 })
 export class AppModule {
 }

@@ -15,6 +15,6 @@ public class LoadTrackViewModel
 
     public List<Genre>? Genres { get; set; }
 
-    [Required]
+    [Required, ScaffoldColumn(false)]
     public int? GenreId { get; set; }
 }
