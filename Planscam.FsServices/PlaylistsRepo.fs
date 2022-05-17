@@ -225,3 +225,8 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
                        TrackIds = playlist.Tracks.Select(fun track -> track.Id) |}
          })
             .FirstOrDefault()
+            
+    member _.GetOwnedPlaylists(userPrincipal) = 
+        userQueryable(userPrincipal)
+            .Select(fun user -> user.OwnedPlaylists.Playlists)
+            .FirstAsync()
