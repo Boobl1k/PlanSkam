@@ -43,52 +43,57 @@
                     <span class="logospan color2 textglow2">PLANSCAM</span>
                 </div>
                 <div class="line glowing2 bcolor2" style="margin-bottom: 15px;">⠀</div>
-                <a class="menuElement" asp-controller="Home" asp-action="Index">
+                <a class="menuElement" style="cursor: pointer;" asp-controller="Home" asp-action="Index">
                     <i class="fi fi-rr-home"></i>
                     Home
                 </a>
-                <a class="menuElement" asp-controller="Tracks" asp-action="Search">
+                <a class="menuElement" style="cursor: pointer;" asp-controller="Tracks" asp-action="Search">
                     <i class="fi fi-rr-search"></i>
                     Search
                 </a>
-                <a class="menuElement" asp-controller="Authors" asp-action="Search">
+                <a class="menuElement" style="cursor: pointer;" asp-controller="Authors" asp-action="Search">
                     <i class="fi fi-rr-search"></i>
                     Search authors
                 </a>
-                <div class="menuElement" onclick="loadPage('Playlists/Liked')">
-                    <i class="fi fi-rr-indent"></i>
-                    My libary
-                </div>
-                <div class="line glowing2 bcolor2" style="margin: 15px 0;">⠀</div>
-                <div class="menuElement" onclick="loadPage('Studio/Index')">
-                    <i class="fi fi-rr-plus"></i>
-                    Studio
-                </div>
-                <div class="menuElement" onclick="loadPage('Playlists/Create')">
-                    <i class="fi fi-rr-plus"></i>
-                    Create Playlist
-                </div>
-                <div class="menuElement" onclick="loadPage('Playlists/FavoriteTracks')">
-                    <i class="fi fi-rr-grin-hearts"></i>
-                    Favorite
-                </div>
-                <div class="line glowing2 bcolor1" style="margin: 15px 0;">⠀</div>
-                <div class="menuElement" onclick="loadPage('Profile/Index')">
-                    <i class="fi fi-rr-user"></i>
-                    Profile
-                </div>
                 @if (authenticated)
                 {
-                    @using (Html.BeginForm("Logoff", "Auth"))
+                    <div class="menuElement" onclick="loadPage('Playlists/Liked')">
+                        <i class="fi fi-rr-indent"></i>
+                        My libary
+                    </div>
+                    <div class="line glowing2 bcolor2" style="margin: 15px 0;">⠀</div>
+                    @if (await UserManager.IsInRoleAsync(await UserManager.FindByIdAsync(UserManager.GetUserId(User)),
+                   "Author"))
                     {
-                        <button type="submit">Logoff</button>
+                        <div class="menuElement" onclick="loadPage('Studio/Index')">
+                            <i class="fi fi-rr-plus"></i>
+                            Studio
+                        </div>
                     }
+                    <div class="menuElement" onclick="loadPage('Playlists/Create')">
+                        <i class="fi fi-rr-plus"></i>
+                        Create Playlist
+                    </div>
+                    <div class="menuElement" onclick="loadPage('Playlists/FavoriteTracks')">
+                        <i class="fi fi-rr-grin-hearts"></i>
+                        Favorite
+                    </div>
                 }
-                <span class="headline">
-                    Your Playlists
-                </span>
+                <div class="line glowing2 bcolor1" style="margin: 15px 0;">⠀</div>
+
                 @if (authenticated)
                 {
+                    <div class="menuElement" onclick="loadPage('Profile/Index')">
+                        <i class="fi fi-rr-user"></i>
+                        Profile
+                    </div>
+                    <a class="menuElement" style="cursor: pointer;" asp-controller="Auth" asp-action="Logoff">
+                        <i class="fi fi-rr-user"></i>
+                        Logoff
+                    </a>
+                    <span class="headline">
+                        Your Playlists
+                    </span>
                     <div class="menuPlaylistsContainer">
                         <div id="layoutPlaylists" class="menuPlaylists">
                             @foreach (var playlist in await PlaylistsRepo.GetLikedPlaylists(User))
@@ -98,12 +103,21 @@
                                         @Html.DrawSmallPlaylistPic(playlist.Picture, "menuPlaylistImg")
                                         @playlist.Name
                                     </div>
-                                    <i onclick="loadPlaylist(@playlist.Id)" style="font-size: 20px;" class="button fi fi-rr-play"></i>
+                                    <i onclick="loadPlaylist(@playlist.Id)" style="font-size: 20px;"
+                                class="button fi fi-rr-play"></i>
                                 </div>
                             }
                         </div>
                     </div>
                 }
+                else
+                {
+                    <a class="menuElement" style="cursor: pointer;" asp-controller="Auth" asp-action="Login">
+                        <i class="fi fi-rr-user"></i>
+                        Login
+                    </a>
+                }
+
             </div>
             <div class="pageContainer">
                 <div id="page" class="page">

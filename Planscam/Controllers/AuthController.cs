@@ -54,8 +54,7 @@ public class AuthController : PsmControllerBase
         return View();
     }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
+    [HttpGet]
     public async Task<IActionResult> Logoff()
     {
         await SignInManager.SignOutAsync();
