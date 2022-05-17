@@ -1,9 +1,13 @@
 ﻿@using Planscam.Extensions
 @using Planscam.FsServices
+@using Planscam.Entities
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     var authenticated = User.Identity?.IsAuthenticated ?? false;
 }
 @inject PlaylistsRepo PlaylistsRepo
+@inject UserManager<User> UserManager;
 <!DOCTYPE html>
 <html lang="en">
 
