@@ -57,41 +57,11 @@ public class PlaylistsController : PsmControllerBase
             })
             .ToListAsync());
 
-    [NonAction, Obsolete("переписано под ajax")] //[HttpPost, Authorize]
-    public async Task<IActionResult> LikePlaylist(int id, string? returnUrl)
-    {
-        var playlist = await DataContext.Playlists
-            .AsNoTracking()
-            .FirstOrDefaultAsync(playlist => playlist.Id == id);
-        if (playlist is null) return BadRequest();
-        (await CurrentUserQueryable
-            .Include(user => user.Playlists!.Where(_ => false))
-            .FirstAsync()).Playlists!.Add(playlist);
-        await DataContext.SaveChangesAsync();
-        return IsLocalUrl(returnUrl)
-            ? Redirect(returnUrl!)
-            : RedirectToAction("Index", new {id});
-    }
-
     [HttpPost, Authorize]
     public IActionResult LikePlaylist(int id) =>
         _playlistsRepo.LikePlaylist(User, id)
             ? Ok()
             : BadRequest();
-
-    [NonAction, Obsolete("переписано под ajax")] //[HttpPost, Authorize]
-    public async Task<IActionResult> UnlikePlaylist(int id, string? returnUrl)
-    {
-        CurrentUser = await CurrentUserQueryable
-            .Include(user => user.Playlists!.Where(playlist => playlist.Id == id))
-            .FirstAsync();
-        if (!CurrentUser.Playlists!.Any()) return BadRequest();
-        CurrentUser.Playlists!.Clear();
-        await DataContext.SaveChangesAsync();
-        return IsLocalUrl(returnUrl)
-            ? Redirect(returnUrl!)
-            : RedirectToAction("Index", new {id});
-    }
 
     [HttpPost, Authorize]
     public IActionResult UnlikePlaylist(int id) =>
@@ -142,26 +112,6 @@ public class PlaylistsController : PsmControllerBase
                 ? Redirect(returnUrl!)
                 : RedirectToAction("Liked")
             : BadRequest();
-
-    [NonAction, Obsolete("переписано под ajax")] //[HttpPost, Authorize]
-    public async Task<IActionResult> AddTrackToPlaylist(int playlistId, int trackId, string returnUrl)
-    {
-        var playlist = await DataContext.Playlists
-            .Include(playlist => playlist.Tracks)
-            .FirstOrDefaultAsync(playlist => playlist.Id == playlistId);
-        if (playlist is null
-            || playlist.Tracks!.Any(t => t.Id == trackId) //не добавлен ли уже этот трек в плейлист
-            || !CurrentUserQueryable
-                .Select(user => user.OwnedPlaylists!.Playlists!)
-                .Any(playlists => playlists.Contains(playlist)) //принадлежит ли плейлист юзеру
-            || DataContext.Tracks.FirstOrDefault(t => t.Id == trackId) is not { } track) //существует ли трек
-            return BadRequest();
-        playlist.Tracks!.Add(track);
-        await DataContext.SaveChangesAsync();
-        return IsLocalUrl(returnUrl)
-            ? Redirect(returnUrl)
-            : RedirectToAction("Index", "Tracks", new {Id = trackId});
-    }
 
     [HttpPost, Authorize]
     public IActionResult AddTrackToPlaylist(int playlistId, int trackId) =>
