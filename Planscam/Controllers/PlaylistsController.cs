@@ -91,10 +91,14 @@ public class PlaylistsController : PsmControllerBase
         CurrentUser = await CurrentUserQueryable
             .Include(user => user.OwnedPlaylists!.Playlists!)
             .ThenInclude(playlist => playlist.Picture)
+            .Include(user => user.FavouriteTracks!.Tracks!)
             .AsNoTracking()
             .FirstAsync();
-        CurrentUser.Playlists!.ForEach(playlist => playlist.IsLiked = true);
-        return View(CurrentUser.Playlists);
+        return View(new OwnedPlaylistsViewModel
+        {
+            OwnedPlaylists = CurrentUser.OwnedPlaylists!.Playlists!,
+            FavouriteTracks = CurrentUser.FavouriteTracks
+        });
     }
 
     [HttpGet, Authorize]
