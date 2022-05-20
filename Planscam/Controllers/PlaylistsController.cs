@@ -73,7 +73,7 @@ public class PlaylistsController : PsmControllerBase
             ? Ok()
             : BadRequest();
 
-    [HttpGet, Authorize]
+    [HttpGet, Authorize, Obsolete]
     public async Task<IActionResult> Liked()
     {
         CurrentUser = await CurrentUserQueryable
@@ -86,6 +86,18 @@ public class PlaylistsController : PsmControllerBase
     }
 
     [HttpGet, Authorize]
+    public async Task<IActionResult> Owned()
+    {
+        CurrentUser = await CurrentUserQueryable
+            .Include(user => user.OwnedPlaylists!.Playlists!)
+            .ThenInclude(playlist => playlist.Picture)
+            .AsNoTracking()
+            .FirstAsync();
+        CurrentUser.Playlists!.ForEach(playlist => playlist.IsLiked = true);
+        return View(CurrentUser.Playlists);
+    }
+
+    [HttpGet, Authorize]
     public IActionResult Create() =>
         View();
 
@@ -94,11 +106,12 @@ public class PlaylistsController : PsmControllerBase
     {
         if (!ModelState.IsValid)
             return View(model);
-        if (model.Picture is {Length: > 1600000 })
+        if (model.Picture is {Length: > 1600000})
         {
             ModelState.AddModelError("picture size", "picture size is too big");
             return View(model);
         }
+
         var playlist = _playlistsRepo.CreatePlaylist(User, model.Name, model.Picture.ToPicture());
         return View("CloseAndRedict", $"/Playlists/Index/{playlist.Id}");
     }
