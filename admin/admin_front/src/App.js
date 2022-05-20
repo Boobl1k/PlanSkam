@@ -46,6 +46,9 @@ function App() {
             <Button color="inherit" component={Link} to="/users">
               All users
             </Button>
+            <Button color="inherit" component={Link} to="/tracks/search">
+              Tracks
+            </Button>
           </div>
           {auth.isLoaded &&
             (auth.user ? (

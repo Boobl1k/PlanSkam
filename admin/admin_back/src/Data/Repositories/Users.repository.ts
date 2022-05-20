@@ -125,15 +125,13 @@ export class UsersRepository extends Repository<User> {
         const user = await this.findOne(userId);
         if (user == null)
             return false;
-        await this.query(`insert into PlaylistTrack values (${user.FavouriteTracksId}, ${trackId})`);
-        return true;
+        return await this.query(`insert into PlaylistTrack values (${user.FavouriteTracksId}, ${trackId})`) === 1;
     }
 
     async removeTrackFromFavourites(userId: string, trackId: number){
         const user = await this.findOne(userId);
         if (user == null)
             return false;
-        await this.query(`delete from PlaylistTrack where PlaylistsId=${user.FavouriteTracksId} and TracksId=${trackId}`);
-        return true;
+        return await this.query(`delete from PlaylistTrack where PlaylistsId=${user.FavouriteTracksId} and TracksId=${trackId}`) === 1;
     }
 }
