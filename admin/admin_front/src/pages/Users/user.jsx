@@ -18,6 +18,7 @@ export default class User extends Component {
                 this.setState({isAuthor: text === 'true'});
             }))
         this.changeAuthorState = this.changeAuthorState.bind(this);
+        this.changeEmail = this.changeEmail.bind(this);
     }
 
     changeAuthorState() {
@@ -34,6 +35,16 @@ export default class User extends Component {
         });
     }
 
+    changeEmail() {
+        const req = new XMLHttpRequest();
+        req.open('POST', `http://localhost:3000/users/changeEmail?id=${this.state.user.Id}&email=${this.state.user.Email}`);
+        req.addEventListener('readystatechange', () => {
+            if (req.readyState === 4)
+                console.log(req.responseText);
+        });
+        req.send();
+    }
+
     render() {
         return (
             <div>
@@ -43,6 +54,14 @@ export default class User extends Component {
                 <button onClick={this.changeAuthorState}>
                     {this.state.isAuthor ? 'Make not author' : 'Make author'}
                 </button>
+                <br/>
+                <input type="text" name="email" value={this.state.user.Email} onChange={e => {
+                    const user = this.state.user;
+                    user.Email = e.target.value;
+                    this.setState({user});
+                }}/>
+                <br/>
+                <button onClick={this.changeEmail}>Change email</button>
             </div>
         );
     }
