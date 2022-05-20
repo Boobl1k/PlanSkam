@@ -57,7 +57,10 @@
                 </a>
                 @if (authenticated)
                 {
-                    <div class="menuElement" onclick="loadPage('Playlists/Liked')">
+                    <div class="menuElement" onclick="{
+                                                        var winForm = window.open('https://localhost:7256/Studio/LoadNewTrack','','scrollbars=1');
+                                                        winForm.resizeTo(500,450);
+                                                        }">
                         <i class="fi fi-rr-indent"></i>
                         My libary
                     </div>
@@ -91,7 +94,8 @@
                         Your Playlists
                     </span>
                     <div id="layoutPlaylistsContainer" class="menuPlaylistsContainer">
-                        @await Html.PartialAsync("~/Views/Playlists/LayoutPlaylists.cshtml", await PlaylistsRepo.GetLikedPlaylists(User))
+                        @await Html.PartialAsync("~/Views/Playlists/LayoutPlaylists.cshtml", await
+                    PlaylistsRepo.GetLikedPlaylists(User))
                     </div>
                 }
                 else

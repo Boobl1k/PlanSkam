@@ -94,7 +94,7 @@ public class PlaylistsController : PsmControllerBase
     {
         if (!ModelState.IsValid)
             return View(model);
-        if (model.Picture is {Length: > 4000})
+        if (model.Picture is {Length: > 1600000 })
         {
             ModelState.AddModelError("picture size", "picture size is too big");
             return View(model);

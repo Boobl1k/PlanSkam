@@ -151,8 +151,6 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
             Playlist(Name = name, Picture = picture)
         user.OwnedPlaylists.Playlists.Add playlist
         dataContext.SaveChanges() |> ignore
-        user.Playlists.Add playlist
-        dataContext.SaveChanges() |> ignore
         playlist
 
     member _.DeletePlaylist(userPrincipal, id) =
