@@ -1,9 +1,9 @@
 function form() {
-    let labels1 = document.getElementsByTagName("label");
-    let inputs1 = document.getElementsByTagName("input");
-    let labels = Array.prototype.slice.call(labels1);
-    let inputs = Array.prototype.slice.call(inputs1);
-    let inputsHoverable = [];
+    var labels1 = document.getElementsByTagName("label");
+    var inputs1 = document.getElementsByTagName("input");
+    var labels = Array.prototype.slice.call(labels1);
+    var inputs = Array.prototype.slice.call(inputs1);
+    var inputsHoverable = [];
     
     inputs.forEach(function (input) {
         labels.forEach(function (label) {
@@ -26,4 +26,8 @@ function form() {
         input.addEventListener('input', () => updateValue(input));
         updateValue(input);
     })
+}
+
+function onSubmitForm(func) {
+    document.getElementsByTagName("form")[0].addEventListener('submit',func);
 }
