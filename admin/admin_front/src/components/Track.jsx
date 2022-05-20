@@ -4,6 +4,7 @@ export default class Track extends Component {
     constructor(props) {
         super(props);
         this.removeFromFavourites = this.removeFromFavourites.bind(this);
+        this.delete = this.delete.bind(this);
     }
 
     removeFromFavourites() {
@@ -18,11 +19,27 @@ export default class Track extends Component {
             }
         });
     }
+    
+    delete(){
+        const req = new XMLHttpRequest();
+        req.open('POST',
+            `http://localhost:3000/tracks/removeTrack?userId=${this.props.id}`);
+        req.addEventListener('readystatechange', () => {
+            if (req.readyState === 4 && req.status === 201) {
+                console.log(req.responseText);
+                this.props.delete(this.props.id);
+            }
+        });
+        req.send();
+    }
 
     render() {
         return <div className="track">
             <p>{this.props.id} {this.props.name}</p>
-            <button onClick={this.removeFromFavourites}>remove from favourites</button>
+            {this.props.userId != null
+                ? <button onClick={this.removeFromFavourites}>remove from favourites</button>
+                : null}
+            <button onClick={this.delete}>delete</button>
         </div>;
     }
 }

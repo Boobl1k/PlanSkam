@@ -15,6 +15,7 @@ import {
 } from "@material-ui/core";
 import All from "../../pages/Users/all";
 import User from "../../pages/Users/user";
+import Search from "../../pages/Tracks/Search"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,6 +60,7 @@ function AppRoutes() {
       />
       <Route path="/users" element={<GuestRoute><All/></GuestRoute>}/>
       <Route path="/user/:id" element={<GuestRoute><WrappedUser/></GuestRoute>}/>
+      <Route path="/tracks/search" element={<GuestRoute><Search/></GuestRoute>}/>
 
       <Route path="/not-found-404" element={<NotFound />} />
       <Route path="*" element={<Navigate to="/not-found-404" />} />
