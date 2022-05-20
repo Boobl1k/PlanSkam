@@ -94,9 +94,13 @@ public class PlaylistsController : PsmControllerBase
     {
         if (!ModelState.IsValid)
             return View(model);
+        if (model.Picture is {Length: > 4000})
+        {
+            ModelState.AddModelError("picture size", "picture size is too big");
+            return View(model);
+        }
         var playlist = _playlistsRepo.CreatePlaylist(User, model.Name, model.Picture.ToPicture());
         return View("CloseAndRedict", $"/Playlists/Index/{playlist.Id}");
-
     }
 
     [HttpGet, Authorize]
