@@ -3,6 +3,7 @@ import {User} from "../Entities/User";
 import {Role} from "../Entities/Role";
 import {Playlist} from "../Entities/Playlist";
 import {Author} from "../Entities/Author";
+import {Track} from "../Entities/Track";
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
@@ -74,7 +75,14 @@ export class UsersRepository extends Repository<User> {
     }
 
     async getFavTracks(id: string) {
-        return await this.findOne(id, {relations: ["FavouriteTracks"]});
+        return await this.createQueryBuilder("users")
+            .innerJoin("FavouriteTracks", "FT", "users.FavouriteTracksId = FT.Id")
+            .innerJoin("Playlists", "P", "FT.Id = P.Id")
+            .innerJoin("PlaylistTrack", "PT", "P.Id = PT.PlaylistsId")
+            .innerJoin("Tracks", "T", "PT.TracksId = T.Id")
+            .where("users.Id = :id", {id})
+            .select("T.*")
+            .getRawMany<Track>();
     }
 
     async addPlaylistToLiked(userId: string, playlistId: number) {
@@ -110,6 +118,22 @@ export class UsersRepository extends Repository<User> {
         user.Email = email;
         user.NormalizedEmail = email.toUpperCase();
         await this.save(user);
+        return true;
+    }
+    
+    async addTrackToFavourites(userId: string, trackId: number){
+        const user = await this.findOne(userId);
+        if (user == null)
+            return false;
+        await this.query(`insert into PlaylistTrack values (${user.FavouriteTracksId}, ${trackId})`);
+        return true;
+    }
+
+    async removeTrackFromFavourites(userId: string, trackId: number){
+        const user = await this.findOne(userId);
+        if (user == null)
+            return false;
+        await this.query(`delete from PlaylistTrack where PlaylistsId=${user.FavouriteTracksId} and TracksId=${trackId}`);
         return true;
     }
 }

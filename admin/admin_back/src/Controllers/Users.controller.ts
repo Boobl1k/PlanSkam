@@ -39,6 +39,20 @@ export class UsersController {
     async getFavTracks(@Query('id') id: string) {
         return await this.usersRepo.getFavTracks(id);
     }
+    
+    @Post('addTrackToFavourites')
+    async addTrackToFavourites(@Query('userId') userId: string, @Query('trackId') trackId: number){
+        if(await this.usersRepo.addTrackToFavourites(userId, trackId))
+            return "Track liked";
+        throw new BadRequestException();
+    }
+    
+    @Post('removeTrackFromFavourites')
+    async removeTrackFromFavourites(@Query('userId') userId: string, @Query('trackId') trackId: number){
+        if(await this.usersRepo.removeTrackFromFavourites(userId, trackId))
+            return "Track unliked";
+        throw new BadRequestException();
+    }
 
     @Post('addPlaylistToLiked')
     async addPlaylistToLiked(@Query('userId') userId: string, @Query('playlistId') playlistId: number) {
