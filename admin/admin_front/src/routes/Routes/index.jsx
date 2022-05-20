@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import {Routes, Route, Navigate, useParams} from "react-router-dom";
 import Home from "../../pages/Home";
 import Login from "../../pages/Login";
 import Registration from "../../pages/Registration";
@@ -26,6 +26,10 @@ function AppRoutes() {
   const classes = useStyles();
   const auth = useAuth();
 
+  const WrappedUser = function (){
+      return <User id={useParams().id}/>;
+  }
+  
   return auth.isLoaded ? (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -54,7 +58,7 @@ function AppRoutes() {
         }
       />
       <Route path="/users" element={<GuestRoute><All/></GuestRoute>}/>
-      <Route path="/user" element={<GuestRoute><User/></GuestRoute>}/>
+      <Route path="/user/:id" element={<GuestRoute><WrappedUser/></GuestRoute>}/>
 
       <Route path="/not-found-404" element={<NotFound />} />
       <Route path="*" element={<Navigate to="/not-found-404" />} />

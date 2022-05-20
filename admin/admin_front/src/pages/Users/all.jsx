@@ -1,4 +1,5 @@
 import {Component} from "react";
+import {NavLink} from "react-router-dom";
 
 export default class All extends Component {
     constructor(props) {
@@ -19,26 +20,26 @@ export default class All extends Component {
 
     render() {
         const renderUsers = (users) => {
-            return <table>
-                <tr>
-                    <th>Id</th>
-                    <th>UserName</th>
-                    <th>Open</th>
-                </tr>
-                {
-                    users.map(user => {
-                        return <tr>
-                            <td>{user.Id}</td>
-                            <td>{user.UserName}</td>
-                            <td>
-                                <button onClick={function () {
-                                    window.location.assign("http://localhost:3004/user")
-                                }}></button>
-                            </td>
-                        </tr>
-                    })
-                }
-            </table>
+            return <div>
+                <table>
+                    <tr>
+                        <th>Id</th>
+                        <th>UserName</th>
+                        <th></th>
+                    </tr>
+                    {
+                        users.map(user => {
+                            return <tr>
+                                <td>{user.Id}</td>
+                                <td>{user.UserName}</td>
+                                <td>
+                                    <NavLink to={`../user/${user.Id}`}>open</NavLink>
+                                </td>
+                            </tr>
+                        })
+                    }
+                </table>
+            </div>
         }
 
         this.click();
