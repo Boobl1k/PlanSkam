@@ -6,6 +6,12 @@ import {Author} from "../Entities/Author";
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
+    async GetUser(id: string){
+        const user = await this.findOne(id);
+        console.log(user);
+        return user;
+    }
+    
     async GetAll() {
         return await this.find({relations: ["Playlists"]});
     }
