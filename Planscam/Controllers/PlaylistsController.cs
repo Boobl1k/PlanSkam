@@ -92,8 +92,12 @@ public class PlaylistsController : PsmControllerBase
             .Include(user => user.OwnedPlaylists!.Playlists!)
             .ThenInclude(playlist => playlist.Picture)
             .Include(user => user.FavouriteTracks!.Tracks!)
+            .ThenInclude(track => track.Author)
+            .Include(user => user.FavouriteTracks!.Tracks!)
+            .ThenInclude(track => track.Picture)
             .AsNoTracking()
             .FirstAsync();
+        CurrentUser.FavouriteTracks!.Tracks!.ForEach(track => track.IsLiked = true);
         return View(new OwnedPlaylistsViewModel
         {
             OwnedPlaylists = CurrentUser.OwnedPlaylists!.Playlists!,
