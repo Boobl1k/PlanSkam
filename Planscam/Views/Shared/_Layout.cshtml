@@ -90,8 +90,8 @@
                     <span class="headline">
                         Your Playlists
                     </span>
-                    <div class="menuPlaylistsContainer">
-                        @await Html.PartialAsync("~/Views/Playlists/LayoutPlaylist.cshtml", await PlaylistsRepo.GetLikedPlaylists(User))
+                    <div id="layoutPlaylistsContainer" class="menuPlaylistsContainer">
+                        @await Html.PartialAsync("~/Views/Playlists/LayoutPlaylists.cshtml", await PlaylistsRepo.GetLikedPlaylists(User))
                     </div>
                 }
                 else

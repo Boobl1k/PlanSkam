@@ -58,7 +58,7 @@ public class PlaylistsController : PsmControllerBase
             .ToListAsync());
 
     [HttpGet, Authorize]
-    public async Task<IActionResult> LayoutPlaylist() =>
+    public async Task<IActionResult> LayoutPlaylists() =>
         View(await _playlistsRepo.GetLikedPlaylists(User));
 
     [HttpPost, Authorize]
@@ -90,11 +90,19 @@ public class PlaylistsController : PsmControllerBase
         View();
 
     [HttpPost, Authorize]
-    public IActionResult Create(CreatePlaylistViewModel model) =>
-        ModelState.IsValid
-            ? RedirectToAction("Index",
-                new {_playlistsRepo.CreatePlaylist(User, model.Name, model.Picture.ToPicture()).Id})
-            : View();
+    public IActionResult Create(CreatePlaylistViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+        if (model.Picture is {Length: > 4000})
+        {
+            ModelState.AddModelError("picture length", "picture size is over 4000");
+            return View(model);
+        }
+
+        var playlist = _playlistsRepo.CreatePlaylist(User, model.Name, model.Picture.ToPicture());
+        return View("CloseAndRedict", $"/Playlists/Index/{playlist.Id}");
+    }
 
     [HttpGet, Authorize]
     public async Task<IActionResult> Delete(int id, string? returnUrl) =>
