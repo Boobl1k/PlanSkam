@@ -97,6 +97,7 @@ public class PlaylistsController : PsmControllerBase
             .ThenInclude(track => track.Picture)
             .AsNoTracking()
             .FirstAsync();
+        CurrentUser.FavouriteTracks!.Tracks!.ForEach(track => track.IsLiked = true);
         return View(new OwnedPlaylistsViewModel
         {
             OwnedPlaylists = CurrentUser.OwnedPlaylists!.Playlists!,
