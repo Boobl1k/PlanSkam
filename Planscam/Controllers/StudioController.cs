@@ -61,7 +61,7 @@ public class StudioController : PsmControllerBase
 
         await DataContext.Tracks.AddAsync(track);
         await DataContext.SaveChangesAsync();
-        return View("RedictAfterAddTrack", track.Id);
+        return View("CloseAndRedict", $"/Tracks/Index/{track.Id}");
     }
 
     private IQueryable<Track> GetOwnTrackById(int id, bool includePic = false) =>

@@ -19,3 +19,12 @@ function likePlaylist(id) {
         });
     }
 }
+
+function updateLayoutPlaylists() {
+    container = document.getElementById('layoutPlaylistsContainer');
+    setTimeout(() => { 
+        sendAjax("GET",'document','/Playlists/LayoutPlaylists/',function() {
+        container.innerHTML = request.response.body.innerHTML;
+    });
+    }, 3000);
+}
