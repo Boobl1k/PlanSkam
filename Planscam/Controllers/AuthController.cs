@@ -74,6 +74,7 @@ public class AuthController : PsmControllerBase
         return Challenge(properties, GoogleDefaults.AuthenticationScheme);
     }
     
+    [Route("signin-google")]
     public async Task<IActionResult> GoogleResponse()
     {
         var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -86,4 +87,5 @@ public class AuthController : PsmControllerBase
         });
         return Json(claims);
     }
+    
 }
