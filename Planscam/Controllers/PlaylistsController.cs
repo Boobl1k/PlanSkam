@@ -125,7 +125,7 @@ public class PlaylistsController : PsmControllerBase
     }
 
     [HttpGet, Authorize]
-    public async Task<IActionResult> Delete(int id, string? returnUrl) =>
+    public async Task<IActionResult> Delete(int id) =>
         await DataContext.Playlists
             .AnyAsync(playlist =>
                 playlist.Id == id && CurrentUserQueryable.Select(user => user.OwnedPlaylists!.Playlists!)
@@ -133,16 +133,14 @@ public class PlaylistsController : PsmControllerBase
             ? View(new DeletePlaylistViewModel
             {
                 Id = id,
-                ReturnUrl = returnUrl
+                Name = "sugar"
             })
             : BadRequest();
 
     [HttpPost, Authorize]
-    public IActionResult DeleteSure(int id, string? returnUrl) =>
+    public IActionResult DeleteSure(int id) =>
         _playlistsRepo.DeletePlaylist(User, id)
-            ? IsLocalUrl(returnUrl)
-                ? Redirect(returnUrl!)
-                : RedirectToAction("Liked")
+            ? View("CloseAndRedict", $"/Studio/Index")
             : BadRequest();
 
     [HttpPost, Authorize]

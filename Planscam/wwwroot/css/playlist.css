@@ -78,7 +78,7 @@
     padding: 10px 20px;
     height: 40px;
     transition: all var(--animationSpeed);
-    gap: 10px;
+    gap: 15px;
 }
 
 .track img,
