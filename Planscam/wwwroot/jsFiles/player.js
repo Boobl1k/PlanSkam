@@ -137,6 +137,12 @@ function setFavourite(isLiked) {
 }
 
 function trackToFavourite() {
+    
+    btn = document.getElementById(`trackFavBtn${JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]}`);
+    if (btn)
+    {
+        setBtnFavourite(btn, !likeBtn.IsLiked);
+    }
     if (likeBtn.IsLiked)
         sendAjax("POST", 'json', `/Tracks/RemoveTrackFromFavourite/${JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]}`, function () {
             setFavourite(false);
