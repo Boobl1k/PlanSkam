@@ -9,6 +9,8 @@ export default class User extends Component {
             user: {},
             isAuthor: false,
             tracks: [],
+            availableTracks: [],
+            availableTracksQuery: '',
             playlists: [],
             availablePlaylists: []
         }
@@ -24,9 +26,11 @@ export default class User extends Component {
             }))
         fetch(`http://localhost:3000/users/getFavTracks?id=${props.id}`)
             .then(res => res.text().then(text => {
-                console.log(text);
-                this.setState({tracks: JSON.parse(text)});
-            }))
+                console.log('fav tracks: ' + text);
+                const tracks = JSON.parse(text);
+                this.setState({tracks: tracks});
+                return tracks;
+            }));
         fetch(`http://localhost:3000/playlists/getLikedPlaylists?userId=${props.id}`)
             .then(res => res.text().then(text => {
                 console.log(text);
@@ -37,12 +41,13 @@ export default class User extends Component {
                 console.log(text);
                 this.setState({availablePlaylists: JSON.parse(text)})
             }))
-
         this.changeAuthorState = this.changeAuthorState.bind(this);
         this.changeEmail = this.changeEmail.bind(this);
-        this.deleteTrack = this.deleteTrack.bind(this);
+        this.removeTrackFromFavourites = this.removeTrackFromFavourites.bind(this);
         this.removePlaylistFromLiked = this.removePlaylistFromLiked.bind(this);
         this.addPlaylistToLiked = this.addPlaylistToLiked.bind(this);
+        this.addTrackToFavourites = this.addTrackToFavourites.bind(this);
+        this.setAvailableTracks = this.setAvailableTracks.bind(this);
     }
 
     changeAuthorState() {
@@ -69,13 +74,45 @@ export default class User extends Component {
         req.send();
     }
 
-    deleteTrack(trackId) {
+    removeTrackFromFavourites(trackId) {
         const tracks = this.state.tracks;
-        tracks.splice(this.state.tracks.indexOf(this.state.tracks.find(track => track.Id === trackId)), 1);
+        const track = tracks.find(track => track.Id === trackId);
+        tracks.splice(tracks.indexOf(track), 1);
         this.setState({tracks: tracks});
+        const available = this.state.availableTracks;
+        available.push(track);
+        this.setState({availableTracks: available});
     }
-    
-    removePlaylistFromLiked(playlistId){
+
+    addTrackToFavourites(trackId) {
+        const available = this.state.availableTracks;
+        const track = available.find(track => track.Id === trackId);
+        available.splice(available.indexOf(track), 1);
+        this.setState({availableTracks: available});
+        const fav = this.state.tracks;
+        fav.push(track);
+        this.setState({tracks: fav});
+    }
+
+    setAvailableTracks() {
+        const tracks = this.state.tracks;
+        fetch(`http://localhost:3000/tracks/searchTracks?query=${this.state.availableTracksQuery}`)
+            .then(res => res.text().then(text => {
+                console.log('available tracks: ' + text);
+                this.setState({
+                    availableTracks: JSON.parse(text).filter(track => {
+                        let used = false;
+                        tracks.forEach(t => {
+                            used = used || t.Id === track.Id;
+                            return !used;
+                        });
+                        return !used;
+                    })
+                })
+            }))
+    }
+
+    removePlaylistFromLiked(playlistId) {
         const playlists = this.state.playlists;
         const playlist = this.state.playlists.find(playlist => playlist.Id === playlistId);
         playlists.splice(playlists.indexOf(playlist), 1);
@@ -85,7 +122,7 @@ export default class User extends Component {
         this.setState({availablePlaylists: available});
     }
 
-    addPlaylistToLiked(playlistId){
+    addPlaylistToLiked(playlistId) {
         const playlists = this.state.playlists;
         const playlist = this.state.availablePlaylists.find(playlist => playlist.Id === playlistId);
         playlists.push(playlist);
@@ -113,16 +150,28 @@ export default class User extends Component {
             <button onClick={this.changeEmail}>Change email</button>
             <h1>Tracks:</h1>
             {this.state.tracks.map(track => {
-                return <Track id={track.Id} name={track.Name} userId={this.state.user.Id} delete={this.deleteTrack}/>;
+                return <Track id={track.Id} name={track.Name} userId={this.state.user.Id}
+                              delete={this.removeTrackFromFavourites}
+                              fav={true}/>;
+            })}
+            <h1>Available tracks:</h1>
+            <input type="text" name="email" value={this.state.availableTracksQuery} onChange={e => {
+                this.setState({availableTracksQuery: e.target.value});
+            }}/>
+            <button onClick={this.setAvailableTracks}>Update</button>
+            {this.state.availableTracks.map(track => {
+                return <Track id={track.Id} name={track.Name} userId={this.state.user.Id}
+                              delete={this.addTrackToFavourites}
+                              fav={false}/>;
             })}
             <h1>Liked playlists:</h1>
             {this.state.playlists.map(playlist => {
-                return <Playlist id={playlist.Id} name={playlist.Name} userId={this.state.user.Id} 
+                return <Playlist id={playlist.Id} name={playlist.Name} userId={this.state.user.Id}
                                  isLiked={true} move={this.removePlaylistFromLiked}/>
             })}
             <h1>Available playlists:</h1>
             {this.state.availablePlaylists.map(playlist => {
-                return <Playlist id={playlist.Id} name={playlist.Name} userId={this.state.user.Id} 
+                return <Playlist id={playlist.Id} name={playlist.Name} userId={this.state.user.Id}
                                  isLiked={false} move={this.addPlaylistToLiked}/>
             })}
         </div>

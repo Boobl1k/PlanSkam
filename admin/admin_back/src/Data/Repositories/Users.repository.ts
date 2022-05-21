@@ -125,7 +125,8 @@ export class UsersRepository extends Repository<User> {
         const user = await this.findOne(userId);
         if (user == null)
             return false;
-        return await this.query(`insert into PlaylistTrack values (${user.FavouriteTracksId}, ${trackId})`) === 1;
+        await this.query(`insert into PlaylistTrack values (${user.FavouriteTracksId}, ${trackId})`);
+        return true;
     }
 
     async removeTrackFromFavourites(userId: string, trackId: number){
