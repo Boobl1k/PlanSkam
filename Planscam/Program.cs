@@ -14,7 +14,7 @@ services.AddDbContext<AppDbContext>(options=>
         action.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName));
     options.UseOpenIddict();
 });
-services.AddIdentity<User, IdentityRole>()
+services.AddIdentity<User, IdentityRole>(options => options.User.RequireUniqueEmail = true)
     .AddEntityFrameworkStores<AppDbContext>();
 services.AddSingleton<UsersRepo>();
 services.AddScoped<PlaylistsRepo>();
