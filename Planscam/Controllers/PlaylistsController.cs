@@ -89,8 +89,7 @@ public class PlaylistsController : PsmControllerBase
     public async Task<IActionResult> Owned()
     {
         CurrentUser = await CurrentUserQueryable
-            .Include(user => user.OwnedPlaylists!.Playlists!)
-            .ThenInclude(playlist => playlist.Picture)
+            .Include(user => user.OwnedPlaylists!)
             .Include(user => user.FavouriteTracks!.Tracks!)
             .ThenInclude(track => track.Author)
             .Include(user => user.FavouriteTracks!.Tracks!)
@@ -98,10 +97,16 @@ public class PlaylistsController : PsmControllerBase
             .AsNoTracking()
             .FirstAsync();
         CurrentUser.FavouriteTracks!.Tracks!.ForEach(track => track.IsLiked = true);
+        CurrentUser.OwnedPlaylists!.Playlists = await DataContext.OwnedPlaylists
+            .Where(playlists => playlists.Id == CurrentUser.OwnedPlaylists.Id)
+            .Include(playlists => playlists.Playlists!)
+            .ThenInclude(playlist => playlist.Picture)
+            .Select(playlists => playlists.Playlists)
+            .FirstAsync();
         return View(new OwnedPlaylistsViewModel
         {
             OwnedPlaylists = CurrentUser.OwnedPlaylists!.Playlists!,
-            FavouriteTracks = CurrentUser.FavouriteTracks
+            FavouriteTracks = CurrentUser.FavouriteTracks!
         });
     }
 
