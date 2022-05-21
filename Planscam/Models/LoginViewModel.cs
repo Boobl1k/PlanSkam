@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Planscam.Models;
@@ -17,4 +18,6 @@ public class LoginViewModel
          
     [HiddenInput(DisplayValue = false)]
     public string? ReturnUrl { get; set; }
+
+    public List<AuthenticationScheme> ExternalLogins { get; set; } = null!;
 }
