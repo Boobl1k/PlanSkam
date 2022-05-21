@@ -1,48 +1,28 @@
 @using Microsoft.AspNetCore.Mvc.Rendering
 @using Planscam.Extensions
-@model Planscam.Entities.Playlist
+@model Planscam.Models.OwnedPlaylistsViewModel
 
 @{
-    ViewBag.Title = Model.Name;
     Layout = "";
 }
 <div class="playlistContainer">
-    <div class="playlistInfoContainer">
-        @Html.DrawHugePlaylistPic(@Model.Picture, "playlistImage")
-        <span class="playlistName">@Model.Name</span>
-        <div class="playlistMenuLinks">
-            @if (Model.IsLiked == true)
-            {
-                <i onclick="likePlaylist(@Model.Id)" id="likePlaylistBtn" class="link fi fi-rr-check">In favorites</i>
-            }
-            else
-            {
-                <i onclick="likePlaylist(@Model.Id)" id="likePlaylistBtn" class="link fi fi-rr-plus">Add</i>
-            }
-            @if (Model.IsOwned == true)
-            {
-                <i onclick="loadPage(`/Playlists/Edit/${@Model.Id}`)" class="link fi fi-rr-pencil">Edit</i>
-            }
+    <div class="ownedContainer">
+        <span class="ownedTitle">
+            Your playlists
+        </span>
+        <div class="trackListContainer">
+            @await Html.PartialAsync("PlaylistList", Model.OwnedPlaylists)
         </div>
     </div>
-    <div class="lineVertical glowing1 bcolor1">⠀</div>
-    <div class="trackListContainer">
-        <div class="trackList">
-            @foreach (var track in Model.Tracks)
-            {
-                <div class="track">
-                    <div class="trackInfo">
-                        <div onclick="loadPage('@($"/Tracks/Index/{track.Id}')")" style="cursor: pointer;">
-                            @Html.DrawSmallPlaylistPic(@track.Picture, "trackListImage")
-                        </div>
-                        <div onclick="loadPage('@($"/Tracks/Index/{track.Id}')")" class="trackSpans">
-                            <span style="font-weight: 600; font-size: 18px;">@track.Author.Name</span>
-                            <span style="font-weight: 300; font-size: 15px;">@track.Name</span>
-                        </div>
-                    </div>
-                    <i onclick="playTrackFromPlaylist(@Model.Id,@track.Id)" class="trackListButton fi fi-rr-play"></i>
-                </div>
-            }
+
+    <div class="lineVertical glowing1 bcolor1" style="height: 100%;">⠀</div>
+
+    <div class="ownedContainer">
+        <span class="ownedTitle">
+            Favourite tracks
+        </span>
+        <div class="trackListContainer">
+            @await Html.PartialAsync("TrackList", Model.FavouriteTracks)
         </div>
     </div>
 </div>
