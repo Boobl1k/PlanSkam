@@ -23,18 +23,22 @@ export default class All extends Component {
             return <div>
                 <table>
                     <tr>
+                        <div className="h_user">
                         <th>Id</th>
                         <th>UserName</th>
                         <th></th>
+                        </div>
                     </tr>
                     {
                         users.map(user => {
                             return <tr>
+                                <div className="res_users">
                                 <td>{user.Id}</td>
                                 <td>{user.UserName}</td>
                                 <td>
                                     <NavLink to={`../user/${user.Id}`}>open</NavLink>
                                 </td>
+                                </div>
                             </tr>
                         })
                     }
