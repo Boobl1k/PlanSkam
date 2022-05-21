@@ -32,7 +32,7 @@ public class Program
                     action.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName));
                 options.UseOpenIddict();
             })
-            .AddIdentity<User, IdentityRole>()
+            .AddIdentity<User, IdentityRole>(options => options.User.RequireUniqueEmail = true)
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
         services.Configure<IdentityOptions>(options =>

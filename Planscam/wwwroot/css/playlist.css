@@ -78,7 +78,7 @@
     padding: 10px 20px;
     height: 40px;
     transition: all var(--animationSpeed);
-    gap: 10px;
+    gap: 15px;
 }
 
 .track img,
@@ -220,4 +220,40 @@
     height: 100%;
     overflow: auto;
     overflow-x: hidden;
+}
+
+.searchResultContainer {
+    width: 100%;
+    height: 100%;
+    flex-grow: 1;
+    display: grid;
+    gap: 1px;
+    grid-template-columns: 1fr 1px 1fr 1px 1fr;
+}
+
+.searchInput {
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px;
+}
+
+.searchContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.searchSubmit {
+    position: absolute;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--animationSpeed);
+}
+
+.searchSubmit:hover {
+    text-shadow: 0 0 10px var(--color3);
+    color: var(--color3);
 }

@@ -52,3 +52,9 @@ function setBtnFavourite(btn, isLiked) {
     }
 }
 
+function removeTrackFromPlaylist(playlistId, trackId) {
+    trackElement = document.getElementById(`track${trackId}`);
+    sendAjax("POST", "json", `/Playlists/RemoveTrackFromPlaylist?playlistId=${playlistId}&trackId=${JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]}`, function () {
+        trackElement.style.display = 'none';
+    })
+}

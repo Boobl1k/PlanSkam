@@ -23,6 +23,7 @@
     <link href="~/css/form.css" rel="stylesheet">
     <link href="~/css/layout.css" rel="stylesheet">
     <link href="~/css/playlist.css" rel="stylesheet">
+    <script src="~/jsFiles/search.js"></script>
     <script src="~/jsFiles/custom-select.js"></script>
     <script src="~/jsFiles/form.js"></script>
     <script src="~/jsFiles/inputs.js"></script>
@@ -47,14 +48,10 @@
                     <i class="fi fi-rr-home"></i>
                     Home
                 </a>
-                <a class="menuElement" style="cursor: pointer;" asp-controller="Tracks" asp-action="Search">
+                <div class="menuElement" style="cursor: pointer;" onclick="loadPage('Tracks/Search', form)">
                     <i class="fi fi-rr-search"></i>
                     Search
-                </a>
-                <a class="menuElement" style="cursor: pointer;" asp-controller="Authors" asp-action="Search">
-                    <i class="fi fi-rr-search"></i>
-                    Search authors
-                </a>
+                </div>
                 @if (authenticated)
                 {
                     <div class="menuElement" onclick="loadPage('Playlists/Owned')">

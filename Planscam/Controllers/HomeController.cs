@@ -44,4 +44,26 @@ public class HomeController : PsmControllerBase
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error() =>
         View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
+
+    [HttpGet]
+    public async Task<IActionResult> Search(string query) =>
+        View(new SearchAllViewModel
+        {
+            Playlists = await DataContext.Playlists
+                .Include(playlist => playlist.Picture)
+                .Where(playlist => playlist.Name.Contains(query))
+                .ToListAsync(),
+            Tracks = new Playlist
+            {
+                Name = $"search result, query = {query}",
+                Tracks = await DataContext.Tracks
+                    .Include(track => track.Picture)
+                    .Include(track => track.Author)
+                    .Where(track => track.Name.Contains(query))
+                    .ToListAsync()
+            },
+            Authors = await DataContext.Authors
+                .Where(author => author.Name.Contains(query))
+                .ToListAsync()
+        });
 }
