@@ -23,9 +23,13 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
             value
 
     member _.GetLikedPlaylists(userPrincipal) =
-        userQueryable(userPrincipal)
-            .Select(fun user -> user.Playlists)
-            .FirstAsync()
+        (query{
+            for playlist in dataContext.Playlists do
+                where (playlist.Users.Contains(userQueryable(userPrincipal).First()))
+                select playlist
+        })
+            .Include(fun playlist -> playlist.Picture)
+            .ToListAsync()
 
     member _.GetFavouriteTracksId(userPrincipal) =
         userQueryable(userPrincipal)
@@ -150,8 +154,6 @@ type PlaylistsRepo(dataContext: AppDbContext, userManager: UserManager<User>, si
         let playlist =
             Playlist(Name = name, Picture = picture)
         user.OwnedPlaylists.Playlists.Add playlist
-        dataContext.SaveChanges() |> ignore
-        user.Playlists.Add playlist
         dataContext.SaveChanges() |> ignore
         playlist
 

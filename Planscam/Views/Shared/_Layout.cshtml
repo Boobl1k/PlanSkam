@@ -23,6 +23,7 @@
     <link href="~/css/form.css" rel="stylesheet">
     <link href="~/css/layout.css" rel="stylesheet">
     <link href="~/css/playlist.css" rel="stylesheet">
+    <script src="~/jsFiles/search.js"></script>
     <script src="~/jsFiles/custom-select.js"></script>
     <script src="~/jsFiles/form.js"></script>
     <script src="~/jsFiles/inputs.js"></script>
@@ -47,17 +48,13 @@
                     <i class="fi fi-rr-home"></i>
                     Home
                 </a>
-                <a class="menuElement" style="cursor: pointer;" asp-controller="Tracks" asp-action="Search">
+                <div class="menuElement" style="cursor: pointer;" onclick="loadPage('Tracks/Search', form)">
                     <i class="fi fi-rr-search"></i>
                     Search
-                </a>
-                <a class="menuElement" style="cursor: pointer;" asp-controller="Authors" asp-action="Search">
-                    <i class="fi fi-rr-search"></i>
-                    Search authors
-                </a>
+                </div>
                 @if (authenticated)
                 {
-                    <div class="menuElement" onclick="loadPage('Playlists/Liked')">
+                    <div class="menuElement" onclick="loadPage('Playlists/Owned')">
                         <i class="fi fi-rr-indent"></i>
                         My libary
                     </div>
@@ -70,13 +67,12 @@
                             Studio
                         </div>
                     }
-                    <div class="menuElement" onclick="loadPage('Playlists/Create')">
+                    <div class="menuElement" onclick="{
+                                                        var winForm = window.open('https://localhost:7256/Studio/LoadNewTrack','','scrollbars=1');
+                                                        winForm.resizeTo(500,450);
+                                                    }">
                         <i class="fi fi-rr-plus"></i>
                         Create Playlist
-                    </div>
-                    <div class="menuElement" onclick="loadPage('Playlists/FavoriteTracks')">
-                        <i class="fi fi-rr-grin-hearts"></i>
-                        Favorite
                     </div>
                 }
                 <div class="line glowing2 bcolor1" style="margin: 15px 0;">⠀</div>
@@ -92,10 +88,10 @@
                         Logoff
                     </a>
                     <span class="headline">
-                        Your Playlists
+                        Favourite Playlists
                     </span>
-                    <div class="menuPlaylistsContainer">
-                        @await Html.PartialAsync("~/Views/Playlists/LayoutPlaylist.cshtml", await PlaylistsRepo.GetLikedPlaylists(User))
+                    <div id="layoutPlaylistsContainer" class="menuPlaylistsContainer">
+                        @await Html.PartialAsync("~/Views/Playlists/LayoutPlaylists.cshtml", await PlaylistsRepo.GetLikedPlaylists(User))
                     </div>
                 }
                 else

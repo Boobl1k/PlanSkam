@@ -37,7 +37,7 @@ function App() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            Real App
+            Psm admin panel
           </Typography>
           <div className={classes.rightToolbar}>
             <Button color="inherit" component={Link} to="/">
@@ -45,6 +45,12 @@ function App() {
             </Button>
             <Button color="inherit" component={Link} to="/users">
               All users
+            </Button>
+            <Button color="inherit" component={Link} to="/tracks/search">
+              Tracks
+            </Button>
+            <Button color="inherit" component={Link} to="authors/search">
+              Authors
             </Button>
           </div>
           {auth.isLoaded &&

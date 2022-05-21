@@ -1,4 +1,4 @@
-import {Controller, Get, Post, Query} from "@nestjs/common";
+import {BadRequestException, Controller, Get, Post, Query} from "@nestjs/common";
 import {TracksRepository} from "../Data/Repositories/Tracks.repository";
 
 @Controller('tracks')
@@ -8,9 +8,9 @@ export class TracksController {
 
     @Post('removeTrack')
     async removeTrack(@Query("id") id: number) {
-        return await this.tracksRepo.removeTrack(id)
-            ? "Track has been removed"
-            : "Error";
+        if (await this.tracksRepo.removeTrack(id))
+            return "Track has been removed";
+        throw new BadRequestException();
     }
 
     @Get('searchTracks')
@@ -20,8 +20,8 @@ export class TracksController {
 
     @Post('changeName')
     async changeName(@Query('id') id: number, @Query('name') name: string) {
-        return (await this.tracksRepo.changeName(id, name))
-            ? "Name changed to " + name
-            : "Error";
+        if(await this.tracksRepo.changeName(id, name))
+            return  "Name changed to " + name;
+        throw new BadRequestException();
     }
 }
