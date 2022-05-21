@@ -1,5 +1,7 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Planscam.DataAccess;
@@ -15,8 +17,7 @@ services.AddDbContext<AppDbContext>(options =>
         action.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName));
     options.UseOpenIddict();
 });
-services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>();
+services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 services.AddSingleton<UsersRepo>();
 services.AddScoped<PlaylistsRepo>();
 services.AddScoped<AuthorsRepo>();
@@ -27,7 +28,8 @@ services.AddControllersWithViews();
 services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-}).AddCookie(options => { options.LoginPath = "/account/google-login"; }).AddGoogle(options =>
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+}).AddCookie(options => { options.LoginPath = "/account/google-login"; }).AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
 {
     options.ClientId = "842296346308-nn6m0csbh0ldm66o9tei07ae9elcjkr4.apps.googleusercontent.com";
     options.ClientSecret = "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";

@@ -11,6 +11,9 @@
     @Html.EditorForModel()
     <div>
         <input type="submit" value="Sign in"/>
+        <p>
+            <a asp-controller="Auth" asp-action="GoogleLogin">Sign in Google</a>
+        </p>
     </div>
 </form>
 <a class="authLink" asp-controller="Auth" asp-action="Register">Create an account</a>

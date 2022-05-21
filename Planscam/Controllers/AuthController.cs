@@ -11,7 +11,6 @@ using Planscam.Models;
 
 namespace Planscam.Controllers;
 
-[AllowAnonymous, Route("account")]
 public class AuthController : PsmControllerBase
 {
     private readonly UsersRepo _usersRepo;
@@ -68,15 +67,13 @@ public class AuthController : PsmControllerBase
 
     [HttpGet]
     public IActionResult AccessDenied() => View();
-
-    [Route("signingoogle")]
+    
     public IActionResult GoogleLogin()
     {
         var properties = new AuthenticationProperties {RedirectUri = Url.Action("GoogleResponse")};
         return Challenge(properties, GoogleDefaults.AuthenticationScheme);
     }
-
-    [Route("google-response")]
+    
     public async Task<IActionResult> GoogleResponse()
     {
         var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
