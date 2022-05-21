@@ -29,7 +29,8 @@ services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-}).AddCookie(options => { options.LoginPath = "/account/google-login"; }).AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+}).AddCookie(options => { options.LoginPath = "/account/google-login"; })
+    .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
 {
     options.ClientId = "842296346308-nn6m0csbh0ldm66o9tei07ae9elcjkr4.apps.googleusercontent.com";
     options.ClientSecret = "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";
