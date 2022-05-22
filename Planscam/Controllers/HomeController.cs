@@ -50,7 +50,8 @@ public class HomeController : PsmControllerBase
     {
         var playlists = await DataContext.Playlists
             .Include(playlist => playlist.Picture)
-            .Where(playlist => playlist.Name.Contains(query))
+            .Where(playlist => playlist.Name.Contains(query)
+            && !DataContext.FavouriteTracks.Any(fav => fav.Id == playlist.Id))
             .ToListAsync();
         var tracks = new Playlist
         {
