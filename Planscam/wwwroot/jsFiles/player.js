@@ -3,7 +3,6 @@ const artist = document.getElementById('artist'),
     trackSpans = document.getElementById('trackSpans'),
     trackName = document.getElementById('trackName'),
     playButton = document.getElementById('play'),
-    playlistBtn = document.getElementById('currentPlaylistBtn'),
     audio = document.getElementById('audio'),
     progressBar = document.getElementById('progress'),
     progressContainer = document.getElementById('progeressContainer'),
@@ -50,6 +49,20 @@ function playPlaylist(id) {
             loadTrack(JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]);
         }
     });
+}
+
+function getCurrentPlaylist()
+{
+    playlist = JSON.parse(localStorage.playlist);
+    if (playlist.id != 0)
+    {
+        loadPage(`/Playlists/Index/${playlist.id}`);
+        return;
+    }
+    query = playlist.trackIds.reduce(
+        (a, b) => a + '&ids=' + b
+      );
+    loadPage(`Playlists/GenerateViewFromTrackIds?ids=${query}`);
 }
 
 function sendAjax(requestType, responseType, req, func) {
@@ -165,7 +178,6 @@ function afterLoadTrack(track) {
     artist.innerHTML = track.author;
     setFavourite(track.isLiked);
     trackName.innerHTML = track.name;
-    playlistBtn.setAttribute("onclick", `loadPage("/Playlists/Index/${JSON.parse(localStorage.playlist).id}")`);
     audio.src = 'data:audio/mp3;base64,' + track.data;
     trackLogo.src = 'data:image/jpg;base64,' + track.picture;
     trackLogo.setAttribute("onclick", `loadPage("/Tracks/Index/${track.id}")`);

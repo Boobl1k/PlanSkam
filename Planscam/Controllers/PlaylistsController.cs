@@ -197,14 +197,14 @@ public class PlaylistsController : PsmControllerBase
             : BadRequest();
 
     [HttpGet]
-    public async Task<IActionResult> GenerateViewFromTrackIds(int[] trackIds)
+    public async Task<IActionResult> GenerateViewFromTrackIds(int[] ids)
     {
         if (!ModelState.IsValid)
             return BadRequest();
         var tracks = await DataContext.Tracks
             .Include(track => track.Author)
             .Include(track => track.Picture)
-            .Where(track => trackIds.Contains(track.Id))
+            .Where(track => ids.Contains(track.Id))
             .ToListAsync();
         var playlist = new Playlist
         {
