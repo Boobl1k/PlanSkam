@@ -202,9 +202,15 @@ public class PlaylistsController : PsmControllerBase
         if (!ModelState.IsValid)
             return BadRequest();
         var tracks = await DataContext.Tracks
-            .Include(track => track.Author)
-            .Include(track => track.Picture)
             .Where(track => trackIds.Contains(track.Id))
+            .Select(track => new Track
+            {
+                Id = track.Id,
+                Name = track.Name,
+                Picture = track.Picture,
+                Author = track.Author,
+                IsLiked = CurrentUserQueryable.Select(user => user.FavouriteTracks!.Tracks!.Contains(track)).First()
+            })
             .ToListAsync();
         var playlist = new Playlist
         {
