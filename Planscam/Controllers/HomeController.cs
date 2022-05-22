@@ -63,6 +63,7 @@ public class HomeController : PsmControllerBase
                     .ToListAsync()
             },
             Authors = await DataContext.Authors
+                .Include(author => author.Picture)
                 .Where(author => author.Name.Contains(query))
                 .ToListAsync()
         });
