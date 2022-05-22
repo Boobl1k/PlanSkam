@@ -195,4 +195,23 @@ public class PlaylistsController : PsmControllerBase
             is { } trackIds
             ? Json(trackIds.Contains(trackId))
             : BadRequest();
+
+    [HttpGet]
+    public async Task<IActionResult> GenerateViewFromTrackIds(int[] trackIds)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest();
+        var tracks = await DataContext.Tracks
+            .Include(track => track.Author)
+            .Include(track => track.Picture)
+            .Where(track => trackIds.Contains(track.Id))
+            .ToListAsync();
+        var playlist = new Playlist
+        {
+            Name = "Current playlist",
+            Picture = tracks.Select(track => track.Picture).FirstOrDefault(picture => picture is { }),
+            Tracks = tracks
+        };
+        return View(playlist);
+    }
 }
