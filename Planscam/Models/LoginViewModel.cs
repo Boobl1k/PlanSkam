@@ -19,5 +19,5 @@ public class LoginViewModel
     [HiddenInput(DisplayValue = false)]
     public string? ReturnUrl { get; set; }
 
-    public List<AuthenticationScheme> ExternalLogins { get; set; } = null!;
+    public List<AuthenticationScheme>? ExternalLogins { get; set; } = null!;
 }
