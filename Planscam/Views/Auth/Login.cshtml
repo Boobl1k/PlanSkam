@@ -9,11 +9,9 @@
 <form class="form" method="post" asp-controller="Auth" asp-action="Login">
     <div asp-validation-summary="ModelOnly"></div>
     @Html.EditorForModel()
-    <div>
-        <input type="submit" value="Sign in"/>
-        <p>
-            <a asp-controller="Auth" asp-action="GoogleLogin">Sign in Google</a>
-        </p>
-    </div>
+    <input type="submit" value="Sign in" />
+    <a asp-controller="Auth" asp-action="GoogleLogin">
+        <img src="https://i.imgur.com/IjVIMxf.png" alt="Sign in with Google" />
+    </a>
 </form>
 <a class="authLink" asp-controller="Auth" asp-action="Register">Create an account</a>
