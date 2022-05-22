@@ -47,7 +47,7 @@ public class HomeController : PsmControllerBase
 
     [HttpGet]
     public async Task<IActionResult> Search(string query) =>
-        View(new SearchAllViewModel
+        View("SearchResult", new SearchAllViewModel
         {
             Playlists = await DataContext.Playlists
                 .Include(playlist => playlist.Picture)
