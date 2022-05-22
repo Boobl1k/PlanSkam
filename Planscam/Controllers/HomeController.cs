@@ -46,25 +46,36 @@ public class HomeController : PsmControllerBase
         View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
 
     [HttpGet]
-    public async Task<IActionResult> Search(string query) =>
-        View("SearchResult", new SearchAllViewModel
+    public async Task<IActionResult> Search(string query)
+    {
+        var playlists = await DataContext.Playlists
+            .Include(playlist => playlist.Picture)
+            .Where(playlist => playlist.Name.Contains(query))
+            .ToListAsync();
+        var tracks = new Playlist
         {
-            Playlists = await DataContext.Playlists
-                .Include(playlist => playlist.Picture)
-                .Where(playlist => playlist.Name.Contains(query))
-                .ToListAsync(),
-            Tracks = new Playlist
-            {
-                Name = $"search result, query = {query}",
-                Tracks = await DataContext.Tracks
-                    .Include(track => track.Picture)
-                    .Include(track => track.Author)
-                    .Where(track => track.Name.Contains(query))
-                    .ToListAsync()
-            },
-            Authors = await DataContext.Authors
-                .Include(author => author.Picture)
-                .Where(author => author.Name.Contains(query))
+            Name = $"search result, query = {query}",
+            Tracks = await DataContext.Tracks
+                .Where(track => track.Name.Contains(query))
+                .Select(track => new Track
+                {
+                    Id = track.Id,
+                    Name = track.Name,
+                    Picture = track.Picture,
+                    Author = track.Author,
+                    IsLiked = CurrentUserQueryable.Select(user => user.FavouriteTracks!.Tracks!.Contains(track)).First()
+                })
                 .ToListAsync()
+        };
+        var authors = await DataContext.Authors
+            .Include(author => author.Picture)
+            .Where(author => author.Name.Contains(query))
+            .ToListAsync();
+        return View("SearchResult", new SearchAllViewModel
+        {
+            Playlists = playlists,
+            Tracks = tracks,
+            Authors = authors
         });
+    }
 }
