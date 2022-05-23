@@ -17,4 +17,13 @@ public class Subscription
         ThreeMonths,
         Year
     }
+
+    public static TimeSpan SubscriptionDurationToTimeSpan(SubscriptionDurations durations) =>
+        durations switch
+        {
+            SubscriptionDurations.Month => TimeSpan.FromDays(30),
+            SubscriptionDurations.ThreeMonths => TimeSpan.FromDays(91),
+            SubscriptionDurations.Year => TimeSpan.FromDays(365),
+            _ => throw new ArgumentOutOfRangeException(nameof(durations), durations, null)
+        };
 }
