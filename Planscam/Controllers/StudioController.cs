@@ -34,15 +34,7 @@ public class StudioController : PsmControllerBase
                 IsLiked = CurrentUserQueryable.Select(user => user.FavouriteTracks!.Tracks!.Contains(track)).First()
             })
             .ToList();
-        return View(new StudioViewModel
-        {
-            Author = author,
-            OwnedTracks = new Playlist
-            {
-                Name = $"{author.Name}'s tracks",
-                Tracks = author.Tracks
-            }
-        });
+        return View(author);
     }
 
     [HttpGet]

@@ -8,7 +8,7 @@
 
 @{ var ids = Model.Skip(1)
        .Aggregate(new StringBuilder(Model.FirstOrDefault()?.Id.ToString() ?? string.Empty), 
-           (builder, track) => builder.Append($", {track.Id}"))
+           (builder, track) => builder.Append($",{track.Id}"))
        .ToString(); }
 
 <div class="trackList">
@@ -34,7 +34,7 @@
                    class="trackListButton fi fi-rr-heart">
                 </i>
             }
-            <i onclick="playTrackFromPlaylist(@Model.Id,@track.Id)" class="trackListButton fi fi-rr-play"></i>
+            <i onclick="playTrackFromCustomPlaylist('@ids',@track.Id)" class="trackListButton fi fi-rr-play"></i>
         </div>
     }
 </div>

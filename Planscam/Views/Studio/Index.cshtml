@@ -1,5 +1,5 @@
 @using Planscam.Extensions
-@model StudioViewModel
+@model Planscam.Entities.Author
 
 @{
     ViewBag.Title = "title";
@@ -8,9 +8,10 @@
 
 <div class="studioContainer">
     <div class="authorInfoContainer">
-        @Html.DrawUserAvatar(Model.Author.Picture,"authorImg")
-        @Model.Author.Name
+        @Html.DrawUserAvatar(Model.Picture,"authorImg")
+        @Model.Name
     </div>
+    <div class="line glowing2 bcolor1" style="align-self: center">⠀</div>
     <div class="studioSpanAndLink">
         Tracks
         <span class="studioBtn" onclick="{
@@ -19,8 +20,8 @@
 }">
             Load Track
         </span>
-        <div id="studioTracklistContainer" class="trackListContainer">
-            @await Html.PartialAsync("TrackList", Model.OwnedTracks.Tracks)
-        </div>
+    </div>
+    <div id="studioTracklistContainer" class="trackListContainer">
+        @await Html.PartialAsync("TrackListCustom", Model.Tracks)
     </div>
 </div>

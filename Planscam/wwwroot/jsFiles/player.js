@@ -29,7 +29,7 @@ function play() {
 
 function getKeyByValue(object, value) {
     return Object.keys(object).find(key => object[key] === value);
-  }
+}
 
 function playTrackFromPlaylist(playlistId, trackId) {
     sendAjax("GET", 'json', `/Playlists/GetData/${playlistId}`, function () {
@@ -38,6 +38,13 @@ function playTrackFromPlaylist(playlistId, trackId) {
         isPlayngnow = true;
         loadTrack(JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]);
     });
+}
+
+function playTrackFromCustomPlaylist(trackList, trackId) {
+    localStorage.playlist = `{"id":0,"name":"Current","trackIds":[${trackList}]}`;
+    localStorage.nowPlayed = getKeyByValue(trackList.split(',').map(str => Number(str)), trackId);
+    isPlayngnow = true;
+    loadTrack(JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]);
 }
 
 function playPlaylist(id) {
@@ -51,17 +58,15 @@ function playPlaylist(id) {
     });
 }
 
-function getCurrentPlaylist()
-{
+function getCurrentPlaylist() {
     playlist = JSON.parse(localStorage.playlist);
-    if (playlist.id != 0)
-    {
+    if (playlist.id != 0) {
         loadPage(`/Playlists/Index/${playlist.id}`);
         return;
     }
     query = playlist.trackIds.reduce(
         (a, b) => a + '&ids=' + b
-      );
+    );
     loadPage(`Playlists/GenerateViewFromTrackIds?ids=${query}`);
 }
 
@@ -150,10 +155,9 @@ function setFavourite(isLiked) {
 }
 
 function trackToFavourite() {
-    
+
     btn = document.getElementById(`trackFavBtn${JSON.parse(localStorage.playlist).trackIds[localStorage.nowPlayed]}`);
-    if (btn)
-    {
+    if (btn) {
         setBtnFavourite(btn, !likeBtn.IsLiked);
     }
     if (likeBtn.IsLiked)
