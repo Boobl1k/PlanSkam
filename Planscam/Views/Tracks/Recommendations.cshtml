@@ -1,11 +1,11 @@
-@model List<Planscam.Entities.Track>
+@model Planscam.Entities.Playlist
 
 @{
     ViewBag.Title = "title";
     Layout = "";
 }
 
-@foreach (var track in Model)
+@foreach (var track in Model.Tracks!)
 {
     @Html.DisplayFor(_ => track)
 }
