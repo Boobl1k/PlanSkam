@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Planscam.Migrations
 {
-    public partial class userSubInspires : Migration
+    public partial class userSubExpires : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,7 +20,7 @@ namespace Planscam.Migrations
                 keyValue: "5b952171-1ae0-4349-a67c-ec1109b7f525");
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "SubInspires",
+                name: "SubExpires",
                 table: "AspNetUsers",
                 type: "datetime2",
                 nullable: true);
@@ -28,12 +28,12 @@ namespace Planscam.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "32c565ce-2fb6-4cd5-b132-09b0b8b7833f", "1bd0b8fe-de34-48a4-bcd6-dfb20152c304", "Author", null });
+                values: new object[] { "1aa278af-7fd5-4d1f-9f15-51d4983eefb1", "ca247a30-f436-4566-822a-835720a7678f", "Sub", null });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "4fae79da-aa34-4917-ad20-a9db5034f5f2", "2b0e519d-1343-41bf-b607-72e5a5d03807", "Sub", null });
+                values: new object[] { "2d912b43-84c4-460e-bbfd-9bb16d1bb4e3", "4401abca-6ed9-4fbd-a073-b1ea46c29562", "Author", null });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -41,15 +41,15 @@ namespace Planscam.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "32c565ce-2fb6-4cd5-b132-09b0b8b7833f");
+                keyValue: "1aa278af-7fd5-4d1f-9f15-51d4983eefb1");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "4fae79da-aa34-4917-ad20-a9db5034f5f2");
+                keyValue: "2d912b43-84c4-460e-bbfd-9bb16d1bb4e3");
 
             migrationBuilder.DropColumn(
-                name: "SubInspires",
+                name: "SubExpires",
                 table: "AspNetUsers");
 
             migrationBuilder.InsertData(

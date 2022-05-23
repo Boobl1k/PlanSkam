@@ -51,14 +51,14 @@ namespace Planscam.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "32c565ce-2fb6-4cd5-b132-09b0b8b7833f",
-                            ConcurrencyStamp = "1bd0b8fe-de34-48a4-bcd6-dfb20152c304",
+                            Id = "2d912b43-84c4-460e-bbfd-9bb16d1bb4e3",
+                            ConcurrencyStamp = "4401abca-6ed9-4fbd-a073-b1ea46c29562",
                             Name = "Author"
                         },
                         new
                         {
-                            Id = "4fae79da-aa34-4917-ad20-a9db5034f5f2",
-                            ConcurrencyStamp = "2b0e519d-1343-41bf-b607-72e5a5d03807",
+                            Id = "1aa278af-7fd5-4d1f-9f15-51d4983eefb1",
+                            ConcurrencyStamp = "ca247a30-f436-4566-822a-835720a7678f",
                             Name = "Sub"
                         });
                 });
@@ -642,7 +642,7 @@ namespace Planscam.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("SubInspires")
+                    b.Property<DateTime?>("SubExpires")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("TwoFactorEnabled")
