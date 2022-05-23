@@ -22,8 +22,4 @@
       <ProjectReference Include="..\Planscam.FsServices\Planscam.FsServices.fsproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <AdditionalFiles Include="Views\Studio\Index.cshtml" />
-    </ItemGroup>
-
 </Project>
