@@ -24,4 +24,10 @@ public class User : IdentityUser
     /// </summary>
     [Required]
     public OwnedPlaylists? OwnedPlaylists { get; set; }
+    
+    /// <summary>
+    /// shows when users subscription inspires
+    /// null if user has no subscription
+    /// </summary>
+    public DateTime? SubInspires { get; set; }
 }
