@@ -14,8 +14,8 @@
 }
 
 .App-header {
-  font-family: 'Montserrat', sans-serif;
-  background-color: #4700af;
+  
+  background-color: #2dff00;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -26,7 +26,7 @@
 }
 
 .App-link {
-  color: #61dafb;
+  color: #134049;
 }
 
 @keyframes App-logo-spin {
@@ -50,7 +50,4 @@
   border: solid 2px black;
 }
 
-.h_user{
-  
-  
-}
+
