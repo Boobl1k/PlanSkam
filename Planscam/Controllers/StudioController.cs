@@ -17,8 +17,23 @@ public class StudioController : PsmControllerBase
     }
 
     [HttpGet]
-    public IActionResult Index() =>
-        View();
+    public async Task<IActionResult> Index()
+    {
+        var author = await DataContext.Authors
+            .Include(author => author.Tracks)
+            .FirstAsync(author => author.User == CurrentUser);
+        author.Tracks = DataContext.Tracks
+            .Where(track => author.Tracks.Contains(track))
+            .Select(track => new Track
+            {
+                Id = track.Id,
+                Name = track.Name,
+                Picture = track.Picture,
+                Author = track.Author,
+                IsLiked = CurrentUserQueryable.Select(user => user.FavouriteTracks.Tracks.Contains(track)).First()
+            });
+        return View(author);
+    }
 
     [HttpGet]
     public async Task<IActionResult> MyTracks() =>
