@@ -26,6 +26,7 @@ public class SubscriptionsController : PsmControllerBase
         if (sub is null) return BadRequest();
         await UserManager.AddToRoleAsync(CurrentUser, "Sub");
         CurrentUser.SubExpires = DateTime.Now + Subscription.SubscriptionDurationToTimeSpan(sub.Duration);
+        await DataContext.SaveChangesAsync();
         return Ok();
     }
 }
