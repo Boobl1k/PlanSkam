@@ -29,5 +29,5 @@ public class User : IdentityUser
     /// shows when users subscription inspires
     /// null if user has no subscription
     /// </summary>
-    public DateTime? SubInspires { get; set; }
+    public DateTime? SubExpires { get; set; }
 }
