@@ -18,4 +18,10 @@ public class AppDbContext : IdentityDbContext<User>
     public DbSet<Genre> Genres { get; set; } = null!;
     public DbSet<TrackData> TrackDatas { get; set; } = null!;
     public DbSet<OwnedPlaylists> OwnedPlaylists { get; set; } = null!;
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        builder.CreateEntities();
+    }
 }

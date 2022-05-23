@@ -44,31 +44,19 @@ services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-
+#region migrations
 using (var scope = app.Services.CreateScope())
 {
-    #region migrations
-
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
-
-    #endregion
-
-    #region roles
-
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    if (!roleManager.Roles.Any())
-        await roleManager.CreateAsync(new IdentityRole("Author"));
-
-    #endregion
 }
-
+#endregion
 
 (app.Environment.IsDevelopment() ? app : app.UseExceptionHandler("/Home/Error").UseHsts())
     .UseHttpsRedirection()
     .UseStaticFiles()
     .UseRouting()
-    .UseCors(builder => builder.AllowAnyOrigin())
+    .UseCors(corsPolicyBuilder => corsPolicyBuilder.AllowAnyOrigin())
     .UseAuthentication()
     .UseAuthorization();
 app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
