@@ -9,5 +9,12 @@ public class Subscription
     public string Description { get; set; } = null!;
     [Column(TypeName = "Money")]
     public decimal Price { get; set; }
-    public TimeSpan Duration { get; set; }
+    public SubscriptionDurations Duration { get; set; }
+    
+    public enum SubscriptionDurations
+    {
+        Month,
+        ThreeMonths,
+        Year
+    }
 }

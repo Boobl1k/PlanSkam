@@ -25,24 +25,27 @@ internal static class Seed
         modelBuilder.Entity<Subscription>().HasData(
             new Subscription
             {
+                Id = 1,
                 Name = "Month",
                 Description = "Month",
                 Price = 100,
-                Duration = TimeSpan.FromDays(30)
+                Duration = Subscription.SubscriptionDurations.Month
             },
             new Subscription
             {
+                Id = 2,
                 Name = "3 months",
                 Description = "3 months",
                 Price = 250,
-                Duration = TimeSpan.FromDays(91)
+                Duration = Subscription.SubscriptionDurations.ThreeMonths
             },
             new Subscription
             {
+                Id = 3,
                 Name = "Year",
                 Description = "Year",
                 Price = 800,
-                Duration = TimeSpan.FromDays(365)
+                Duration = Subscription.SubscriptionDurations.Year
             });
         return modelBuilder;
     }

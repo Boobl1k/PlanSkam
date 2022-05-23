@@ -51,9 +51,15 @@ namespace Planscam.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b1cc7927-12d7-48e6-bb20-f1eca5e29784",
-                            ConcurrencyStamp = "61faafed-0399-48a5-ad16-813e572f9d42",
+                            Id = "5b952171-1ae0-4349-a67c-ec1109b7f525",
+                            ConcurrencyStamp = "95173b8f-4abf-4f1b-9179-24faaae76160",
                             Name = "Author"
+                        },
+                        new
+                        {
+                            Id = "2b2ae3b3-fb58-4a25-bf4f-a59e4da261da",
+                            ConcurrencyStamp = "8bf83fbe-3c20-4495-9c65-f7bf55e98c0b",
+                            Name = "Sub"
                         });
                 });
 
@@ -486,8 +492,8 @@ namespace Planscam.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("time");
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -499,6 +505,32 @@ namespace Planscam.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Subscriptions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Month",
+                            Duration = 0,
+                            Name = "Month",
+                            Price = 100m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "3 months",
+                            Duration = 1,
+                            Name = "3 months",
+                            Price = 250m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Year",
+                            Duration = 2,
+                            Name = "Year",
+                            Price = 800m
+                        });
                 });
 
             modelBuilder.Entity("Planscam.Entities.Track", b =>
