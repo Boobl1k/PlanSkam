@@ -257,3 +257,30 @@
     text-shadow: 0 0 10px var(--color3);
     color: var(--color3);
 }
+
+.studioContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.authorInfoContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+.authorImg {
+    height: 200px!important;
+    width: 200px!important;
+}
+
+.studioSpanAndLink {
+    display: flex;
+    justify-content: space-around;
+}
+
+.studioBtn {
+    background-color: aqua;
+    cursor: pointer;
+}

@@ -1,23 +1,26 @@
-@model dynamic
+@using Planscam.Extensions
+@model StudioViewModel
 
 @{
     ViewBag.Title = "title";
     Layout = "";
 }
 
-<
-
-
-
-
-
-
-<span style="cursor: pointer;" onclick="{
+<div class="studioContainer">
+    <div class="authorInfoContainer">
+        @Html.DrawUserAvatar(Model.Author.Picture,"authorImg")
+        @Model.Author.Name
+    </div>
+    <div class="studioSpanAndLink">
+        Tracks
+        <span class="studioBtn" onclick="{
     var winForm = window.open(`${window.location.origin}/Studio/LoadNewTrack`,'','scrollbars=1');
     winForm.resizeTo(500,450);
 }">
-    load new track
-</span>
-@Html.ActionLink("My tracks", "MyTracks")
-@Html.ActionLink("My albums", "Albums")
-@Html.ActionLink("Create album", "CreateAlbum")
+            Load Track
+        </span>
+        <div id="studioTracklistContainer" class="trackListContainer">
+            @await Html.PartialAsync("TrackList.cshtml", Model.OwnedTracks.Tracks)
+        </div>
+    </div>
+</div>

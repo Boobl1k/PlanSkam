@@ -22,7 +22,18 @@ function updateLayoutPlaylists() {
     container = document.getElementById('layoutPlaylistsContainer');
     sendAjax("GET", 'document', '/Playlists/LayoutPlaylists/', function () {
         container.innerHTML = request.response.body.innerHTML;
+        updateStudioTracklist(); //Если открыто студио (небольшой костыль, чтобы сэкономить время)
     })
+}
+
+function updateStudioTracklist() {
+    container = document.getElementById('studioTracklistContainer');
+    if (container)
+    {
+        sendAjax("GET", 'document', '/Tracks/GetOwned/', function () {
+            container.innerHTML = request.response.body.innerHTML;
+        })
+    }
 }
 
 function addTrackToFavourite(id) {
