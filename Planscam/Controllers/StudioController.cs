@@ -21,6 +21,7 @@ public class StudioController : PsmControllerBase
     {
         var author = await DataContext.Authors
             .Include(author => author.Tracks)
+            .Include(author => author.Picture)
             .FirstAsync(author => author.User == CurrentUser);
         author.Tracks = DataContext.Tracks
             .Where(track => author.Tracks.Contains(track))
