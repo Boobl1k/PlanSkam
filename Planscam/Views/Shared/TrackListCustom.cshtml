@@ -1,9 +1,15 @@
 @using Planscam.Extensions
+@using System.Text
 @model List<Planscam.Entities.Track>
 
 @{
     Layout = "";
 }
+
+@{ var ids = Model.Skip(1)
+       .Aggregate(new StringBuilder(Model.FirstOrDefault()?.Id.ToString() ?? string.Empty), 
+           (builder, track) => builder.Append($", {track.Id}"))
+       .ToString(); }
 
 <div class="trackList">
     @foreach (var track in Model)
@@ -19,12 +25,14 @@
             @if (track.IsLiked == true)
             {
                 <i onclick="addTrackToFavourite('@track.Id')" id="trackFavBtn@(track.Id)"
-            class="trackListButton fi fi-sr-heart"></i>
+                   class="trackListButton fi fi-sr-heart">
+                </i>
             }
             else
             {
                 <i onclick="addTrackToFavourite('@track.Id')" id="trackFavBtn@(track.Id)"
-            class="trackListButton fi fi-rr-heart"></i>
+                   class="trackListButton fi fi-rr-heart">
+                </i>
             }
             <i onclick="playTrackFromPlaylist(@Model.Id,@track.Id)" class="trackListButton fi fi-rr-play"></i>
         </div>
