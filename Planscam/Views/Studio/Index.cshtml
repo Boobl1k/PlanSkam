@@ -20,7 +20,7 @@
             Load Track
         </span>
         <div id="studioTracklistContainer" class="trackListContainer">
-            @await Html.PartialAsync("TrackList.cshtml", Model.OwnedTracks.Tracks)
+            @await Html.PartialAsync("TrackList", Model.OwnedTracks.Tracks)
         </div>
     </div>
 </div>
