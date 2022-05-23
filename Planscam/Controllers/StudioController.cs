@@ -30,8 +30,9 @@ public class StudioController : PsmControllerBase
                 Name = track.Name,
                 Picture = track.Picture,
                 Author = track.Author,
-                IsLiked = CurrentUserQueryable.Select(user => user.FavouriteTracks.Tracks.Contains(track)).First()
-            });
+                IsLiked = CurrentUserQueryable.Select(user => user.FavouriteTracks!.Tracks!.Contains(track)).First()
+            })
+            .ToList();
         return View(author);
     }
 
