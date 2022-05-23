@@ -220,4 +220,11 @@ public class PlaylistsController : PsmControllerBase
         };
         return View(playlist);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Popular() =>
+        View(await DataContext.Playlists
+            .OrderBy(playlist => DataContext.Users.Count(user => user.Playlists!.Contains(playlist)))
+            .Take(5)
+            .ToListAsync());
 }
