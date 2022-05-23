@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +46,7 @@ public class HomeController : PsmControllerBase
     public IActionResult Error() =>
         View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
 
-    [HttpGet]
+    [HttpGet, Authorize(Roles = "Sub")]
     public async Task<IActionResult> Search(string query)
     {
         var playlists = await DataContext.Playlists

@@ -48,10 +48,13 @@
                     <i class="fi fi-rr-home"></i>
                     Home
                 </a>
-                <div class="menuElement" style="cursor: pointer;" onclick="loadPage('Tracks/Search', form)">
-                    <i class="fi fi-rr-search"></i>
-                    Search
-                </div>
+                @if (authenticated && await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Sub"))
+                {
+                    <div class="menuElement" style="cursor: pointer;" onclick="loadPage('Tracks/Search', form)">
+                        <i class="fi fi-rr-search"></i>
+                        Search
+                    </div>
+                }
                 @if (authenticated)
                 {
                     <div class="menuElement" onclick="loadPage('Playlists/Owned')">
