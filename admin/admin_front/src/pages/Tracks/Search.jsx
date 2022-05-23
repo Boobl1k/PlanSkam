@@ -1,6 +1,7 @@
 import {Component} from "react";
 import Track from "../../components/Track";
 
+
 export default class Search extends Component {
     constructor(props) {
         super(props);

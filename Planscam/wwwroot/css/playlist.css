@@ -15,12 +15,12 @@
 }
 
 .playlistImage {
-    height: 500px!important;
-    width: 500px!important;
+    height: 500px !important;
+    width: 500px !important;
     border-radius: 5px;
     object-fit: cover;
     object-position: center;
-    animation: shadow  10s infinite ease-in-out;
+    animation: shadow 10s infinite ease-in-out;
 }
 
 .playlistName {
@@ -29,10 +29,21 @@
 }
 
 @keyframes shadow {
-    0% {box-shadow: 10px 5px 40px -25px var(--color2);}
-    33%{box-shadow: 5px 10px 40px -25px var(--color1);}
-    77%{box-shadow: -10px -5px 40px -25px var(--color3);}
-    100% {box-shadow: 10px 5px 40px -25px var(--color2);}
+    0% {
+        box-shadow: 10px 5px 40px -25px var(--color2);
+    }
+
+    33% {
+        box-shadow: 5px 10px 40px -25px var(--color1);
+    }
+
+    77% {
+        box-shadow: -10px -5px 40px -25px var(--color3);
+    }
+
+    100% {
+        box-shadow: 10px 5px 40px -25px var(--color2);
+    }
 }
 
 .playlistMenuLinks {
@@ -261,26 +272,51 @@
 .studioContainer {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    width: 100%;
 }
 
 .authorInfoContainer {
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: 20px;
     align-items: center;
+    padding: 40px;
+    font-size: 24px;
+    font-weight: 400;
 }
 
 .authorImg {
-    height: 200px!important;
-    width: 200px!important;
+    height: 100px !important;
+    width: 100px !important;
+    border-radius: 3px;
 }
 
 .studioSpanAndLink {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    padding: 20px 50px;
+    font-size: 30px;
+    font-weight: 500;
 }
 
 .studioBtn {
-    background-color: aqua;
+    width: 150px;
+    font-weight: 400;
+    font-size: 18px;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    background-color: white;
     cursor: pointer;
+}
+
+.studioBtn:hover {
+    background-color: rgb(231, 231, 231);
+}
+
+.studioBtn:active {
+    background-color: rgb(211, 211, 211);
 }

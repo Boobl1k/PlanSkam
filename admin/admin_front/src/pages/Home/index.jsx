@@ -14,10 +14,10 @@ function Home() {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Typography variant="h2" gutterBottom>
-            Psm admin panel
+            This is Admin Panel
           </Typography>
-          <Typography variant="body1" gutterBottom>
-            развлекайтесь
+          <Typography variant="h4" gutterBottom>
+            have a fun!
           </Typography>
         </Grid>
       </Grid>

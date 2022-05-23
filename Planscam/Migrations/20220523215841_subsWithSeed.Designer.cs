@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Planscam.DataAccess;
 
@@ -11,9 +12,10 @@ using Planscam.DataAccess;
 namespace Planscam.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220523215841_subsWithSeed")]
+    partial class subsWithSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,14 +53,14 @@ namespace Planscam.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2d912b43-84c4-460e-bbfd-9bb16d1bb4e3",
-                            ConcurrencyStamp = "4401abca-6ed9-4fbd-a073-b1ea46c29562",
+                            Id = "5b952171-1ae0-4349-a67c-ec1109b7f525",
+                            ConcurrencyStamp = "95173b8f-4abf-4f1b-9179-24faaae76160",
                             Name = "Author"
                         },
                         new
                         {
-                            Id = "1aa278af-7fd5-4d1f-9f15-51d4983eefb1",
-                            ConcurrencyStamp = "ca247a30-f436-4566-822a-835720a7678f",
+                            Id = "2b2ae3b3-fb58-4a25-bf4f-a59e4da261da",
+                            ConcurrencyStamp = "8bf83fbe-3c20-4495-9c65-f7bf55e98c0b",
                             Name = "Sub"
                         });
                 });
@@ -641,9 +643,6 @@ namespace Planscam.Migrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("SubExpires")
-                        .HasColumnType("datetime2");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");

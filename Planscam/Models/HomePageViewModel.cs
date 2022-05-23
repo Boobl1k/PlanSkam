@@ -4,6 +4,7 @@ namespace Planscam.Models;
 
 public class HomePageViewModel
 {
-    public User? User { get; set; } = null!;
-    public List<Playlist> Playlists { get; set; } = null!;
+    public List<Playlist> BestPlaylists { get; set; } = null!;
+    public List<Track> BestTracks { get; set; } = null!;
+    public List<Subscription> Subscriptions { get; set; } = null!;
 }

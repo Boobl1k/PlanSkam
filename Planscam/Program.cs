@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Planscam.DataAccess;
 using Planscam.Entities;
 using Planscam.FsServices;
+using Planscam.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -43,6 +44,8 @@ services.ConfigureApplicationCookie(options =>
 });
 
 var app = builder.Build();
+
+app.UseMiddleware<SubscriptionsMiddleware>();
 
 #region migrations
 using (var scope = app.Services.CreateScope())
