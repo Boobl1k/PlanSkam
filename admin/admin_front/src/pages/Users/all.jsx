@@ -20,25 +20,21 @@ export default class All extends Component {
 
     render() {
         const renderUsers = (users) => {
-            return <div>
-                <table>
-                    <tr>
-                        <div className="h_user">
+            return <div className="d-flex justify-content-center align-items-center py-3">
+                <table className="d-flex justify-content-center align-items-center py-3">
+                    <tr className="nav nav-pills">
                         <th>Id</th>
                         <th>UserName</th>
                         <th></th>
-                        </div>
                     </tr>
                     {
                         users.map(user => {
-                            return <tr>
-                                <div className="res_users">
+                            return <tr className="nav nav-pills">
                                 <td>{user.Id}</td>
                                 <td>{user.UserName}</td>
                                 <td>
                                     <NavLink to={`../user/${user.Id}`}>open</NavLink>
                                 </td>
-                                </div>
                             </tr>
                         })
                     }
