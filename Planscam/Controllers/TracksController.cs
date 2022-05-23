@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Planscam.DataAccess;
 using Planscam.Entities;
+using Planscam.Migrations;
 using Planscam.Models;
 
 namespace Planscam.Controllers;
@@ -119,4 +120,27 @@ public class TracksController : PsmControllerBase
                 { } track => Json(track),
                 _ => NotFound()
             };
+
+    [HttpGet, Authorize]
+    public async Task<IActionResult> Recommendations()
+    {
+        var genre = (await CurrentUserQueryable
+            .Select(user => user.FavouriteTracks!.Tracks!
+                .GroupBy(track => track.Genre!.Id)
+                .Select(g => new
+                {
+                    Count = g.Count(), 
+                    g.First().Genre
+                })
+                .OrderBy(g => g.Count)
+                .First())
+            .FirstAsync())
+            .Genre;
+        var tracks = await DataContext.Tracks
+            .Where(track => track.Genre == genre)
+            .OrderBy(track => Guid.NewGuid())
+            .Take(5)
+            .ToListAsync();
+        return View(tracks);
+    }
 }

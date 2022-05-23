@@ -1,0 +1,11 @@
+@model List<Planscam.Entities.Track>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "";
+}
+
+@foreach (var track in Model)
+{
+    @Html.DisplayFor(_ => track)
+}
