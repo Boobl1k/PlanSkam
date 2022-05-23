@@ -23,6 +23,8 @@ public class AppDbContext : IdentityDbContext<User>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        builder.CreateEntities();
+        builder
+            .CreateRoles()
+            .CreateSubscriptions();
     }
 }
