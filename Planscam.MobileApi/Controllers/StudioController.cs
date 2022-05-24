@@ -23,7 +23,7 @@ public class StudioController : PsmControllerBase
             .ToListAsync());
 
     [HttpPost]
-    public async Task<IActionResult> LoadNewTrack(LoadTrackViewModel model)
+    public async Task<IActionResult> LoadNewTrack([FromForm]LoadTrackViewModel model)
     {
         model.Genres = DataContext.Genres.ToList();
         if (!ModelState.IsValid) return BadRequest();

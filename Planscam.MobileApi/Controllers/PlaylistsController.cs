@@ -77,11 +77,27 @@ public class PlaylistsController : PsmControllerBase
             .AsNoTracking()
             .FirstAsync();
         CurrentUser.Playlists!.ForEach(playlist => playlist.IsLiked = true);
-        return Json(CurrentUser);
+        return Json(new
+        {
+            User = new
+            {
+                CurrentUser.Id,
+                CurrentUser.Picture,
+                CurrentUser.Email,
+                CurrentUser.UserName
+            },
+            Playlists = CurrentUser.Playlists.Select(playlist => new
+            {
+                playlist.Id,
+                playlist.Name,
+                playlist.IsLiked,
+                playlist.Picture
+            })
+        });
     }
 
     [HttpPost, OpenIdDictAuthorize]
-    public IActionResult Create(CreatePlaylistViewModel model) =>
+    public IActionResult Create([FromForm] CreatePlaylistViewModel model) =>
         ModelState.IsValid
             ? RedirectToAction("Index",
                 new {_playlistsRepo.CreatePlaylist(User, model.Name, model.Picture.ToPicture()).Id})
@@ -98,7 +114,7 @@ public class PlaylistsController : PsmControllerBase
         _playlistsRepo.AddTrackToPlaylist(User, playlistId, trackId)
             ? Ok()
             : BadRequest();
-    
+
     [HttpPost, OpenIdDictAuthorize]
     public IActionResult RemoveTrackFromPlaylist(int playlistId, int trackId) =>
         _playlistsRepo.RemoveTrackFromPlaylist(User, playlistId, trackId)
