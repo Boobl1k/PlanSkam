@@ -10,6 +10,6 @@
     <div asp-validation-summary="ModelOnly"></div>
     @Html.EditorForModel()
     <input type="submit" value="Sign in" />
-    <input asp-controller="Auth" asp-action="GoogleLogin" value="Sign in with Google"/>
+    <input type="submit" asp-controller="Auth" asp-action="GoogleLogin" value="Sign in with Google"/>
 </form>
 <a class="authLink" asp-controller="Auth" asp-action="Register">Create an account</a>
