@@ -15,9 +15,16 @@
                         <div class="popularPlaylistContainer">
                             @Html.DrawSmallPlaylistPic(@playlist.Picture, "popularPlaylistImg")
                             <div class="popularPlaylistBtns">
-
-                                <i onclick="likePlaylistHome(@playlist.Id)" style="font-size: 30px;"
+                                @if(playlist.IsLiked == true)
+                                {
+                                    <i onclick="likePlaylistHome(@playlist.Id)" style="font-size: 30px;"
+                                class="popularPlaylistBtn fi fi-sr-heart"></i>
+                                }
+                                else
+                                {                                
+                                    <i onclick="likePlaylistHome(@playlist.Id)" style="font-size: 30px;"
                                 class="popularPlaylistBtn fi fi-rr-heart"></i>
+                                }
                                 <i onclick="playPlaylist(@playlist.Id)" style="font-size: 45px;"
                                 class="popularPlaylistBtn fi fi-rr-play"></i>
                                 <i onclick="loadPage(`Playlists/Index/${@playlist.Id}`)" style="font-size: 28px;"

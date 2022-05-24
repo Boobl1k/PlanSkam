@@ -90,7 +90,7 @@ public class HomeController : PsmControllerBase
             })
             .Take(15)
             .ToListAsync();
-        return View(new HomePageViewModel
+        return View("MainPage", new HomePageViewModel
         {
             BestPlaylists = playlists,
             BestTracks = tracks,
