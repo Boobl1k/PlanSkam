@@ -18,6 +18,25 @@ function likePlaylist(id) {
     }
 }
 
+//Хардкод, ибо не хватает времени
+function likePlaylistHome(id) {
+    btn = event.target;
+    if (btn.classList.contains('fi-rr-heart')) {
+        sendAjax("POST", 'document', `/Playlists/LikePlaylist?id=${id}`, function () {
+            btn.classList.remove('fi-rr-heart');
+            btn.classList.add('fi-sr-heart');
+            updateLayoutPlaylists();
+        });
+    }
+    else {
+        sendAjax("POST", 'document', `/Playlists/UnlikePlaylist?id=${id}`, function () {
+            btn.classList.remove('fi-sr-heart');
+            btn.classList.add('fi-rr-heart');
+            updateLayoutPlaylists();
+        });
+    }
+}
+
 function updateLayoutPlaylists() {
     container = document.getElementById('layoutPlaylistsContainer');
     sendAjax("GET", 'document', '/Playlists/LayoutPlaylists/', function () {
