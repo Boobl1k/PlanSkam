@@ -19,6 +19,14 @@ public class SubscriptionsController : PsmControllerBase
     public async Task<IActionResult> Index() =>
         View(await DataContext.Subscriptions.ToListAsync());
 
+    [HttpGet]
+    public async Task<IActionResult> PaymentEmulator(int id) =>
+        await DataContext.Subscriptions.FindAsync(id) switch
+        {
+            { } sub => View(sub),
+            _ => NotFound()
+        };
+
     [HttpPost]
     public async Task<IActionResult> BuySub(int subId)
     {
