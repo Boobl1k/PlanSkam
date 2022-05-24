@@ -16,11 +16,19 @@ public class HomeController : PsmControllerBase
     {
     }
 
-    //todo переписать полностью
     public async Task<IActionResult> Index()
     {
-        var playlists = await DataContext.Playlists
-            .Include(playlist => playlist.Picture)
+        var playlists = await (SignInManager.IsSignedIn(User)
+                ? DataContext.Playlists
+                    .Include(playlist => playlist.Picture)
+                : DataContext.Playlists
+                    .Select(playlist => new Playlist
+                    {
+                        Id = playlist.Id,
+                        Name = playlist.Name,
+                        Picture = playlist.Picture,
+                        IsLiked = CurrentUserQueryable.Select(user => user.Playlists!.Contains(playlist)).First()
+                    }))
             .OrderByDescending(playlist => DataContext.Users.Count(user => user.Playlists!.Contains(playlist)))
             .Take(15)
             .ToListAsync();
