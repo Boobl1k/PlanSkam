@@ -148,13 +148,13 @@ export default class User extends Component {
             }}/>
             <br/>
             <button onClick={this.changeEmail}>Change email</button>
-            <h1>Tracks:</h1>
+            <h3>Tracks:</h3>
             {this.state.tracks.map(track => {
                 return <Track id={track.Id} name={track.Name} userId={this.state.user.Id}
                               delete={this.removeTrackFromFavourites}
                               fav={true}/>;
             })}
-            <h1>Available tracks:</h1>
+            <h3>Available tracks:</h3>
             <input type="text" name="email" value={this.state.availableTracksQuery} onChange={e => {
                 this.setState({availableTracksQuery: e.target.value});
             }}/>
@@ -164,12 +164,12 @@ export default class User extends Component {
                               delete={this.addTrackToFavourites}
                               fav={false}/>;
             })}
-            <h1>Liked playlists:</h1>
+            <h3>Liked playlists:</h3>
             {this.state.playlists.map(playlist => {
                 return <Playlist id={playlist.Id} name={playlist.Name} userId={this.state.user.Id}
                                  isLiked={true} move={this.removePlaylistFromLiked}/>
             })}
-            <h1>Available playlists:</h1>
+            <h3>Available playlists:</h3>
             {this.state.availablePlaylists.map(playlist => {
                 return <Playlist id={playlist.Id} name={playlist.Name} userId={this.state.user.Id}
                                  isLiked={false} move={this.addPlaylistToLiked}/>

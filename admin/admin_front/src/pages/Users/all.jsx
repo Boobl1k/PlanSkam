@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {NavLink} from "react-router-dom";
+import {Button} from "@material-ui/core";
 
 export default class All extends Component {
     constructor(props) {
@@ -20,10 +20,10 @@ export default class All extends Component {
 
     render() {
         const renderUsers = (users) => {
-            return <div className="d-flex justify-content-center align-items-center py-3">
-                <table className="d-flex justify-content-center align-items-center py-3">
+            return <div>
+                <table>
                     <tr className="nav nav-pills">
-                        <th>Id</th>
+                        <th>Identifier</th>
                         <th>UserName</th>
                         <th></th>
                     </tr>
@@ -33,7 +33,7 @@ export default class All extends Component {
                                 <td>{user.Id}</td>
                                 <td>{user.UserName}</td>
                                 <td>
-                                    <NavLink to={`../user/${user.Id}`}>open</NavLink>
+                                    <Button to={`../user/${user.Id}`}>OPEN</Button>
                                 </td>
                             </tr>
                         })
@@ -46,7 +46,7 @@ export default class All extends Component {
 
         return <div>
             {renderUsers(this.state.users)}
-            <button onClick={this.click}>Update</button>
+            <Button onClick={this.click}>UPDATE</Button>
         </div>
     }
 }
