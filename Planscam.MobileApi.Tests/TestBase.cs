@@ -20,12 +20,12 @@ public abstract class TestBase
             .CreateClient();
     }
 
-    protected async Task SimpleTest(string uri) =>
+    protected async Task<HttpResponseMessage> SimpleTest(string uri) =>
         (await Client.GetAsync(uri))
         .WriteToOutput(Output)
         .StatusCodeIsOk();
 
-    protected async Task SimpleTest(HttpRequestMessage request) =>
+    protected async Task<HttpResponseMessage> SimpleTest(HttpRequestMessage request) =>
         (await Client.SendAsync(request))
         .WriteToOutput(Output)
         .StatusCodeIsOk();

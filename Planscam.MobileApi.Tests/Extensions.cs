@@ -22,20 +22,20 @@ internal static class Extensions
         output?.WriteLine(response.Content.ReadAsStringAsync().Result);
         return response;
     }
-    
-    private static string? GetToken(HttpClient client, ITestOutputHelper? output = default)
+
+    private static string? GetToken(HttpClient client, ITestOutputHelper? output = default, string? userName = default)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, "/Auth/Login");
         request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
         {
             {"grant_type", "password"},
-            {"username", "qwe"},
+            {"username", userName ?? "qwe"},
             {"password", "qweQWE123!"}
         });
         var response = client.SendAsync(request).Result
             .WriteToOutput(output)
             .StatusCodeIsOk();
-        return (string)(JsonConvert.DeserializeObject(
+        return (string) (JsonConvert.DeserializeObject(
                 response.Content.ReadAsStringAsync().Result) as dynamic)
             .access_token;
     }
@@ -43,9 +43,10 @@ internal static class Extensions
     public static HttpRequestMessage AddTokenToHeaders(
         this HttpRequestMessage request,
         HttpClient client,
-        ITestOutputHelper? output = default)
+        ITestOutputHelper? output = default,
+        string? userName = default)
     {
-        request.Headers.Add("Authorization", $"Bearer {GetToken(client, output)}");
+        request.Headers.Add("Authorization", $"Bearer {GetToken(client, output, userName)}");
         return request;
     }
 }
