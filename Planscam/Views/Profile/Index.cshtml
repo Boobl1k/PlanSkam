@@ -29,7 +29,13 @@
         
     </div>
     <div class="profile_edit_block">
-        <div class="edit_button">@Html.ActionLink("Edit", "Edit")</div>
+        <div class="menuElement" onclick="{
+                                                        var winForm = window.open(`${window.location.origin}/Profile/Edit`,'','scrollbars=1');
+                                                        winForm.resizeTo(500,450);
+                                                    }">
+                        <i class="fi fi-rr-plus"></i>
+                        Create Playlist
+                    </div>
         </div>
 </div>
 
