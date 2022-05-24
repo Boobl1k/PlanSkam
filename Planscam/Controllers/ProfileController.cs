@@ -61,6 +61,7 @@ public class ProfileController : PsmControllerBase
         if (model.UploadImage is { })
             user.Picture = model.UploadImage.ToPicture();
         user.UserName = model.Name;
+        user.Email = model.Email;
         await UserManager.UpdateAsync(user);
         model.Picture = user.Picture;
         return View(model);
