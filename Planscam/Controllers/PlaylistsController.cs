@@ -138,14 +138,14 @@ public class PlaylistsController : PsmControllerBase
             ? View(new DeletePlaylistViewModel
             {
                 Id = id,
-                Name = "sugar"
+                Name = "name"
             })
             : BadRequest();
 
     [HttpPost, Authorize]
     public IActionResult DeleteSure(int id) =>
         _playlistsRepo.DeletePlaylist(User, id)
-            ? View("CloseAndRedict", $"/Studio/Index")
+            ? View("CloseAndRedict", $"/Home/MainPage")
             : BadRequest();
 
     [HttpPost, Authorize]

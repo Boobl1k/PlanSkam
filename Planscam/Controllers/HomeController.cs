@@ -49,6 +49,38 @@ public class HomeController : PsmControllerBase
         });
     }
 
+    public async Task<IActionResult> MainPage()
+    {
+        var playlists = await DataContext.Playlists
+            .Include(playlist => playlist.Picture)
+            .OrderByDescending(playlist => DataContext.Users.Count(user => user.Playlists!.Contains(playlist)))
+            .Take(15)
+            .ToListAsync();
+        var subs = await DataContext.Subscriptions.ToListAsync();
+        var tracks = await DataContext.Tracks
+            .OrderByDescending(track => DataContext.Users.Count(user => user.FavouriteTracks!.Tracks!.Contains(track)))
+            .Select(track => new Track
+            {
+                Id = track.Id,
+                Name = track.Name,
+                Picture = track.Picture,
+                Author = track.Author,
+                IsLiked = SignInManager.IsSignedIn(User)
+                    ? CurrentUserQueryable
+                        .Select(user => user.FavouriteTracks!.Tracks!.Contains(track))
+                        .First()
+                    : null
+            })
+            .Take(15)
+            .ToListAsync();
+        return View("MainPage",new HomePageViewModel
+        {
+            BestPlaylists = playlists,
+            BestTracks = tracks,
+            Subscriptions = subs
+        });
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error() =>
         View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});

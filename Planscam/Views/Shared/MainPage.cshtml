@@ -15,10 +15,13 @@
                         <div class="popularPlaylistContainer">
                             @Html.DrawSmallPlaylistPic(@playlist.Picture, "popularPlaylistImg")
                             <div class="popularPlaylistBtns">
-                            
-                                <i onclick="likePlaylistHome(@playlist.Id)" style="font-size: 30px;" class="popularPlaylistBtn fi fi-rr-heart"></i>
-                                <i onclick="playPlaylist(@playlist.Id)" style="font-size: 45px;" class="popularPlaylistBtn fi fi-rr-play"></i>
-                                <i onclick="loadPage(`Playlists/Index/${@playlist.Id}`)" style="font-size: 28px;" class="popularPlaylistBtn fi fi-rr-indent"></i>
+
+                                <i onclick="likePlaylistHome(@playlist.Id)" style="font-size: 30px;"
+                                class="popularPlaylistBtn fi fi-rr-heart"></i>
+                                <i onclick="playPlaylist(@playlist.Id)" style="font-size: 45px;"
+                                class="popularPlaylistBtn fi fi-rr-play"></i>
+                                <i onclick="loadPage(`Playlists/Index/${@playlist.Id}`)" style="font-size: 28px;"
+                                class="popularPlaylistBtn fi fi-rr-indent"></i>
                             </div>
                         </div>
                         <span onclick="loadPage(`Playlists/Index/${@playlist.Id}`)" class="popularPlaylistSpan">
@@ -29,11 +32,31 @@
             </div>
         </div>
     </div>
-    <div b-4rrdvvqhni="" class="line glowing1 bcolor1" style="margin: 15px 0;">⠀</div>
-    <div class="subscribesContainer">
-        subscribes
+    <div class="subscriptionsContainer">
+        <span class="mainSpan">Support atrists and get premium</span>
+        <div class="subscriptions">
+            @foreach (var subscription in Model.Subscriptions)
+            {
+                <div class="subscription">
+                    <div class="subscriptionInfo">
+                        <span>
+                            @subscription.Name
+                        </span>
+                        <span>
+                            For @subscription.Duration
+                        </span>
+                    </div>
+                    <div class="subscribeBtnContainer">
+                        <span class="subscribeBtn" onclick="{
+                                var winForm = window.open(`${window.location.origin}/Subscriptions/PaymentEmulator/@(subscription.Id)`,'','scrollbars=1');
+                                winForm.resizeTo(500,450);
+                            }">Subscribe for @string.Format("{0:F2}", subscription.Price)$</span>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
-    <div b-4rrdvvqhni="" class="line glowing2 bcolor2" style="margin: 15px 0;">⠀</div>
+    <div b-4rrdvvqhni="" class="line glowing2 bcolor2">⠀</div>
     <div class="popularTracks">
         <span class="mainSpan">User's choice</span>
         <div class="trackListContainer">
