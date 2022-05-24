@@ -40,29 +40,25 @@
     
 }
 
-<div class="edit_block">
-    <div class="container">
-        <div class="edit_information_block">
-            <div class="edit_name_block">
-                <div class="edit_name_label"><p>Name</p></div>
-                <div class="edit_name_change"><input type="text"></div>
+<body>
+    <div class="background"></div>
+    <div class="formWindowContainer">
+        <form enctype="multipart/form-data" class="formWindow" asp-controller="Playlists" asp-action="Create">
+            @Html.EditorForModel()
+            <div class="fileInputContainer">
+                <input class="fileInput" type="file" accept=".jpg" name="Picture" id="imgInput" />
+                <div class="inputLabel" id="imgInputLabel">
+                    Picture <i class="fi fi-rr-download"></i>
+                </div>
             </div>
-            <div class="edit_email_block">
-                <div class="edit_email_label"><p>Email</p></div>
-                <div class="edit_email_change"><input type="text"></div>
-            </div>
-            <div class="edit_author_block">
-                <div class="edit_author_label"><p>IsAuthor</p></div>
-                <div class="edit_author_checkbox"><input type="checkbox"></div>
-            </div>
-        </div>
-        <div class="edit_img_block">@Html.DrawUserAvatar(Model.Picture)</div>
+            <input type="submit" value="Create" />
+        </form>
     </div>
-</div>
-<div class="upload_files_block">
-    <input type="file" name="UploadImage"/>
-    <input type="submit" value="submit"/>
-</div>
+    <script>
+        form();
+        imgInput();
+    </script>
+</body>
 
 
 <style>
@@ -92,7 +88,7 @@
     border-left: 0;
     border-right: 0;
     size: 50px;
-    background-color: #1f1f1ff0;
+    background-color: transparent;
     margin: 25px 0;
     }
     .edit_email_label {
