@@ -47,6 +47,20 @@ namespace Planscam.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "2d912b43-84c4-460e-bbfd-9bb16d1bb4e3",
+                            ConcurrencyStamp = "4401abca-6ed9-4fbd-a073-b1ea46c29562",
+                            Name = "Author"
+                        },
+                        new
+                        {
+                            Id = "1aa278af-7fd5-4d1f-9f15-51d4983eefb1",
+                            ConcurrencyStamp = "ca247a30-f436-4566-822a-835720a7678f",
+                            Name = "Sub"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -466,6 +480,59 @@ namespace Planscam.Migrations
                     b.ToTable("Playlists");
                 });
 
+            modelBuilder.Entity("Planscam.Entities.Subscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("Money");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Subscriptions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Month",
+                            Duration = 0,
+                            Name = "Month",
+                            Price = 100m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "3 months",
+                            Duration = 1,
+                            Name = "3 months",
+                            Price = 250m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Year",
+                            Duration = 2,
+                            Name = "Year",
+                            Price = 800m
+                        });
+                });
+
             modelBuilder.Entity("Planscam.Entities.Track", b =>
                 {
                     b.Property<int>("Id")
@@ -574,6 +641,9 @@ namespace Planscam.Migrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("SubExpires")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");

@@ -20,10 +20,6 @@
     font-size: 34px;
 }
 
-.playlist {
-    font-size: 28px;
-}
-
 .trackInfo {
     display: flex;
     flex-direction: row;
@@ -35,6 +31,7 @@
     border-radius: 5%;
     height: 55px;
     width: 55px;
+    cursor: pointer;
 }
 
 .trackSpans {
@@ -43,8 +40,10 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    justify-content: center;
     overflow: hidden;
     color: white;
+    cursor: pointer;
 }
 
 .button {

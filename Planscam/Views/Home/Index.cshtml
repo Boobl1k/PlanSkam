@@ -3,19 +3,4 @@
     ViewData["Title"] = "Home Page";
 }
 
-@Html.DisplayForModel()
-@if (Model.User is {})
-{
-    @Html.DisplayFor(model => model.User)
-    @Html.DisplayFor(model => model.User!.Picture)
-    @await Html.PartialAsync("PlaylistFull", Model.User.FavouriteTracks)
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    @foreach (var playlist in Model.Playlists)
-    {
-        @(await Html.PartialAsync("PlaylistInList", playlist))
-    }
-}
+@await Html.PartialAsync("MainPage",Model)

@@ -1,6 +1,7 @@
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.FSharp.Core;
+using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -11,8 +12,14 @@ public class TracksTests : TestBase
     public TracksTests(ITestOutputHelper output) : base(output) { }
 
     [Fact]
-    public async Task Index() =>
-        await SimpleTest("/Tracks/Index?id=2");
+    public async Task Index()
+    {
+        var response = await SimpleTest("/Tracks/Index?id=2");
+        dynamic parsed = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
+        Assert.NotNull(parsed);
+        Assert.Equal(2, (int)parsed.track.id);
+        Assert.Equal(1, (int)parsed.track.author.id);
+    }
 
     [Fact]
     public async Task Search_byTracks() =>
@@ -29,16 +36,23 @@ public class TracksTests : TestBase
     [Fact]
     public async Task AddTrackToFavourite()
     {
-        //этот хер сам по себе иногда валится, без понятия почему, разберусь позже
+        Exception? exception = null;
+        try
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "Tracks/AddTrackToFavourite?id=8")
+            var request = new HttpRequestMessage(HttpMethod.Post, "Tracks/AddTrackToFavourite?id=9")
                 .AddTokenToHeaders(Client, Output);
             await SimpleTest(request);
         }
+        catch (Exception e)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "Tracks/RemoveTrackFromFavourite?id=8")
+            exception = e;
+        }
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "Tracks/RemoveTrackFromFavourite?id=9")
                 .AddTokenToHeaders(Client, Output);
             await SimpleTest(request);
         }
+        if (exception is { })
+            throw exception;
     }
 }

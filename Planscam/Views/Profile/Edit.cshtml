@@ -3,13 +3,102 @@
 
 @{
     ViewBag.Title = "Profile editing";
-    Layout = "_Layout";
+    Layout = "";
 }
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Mansur and 1 father who went for bread 19 years ago</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link href="~/css/form.css" rel="stylesheet">
+    <link href="~/css/layout.css" rel="stylesheet">
+    <link href="~/css/playlist.css" rel="stylesheet">
+    <link href="~/css/home.css" rel="stylesheet">
+    <script src="~/jsFiles/search.js"></script>
+    <script src="~/jsFiles/custom-select.js"></script>
+    <script src="~/jsFiles/form.js"></script>
+    <script src="~/jsFiles/inputs.js"></script>
+    <script src="~/jsFiles/playlist.js"></script>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel='stylesheet'
+        href='https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css'>
+</head>
+
+
+
+
+
 
 @using (Html.BeginForm(FormMethod.Post, new {enctype = "multipart/form-data"}))
 {
-    @Html.EditorForModel()
-    @Html.DrawUserAvatar(Model.Picture)
+    
+}
+
+<div class="edit_block">
+    <div class="container">
+        <div class="edit_information_block">
+            <div class="edit_name_block">
+                <div class="edit_name_label"><p>Name</p></div>
+                <div class="edit_name_change"><input type="text"></div>
+            </div>
+            <div class="edit_email_block">
+                <div class="edit_email_label"><p>Email</p></div>
+                <div class="edit_email_change"><input type="text"></div>
+            </div>
+            <div class="edit_author_block">
+                <div class="edit_author_label"><p>IsAuthor</p></div>
+                <div class="edit_author_checkbox"><input type="checkbox"></div>
+            </div>
+        </div>
+        <div class="edit_img_block">@Html.DrawUserAvatar(Model.Picture)</div>
+    </div>
+</div>
+<div class="upload_files_block">
     <input type="file" name="UploadImage"/>
     <input type="submit" value="submit"/>
-}
+</div>
+
+
+<style>
+    .container {
+        display: block;
+        justify-content: space-between;
+        flex: 1;
+        font-size: 20px;
+        margin: 50px;
+        }
+    .edit_email_block, .edit_name_block, .edit_author_block {
+        display: flex;
+    }
+    .edit_author_label, .edit_email_label, .edit_name_label {
+        margin-right: 20px;
+    }
+    .edit_img_block img {
+        width: 200px !important;
+        height: 180px !important;
+    }
+    .edit_author_checkbox {
+        padding: 17px 0;
+    }
+    .edit_name_change input, .edit_email_change input{
+    border-bottom:  1px solid var(--color2);
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    size: 50px;
+    background-color: #1f1f1ff0;
+    margin: 25px 0;
+    }
+    .edit_email_label {
+    margin-right: 25px;
+    }
+    .upload_files_block {
+    margin-left: 50px;
+    }
+</style>

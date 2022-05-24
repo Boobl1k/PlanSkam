@@ -24,7 +24,7 @@ public class ProfileController : PsmControllerBase
 
     [HttpGet, OpenIdDictAuthorize, AllowAnonymous]
     public async Task<IActionResult> Index(string? id) =>
-        (id, IsSignedIn) switch
+        (id, true) switch
         {
             (null, false) => Unauthorized(),
             (null, true) => Json(GetModel(

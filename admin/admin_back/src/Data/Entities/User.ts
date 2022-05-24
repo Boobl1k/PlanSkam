@@ -14,16 +14,16 @@ export class User {
     @ManyToMany(() => Playlist, playlist => playlist.Users)
     @JoinTable({
         name: "PlaylistUser",
-        joinColumn:{
+        joinColumn: {
             name: "UsersId",
             referencedColumnName: "Id"
         },
-        inverseJoinColumn:{
+        inverseJoinColumn: {
             name: "PlaylistsId",
             referencedColumnName: "Id"
         }
     })
-    Playlists : Playlist[]
+    Playlists: Playlist[]
 
     @ManyToMany(() => Role, role => role.Users)
     @JoinTable({
@@ -38,4 +38,13 @@ export class User {
         }
     })
     Roles: Role[]
+
+    @Column()
+    Email: string;
+    
+    @Column()
+    NormalizedEmail: string;
+    
+    @Column()
+    FavouriteTracksId: number;
 }

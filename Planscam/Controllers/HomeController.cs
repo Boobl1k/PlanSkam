@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,28 +21,70 @@ public class HomeController : PsmControllerBase
     {
         var playlists = await DataContext.Playlists
             .Include(playlist => playlist.Picture)
-            .AsNoTracking()
+            .OrderByDescending(playlist => DataContext.Users.Count(user => user.Playlists!.Contains(playlist)))
+            .Take(15)
             .ToListAsync();
-        if (!SignInManager.IsSignedIn(User)) return View(new HomePageViewModel {Playlists = playlists});
-        CurrentUser = await CurrentUserQueryable
-            .Include(user => user.Picture)
-            .Include(user => user.FavouriteTracks)
-            .Include(user => user.FavouriteTracks!.Picture)
-            .AsNoTracking()
-            .FirstAsync();
-        CurrentUser.FavouriteTracks!.Tracks = DataContext.Tracks
-            .Where(track => track.Playlists!.Contains(CurrentUser.FavouriteTracks!))
-            .Include(track => track.Picture)
-            .AsNoTracking()
-            .ToList();
+        var subs = await DataContext.Subscriptions.ToListAsync();
+        var tracks = await DataContext.Tracks
+            .OrderByDescending(track => DataContext.Users.Count(user => user.FavouriteTracks!.Tracks!.Contains(track)))
+            .Select(track => new Track
+            {
+                Id = track.Id,
+                Name = track.Name,
+                Picture = track.Picture,
+                Author = track.Author,
+                IsLiked = SignInManager.IsSignedIn(User)
+                    ? CurrentUserQueryable
+                        .Select(user => user.FavouriteTracks!.Tracks!.Contains(track))
+                        .First()
+                    : null
+            })
+            .Take(15)
+            .ToListAsync();
         return View(new HomePageViewModel
         {
-            Playlists = playlists,
-            User = CurrentUser
+            BestPlaylists = playlists,
+            BestTracks = tracks,
+            Subscriptions = subs
         });
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error() =>
         View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
+
+    [HttpGet, Authorize(Roles = "Sub")]
+    public async Task<IActionResult> Search(string query)
+    {
+        var playlists = await DataContext.Playlists
+            .Include(playlist => playlist.Picture)
+            .Where(playlist => playlist.Name.Contains(query)
+                               && !DataContext.FavouriteTracks.Any(fav => fav.Id == playlist.Id))
+            .ToListAsync();
+        var tracks = new Playlist
+        {
+            Name = $"search result, query = {query}",
+            Tracks = await DataContext.Tracks
+                .Where(track => track.Name.Contains(query))
+                .Select(track => new Track
+                {
+                    Id = track.Id,
+                    Name = track.Name,
+                    Picture = track.Picture,
+                    Author = track.Author,
+                    IsLiked = CurrentUserQueryable.Select(user => user.FavouriteTracks!.Tracks!.Contains(track)).First()
+                })
+                .ToListAsync()
+        };
+        var authors = await DataContext.Authors
+            .Include(author => author.Picture)
+            .Where(author => author.Name.Contains(query))
+            .ToListAsync();
+        return View("SearchResult", new SearchAllViewModel
+        {
+            Playlists = playlists,
+            Tracks = tracks,
+            Authors = authors
+        });
+    }
 }

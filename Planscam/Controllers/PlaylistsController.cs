@@ -19,7 +19,7 @@ public class PlaylistsController : PsmControllerBase
         base(dataContext, userManager, signInManager) =>
         _playlistsRepo = playlistsRepo;
 
-    [HttpGet, Route(nameof(FavoriteTracks)), Authorize]
+    [HttpGet, Authorize]
     public async Task<IActionResult> FavoriteTracks() =>
         RedirectToAction("Index", new
         {
@@ -57,21 +57,9 @@ public class PlaylistsController : PsmControllerBase
             })
             .ToListAsync());
 
-    [NonAction, Obsolete("переписано под ajax")] //[HttpPost, Authorize]
-    public async Task<IActionResult> LikePlaylist(int id, string? returnUrl)
-    {
-        var playlist = await DataContext.Playlists
-            .AsNoTracking()
-            .FirstOrDefaultAsync(playlist => playlist.Id == id);
-        if (playlist is null) return BadRequest();
-        (await CurrentUserQueryable
-            .Include(user => user.Playlists!.Where(_ => false))
-            .FirstAsync()).Playlists!.Add(playlist);
-        await DataContext.SaveChangesAsync();
-        return IsLocalUrl(returnUrl)
-            ? Redirect(returnUrl!)
-            : RedirectToAction("Index", new {id});
-    }
+    [HttpGet, Authorize]
+    public async Task<IActionResult> LayoutPlaylists() =>
+        View(await _playlistsRepo.GetLikedPlaylists(User));
 
     [HttpPost, Authorize]
     public IActionResult LikePlaylist(int id) =>
@@ -79,27 +67,13 @@ public class PlaylistsController : PsmControllerBase
             ? Ok()
             : BadRequest();
 
-    [NonAction, Obsolete("переписано под ajax")] //[HttpPost, Authorize]
-    public async Task<IActionResult> UnlikePlaylist(int id, string? returnUrl)
-    {
-        CurrentUser = await CurrentUserQueryable
-            .Include(user => user.Playlists!.Where(playlist => playlist.Id == id))
-            .FirstAsync();
-        if (!CurrentUser.Playlists!.Any()) return BadRequest();
-        CurrentUser.Playlists!.Clear();
-        await DataContext.SaveChangesAsync();
-        return IsLocalUrl(returnUrl)
-            ? Redirect(returnUrl!)
-            : RedirectToAction("Index", new {id});
-    }
-
     [HttpPost, Authorize]
     public IActionResult UnlikePlaylist(int id) =>
         _playlistsRepo.UnlikePlaylist(User, id)
             ? Ok()
             : BadRequest();
 
-    [HttpGet, Authorize]
+    [HttpGet, Authorize, Obsolete]
     public async Task<IActionResult> Liked()
     {
         CurrentUser = await CurrentUserQueryable
@@ -112,18 +86,51 @@ public class PlaylistsController : PsmControllerBase
     }
 
     [HttpGet, Authorize]
+    public async Task<IActionResult> Owned()
+    {
+        CurrentUser = await CurrentUserQueryable
+            .Include(user => user.OwnedPlaylists!)
+            .Include(user => user.FavouriteTracks!.Tracks!)
+            .ThenInclude(track => track.Author)
+            .Include(user => user.FavouriteTracks!.Tracks!)
+            .ThenInclude(track => track.Picture)
+            .AsNoTracking()
+            .FirstAsync();
+        CurrentUser.FavouriteTracks!.Tracks!.ForEach(track => track.IsLiked = true);
+        CurrentUser.OwnedPlaylists!.Playlists = await DataContext.OwnedPlaylists
+            .Where(playlists => playlists.Id == CurrentUser.OwnedPlaylists.Id)
+            .Include(playlists => playlists.Playlists!)
+            .ThenInclude(playlist => playlist.Picture)
+            .Select(playlists => playlists.Playlists)
+            .FirstAsync();
+        return View(new OwnedPlaylistsViewModel
+        {
+            OwnedPlaylists = CurrentUser.OwnedPlaylists!.Playlists!,
+            FavouriteTracks = CurrentUser.FavouriteTracks!
+        });
+    }
+
+    [HttpGet, Authorize]
     public IActionResult Create() =>
         View();
 
     [HttpPost, Authorize]
-    public IActionResult Create(CreatePlaylistViewModel model) =>
-        ModelState.IsValid
-            ? RedirectToAction("Index",
-                new {_playlistsRepo.CreatePlaylist(User, model.Name, model.Picture.ToPicture()).Id})
-            : View();
+    public IActionResult Create(CreatePlaylistViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+        if (model.Picture is {Length: > 1600000})
+        {
+            ModelState.AddModelError("picture size", "picture size is too big");
+            return View(model);
+        }
+
+        var playlist = _playlistsRepo.CreatePlaylist(User, model.Name, model.Picture.ToPicture());
+        return View("CloseAndRedict", $"/Playlists/Index/{playlist.Id}");
+    }
 
     [HttpGet, Authorize]
-    public async Task<IActionResult> Delete(int id, string? returnUrl) =>
+    public async Task<IActionResult> Delete(int id) =>
         await DataContext.Playlists
             .AnyAsync(playlist =>
                 playlist.Id == id && CurrentUserQueryable.Select(user => user.OwnedPlaylists!.Playlists!)
@@ -131,37 +138,15 @@ public class PlaylistsController : PsmControllerBase
             ? View(new DeletePlaylistViewModel
             {
                 Id = id,
-                ReturnUrl = returnUrl
+                Name = "sugar"
             })
             : BadRequest();
 
     [HttpPost, Authorize]
-    public IActionResult DeleteSure(int id, string? returnUrl) =>
+    public IActionResult DeleteSure(int id) =>
         _playlistsRepo.DeletePlaylist(User, id)
-            ? IsLocalUrl(returnUrl)
-                ? Redirect(returnUrl!)
-                : RedirectToAction("Liked")
+            ? View("CloseAndRedict", $"/Studio/Index")
             : BadRequest();
-
-    [NonAction, Obsolete("переписано под ajax")] //[HttpPost, Authorize]
-    public async Task<IActionResult> AddTrackToPlaylist(int playlistId, int trackId, string returnUrl)
-    {
-        var playlist = await DataContext.Playlists
-            .Include(playlist => playlist.Tracks)
-            .FirstOrDefaultAsync(playlist => playlist.Id == playlistId);
-        if (playlist is null
-            || playlist.Tracks!.Any(t => t.Id == trackId) //не добавлен ли уже этот трек в плейлист
-            || !CurrentUserQueryable
-                .Select(user => user.OwnedPlaylists!.Playlists!)
-                .Any(playlists => playlists.Contains(playlist)) //принадлежит ли плейлист юзеру
-            || DataContext.Tracks.FirstOrDefault(t => t.Id == trackId) is not { } track) //существует ли трек
-            return BadRequest();
-        playlist.Tracks!.Add(track);
-        await DataContext.SaveChangesAsync();
-        return IsLocalUrl(returnUrl)
-            ? Redirect(returnUrl)
-            : RedirectToAction("Index", "Tracks", new {Id = trackId});
-    }
 
     [HttpPost, Authorize]
     public IActionResult AddTrackToPlaylist(int playlistId, int trackId) =>
@@ -210,4 +195,29 @@ public class PlaylistsController : PsmControllerBase
             is { } trackIds
             ? Json(trackIds.Contains(trackId))
             : BadRequest();
+
+    [HttpGet]
+    public async Task<IActionResult> GenerateViewFromTrackIds(int[] ids)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest();
+        var tracks = await DataContext.Tracks
+            .Where(track => ids.Contains(track.Id))
+            .Select(track => new Track
+            {
+                Id = track.Id,
+                Name = track.Name,
+                Picture = track.Picture,
+                Author = track.Author,
+                IsLiked = CurrentUserQueryable.Select(user => user.FavouriteTracks!.Tracks!.Contains(track)).First()
+            })
+            .ToListAsync();
+        var playlist = new Playlist
+        {
+            Name = "Current playlist",
+            Picture = tracks.Select(track => track.Picture).FirstOrDefault(picture => picture is { }),
+            Tracks = tracks
+        };
+        return View(playlist);
+    }
 }

@@ -17,8 +17,25 @@ public class StudioController : PsmControllerBase
     }
 
     [HttpGet]
-    public IActionResult Index() =>
-        View();
+    public async Task<IActionResult> Index()
+    {
+        var author = await DataContext.Authors
+            .Include(author => author.Tracks)
+            .Include(author => author.Picture)
+            .FirstAsync(author => author.User == CurrentUser);
+        author.Tracks = DataContext.Tracks
+            .Where(track => author.Tracks.Contains(track))
+            .Select(track => new Track
+            {
+                Id = track.Id,
+                Name = track.Name,
+                Picture = track.Picture,
+                Author = track.Author,
+                IsLiked = CurrentUserQueryable.Select(user => user.FavouriteTracks!.Tracks!.Contains(track)).First()
+            })
+            .ToList();
+        return View(author);
+    }
 
     [HttpGet]
     public async Task<IActionResult> MyTracks() =>
@@ -61,7 +78,7 @@ public class StudioController : PsmControllerBase
 
         await DataContext.Tracks.AddAsync(track);
         await DataContext.SaveChangesAsync();
-        return View(model);
+        return View("CloseAndRedict", $"/Tracks/Index/{track.Id}");
     }
 
     private IQueryable<Track> GetOwnTrackById(int id, bool includePic = false) =>
@@ -114,6 +131,6 @@ public class StudioController : PsmControllerBase
             .FirstAsync());
 
     [HttpGet]
-    public IActionResult CreateAlbum() => 
-        View();//todo
+    public IActionResult CreateAlbum() =>
+        View(); //todo
 }

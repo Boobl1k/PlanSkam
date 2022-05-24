@@ -1,4 +1,4 @@
-import {Controller, Get, Post, Query} from "@nestjs/common";
+import {Controller, Get, Post, Query, BadRequestException} from "@nestjs/common";
 import {UsersRepository} from "../Data/Repositories/Users.repository";
 
 @Controller('users')
@@ -11,6 +11,11 @@ export class UsersController {
         return this.usersRepo.GetAll();
     }
 
+    @Get('')
+    async index(@Query('id') id: string) {
+        return await this.usersRepo.GetUser(id);
+    }
+
     @Get('isAuthor')
     async isAuthor(@Query('id') id: string) {
         return await this.usersRepo.IsAuthor(id);
@@ -18,34 +23,55 @@ export class UsersController {
 
     @Post('makeAuthor')
     async makeAuthor(@Query('id') id: string) {
-        return (await this.usersRepo.MakeAuthor(id))
-            ? "User is now author"
-            : "Error";
+        if (await this.usersRepo.MakeAuthor(id))
+            return "User is now author";
+        throw new BadRequestException();
     }
 
     @Post('makeNotAuthor')
     async makeNotAuthor(@Query('id') id: string) {
-        return (await this.usersRepo.MakeNotAuthor(id))
-            ? "User is not author now"
-            : "Error";
+        if (await this.usersRepo.MakeNotAuthor(id))
+            return "User is not author now";
+        throw new BadRequestException();
     }
 
     @Get('getFavTracks')
     async getFavTracks(@Query('id') id: string) {
         return await this.usersRepo.getFavTracks(id);
     }
+    
+    @Post('addTrackToFavourites')
+    async addTrackToFavourites(@Query('userId') userId: string, @Query('trackId') trackId: number){
+        if(await this.usersRepo.addTrackToFavourites(userId, trackId))
+            return "Track liked";
+        throw new BadRequestException();
+    }
+    
+    @Post('removeTrackFromFavourites')
+    async removeTrackFromFavourites(@Query('userId') userId: string, @Query('trackId') trackId: number){
+        if(await this.usersRepo.removeTrackFromFavourites(userId, trackId))
+            return "Track unliked";
+        throw new BadRequestException();
+    }
 
     @Post('addPlaylistToLiked')
     async addPlaylistToLiked(@Query('userId') userId: string, @Query('playlistId') playlistId: number) {
-        return await this.usersRepo.addPlaylistToLiked(userId, playlistId)
-            ? "Playlist added"
-            : "Error";
+        if (await this.usersRepo.addPlaylistToLiked(userId, playlistId))
+            return "Playlist added"
+        throw new BadRequestException();
     }
 
     @Post('removePlaylistFromLiked')
     async removePlaylistFromLiked(@Query('userId') userId: string, @Query('playlistId') playlistId: number) {
-        return await this.usersRepo.removePlaylistFromLiked(userId, playlistId)
-            ? "Playlist removed"
-            : "Error";
+        if (await this.usersRepo.removePlaylistFromLiked(userId, playlistId))
+            return "Playlist removed"
+        throw new BadRequestException();
+    }
+
+    @Post('changeEmail')
+    async changeName(@Query('id') id: string, @Query('email') email: string) {
+        if (await this.usersRepo.changeEmail(id, email))
+            return "Email changed to " + email
+        throw new BadRequestException();
     }
 }
