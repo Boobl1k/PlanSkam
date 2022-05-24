@@ -59,8 +59,17 @@ public class HomeController : PsmControllerBase
 
     public async Task<IActionResult> MainPage()
     {
-        var playlists = await DataContext.Playlists
-            .Include(playlist => playlist.Picture)
+        var playlists = await (SignInManager.IsSignedIn(User)
+                ? DataContext.Playlists
+                    .Include(playlist => playlist.Picture)
+                : DataContext.Playlists
+                    .Select(playlist => new Playlist
+                    {
+                        Id = playlist.Id,
+                        Name = playlist.Name,
+                        Picture = playlist.Picture,
+                        IsLiked = CurrentUserQueryable.Select(user => user.Playlists!.Contains(playlist)).First()
+                    }))
             .OrderByDescending(playlist => DataContext.Users.Count(user => user.Playlists!.Contains(playlist)))
             .Take(15)
             .ToListAsync();
@@ -81,7 +90,7 @@ public class HomeController : PsmControllerBase
             })
             .Take(15)
             .ToListAsync();
-        return View("MainPage",new HomePageViewModel
+        return View(new HomePageViewModel
         {
             BestPlaylists = playlists,
             BestTracks = tracks,
