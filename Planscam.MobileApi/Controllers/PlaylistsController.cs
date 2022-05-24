@@ -77,7 +77,23 @@ public class PlaylistsController : PsmControllerBase
             .AsNoTracking()
             .FirstAsync();
         CurrentUser.Playlists!.ForEach(playlist => playlist.IsLiked = true);
-        return Json(CurrentUser);
+        return Json(new
+        {
+            User = new
+            {
+                CurrentUser.Id,
+                CurrentUser.Picture,
+                CurrentUser.Email,
+                CurrentUser.UserName
+            },
+            Playlists = CurrentUser.Playlists.Select(playlist => new
+            {
+                playlist.Id,
+                playlist.Name,
+                playlist.IsLiked,
+                playlist.Picture
+            })
+        });
     }
 
     [HttpPost, OpenIdDictAuthorize]
