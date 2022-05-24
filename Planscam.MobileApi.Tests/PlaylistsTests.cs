@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -9,9 +10,7 @@ namespace Planscam.MobileApi.Tests;
 
 public class PlaylistsTests : TestBase
 {
-    public PlaylistsTests(ITestOutputHelper output) : base(output)
-    {
-    }
+    public PlaylistsTests(ITestOutputHelper output) : base(output) { }
 
     [Fact]
     public async Task All() => await SimpleTest("/Playlists/All");
@@ -42,10 +41,11 @@ public class PlaylistsTests : TestBase
                 .AddTokenToHeaders(Client);
             await SimpleTest(request);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             exception = e;
         }
+
         {
             var request = new HttpRequestMessage(HttpMethod.Post,
                     "/Playlists/RemoveTrackFromPlaylist?playlistId=31&trackId=7")
@@ -70,6 +70,7 @@ public class PlaylistsTests : TestBase
         {
             exception = e;
         }
+
         var unlikeRequest = new HttpRequestMessage(HttpMethod.Post, "/Playlists/UnlikePlaylist?id=1")
             .AddTokenToHeaders(Client, Output);
         await SimpleTest(unlikeRequest);
@@ -85,33 +86,36 @@ public class PlaylistsTests : TestBase
         await SimpleTest(request);
     }
 
-    [Fact]
-    public async Task Create()
+    private async Task<HttpResponseMessage> Create()
     {
         var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/Create")
             .AddTokenToHeaders(Client, Output);
         var content = new MultipartFormDataContent();
         content.Add(new StringContent("fff"), "Name");
         request.Content = content;
-        await SimpleTest(request);
+        return await SimpleTest(request);
     }
 
     [Fact]
-    public async Task DeleteSure()
+    public async Task CreateAndDeleteSure()
     {
-        //todo тут надо с начала создать плейлист запросом /Playlists/Create, получить из ответа айди,
-        //например как сделано в AddTokenToHeaders, и в этом запросе указать этот айди
-        var request = new HttpRequestMessage(HttpMethod.Post, $"/Playlists/DeleteSure?id=1")
+        var createResponse = await Create();
+        int id = (JsonConvert.DeserializeObject(await createResponse.Content.ReadAsStringAsync()) as dynamic).id;
+        var request = new HttpRequestMessage(HttpMethod.Post, $"/Playlists/DeleteSure?id={id}")
             .AddTokenToHeaders(Client, Output);
         await SimpleTest(request);
     }
 
     [Fact]
-    public async Task RemoveTrackFromPlaylist()
+    public async Task AddAndRemoveTrackFromPlaylist()
     {
-        //todo тут надо указать айдишники и трека, и плейлиста
-        var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/RemoveTrackFromPlaylist")
-            .AddTokenToHeaders(Client, Output);
-        await SimpleTest(request);
+        var addRequest =
+            new HttpRequestMessage(HttpMethod.Post, "Playlists/AddTrackToPlaylist?playlistId=31&trackId=2")
+                .AddTokenToHeaders(Client);
+        await SimpleTest(addRequest);
+        var removeRequest =
+            new HttpRequestMessage(HttpMethod.Post, "/Playlists/RemoveTrackFromPlaylist?playlistId=31&trackId=2")
+                .AddTokenToHeaders(Client, Output);
+        await SimpleTest(removeRequest);
     }
 }
