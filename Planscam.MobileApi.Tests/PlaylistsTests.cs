@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -10,7 +11,9 @@ namespace Planscam.MobileApi.Tests;
 
 public class PlaylistsTests : TestBase
 {
-    public PlaylistsTests(ITestOutputHelper output) : base(output) { }
+    public PlaylistsTests(ITestOutputHelper output) : base(output)
+    {
+    }
 
     [Fact]
     public async Task All() => await SimpleTest("/Playlists/All");
@@ -19,15 +22,25 @@ public class PlaylistsTests : TestBase
     public async Task Index() => await SimpleTest("Playlists/Index?id=1");
 
     [Fact]
-    public async Task GetData() => await SimpleTest("Playlists/GetData?id=1");
+    public async Task GetData()
+    {
+        var res = await SimpleTest("Playlists/GetData?id=2");
+        dynamic resObj = JsonConvert.DeserializeObject(await res.Content.ReadAsStringAsync());
+        Assert.Equal("test playlist", (string) resObj.name);
+        Assert.Equal(5, (int) resObj.trackIds[0]);
+        Assert.Equal(6, (int) resObj.trackIds[1]);
+        Assert.Equal(7, (int) resObj.trackIds[2]);
+    }
 
     [Fact]
     public async Task FavouriteTracks()
     {
         var request = new HttpRequestMessage(HttpMethod.Get, "Playlists/FavoriteTracks")
-            .AddTokenToHeaders(Client, Output);
-        Output.WriteLine(request.Headers.First().Key + " " + request.Headers.First().Value.First());
-        await SimpleTest(request);
+            .AddTokenToHeaders(Client);
+        var response = await SimpleTest(request);
+        dynamic resObj = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
+        Assert.Equal(@"qwe's favorite tracks", (string) resObj.name);
+        Assert.True(((JArray) resObj.tracks).Count is >= 6 and <= 7);
     }
 
     [Fact]
@@ -82,24 +95,36 @@ public class PlaylistsTests : TestBase
     public async Task Liked()
     {
         var request = new HttpRequestMessage(HttpMethod.Get, "/Playlists/Liked")
-            .AddTokenToHeaders(Client, Output);
-        await SimpleTest(request);
+            .AddTokenToHeaders(Client); 
+        var response = await SimpleTest(request);
+        dynamic resObj = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
+        Assert.Equal("ddd", (string)resObj.playlists[0].name);
+        Assert.Equal("fff", (string)resObj.playlists[1].name);
     }
 
-    private async Task<HttpResponseMessage> Create()
+    private async Task<HttpResponseMessage> CreatePlaylist(string name = "fff")
     {
         var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/Create")
-            .AddTokenToHeaders(Client, Output);
+            .AddTokenToHeaders(Client);
         var content = new MultipartFormDataContent();
-        content.Add(new StringContent("fff"), "Name");
+        content.Add(new StringContent(name), "Name");
         request.Content = content;
         return await SimpleTest(request);
     }
 
     [Fact]
+    public async Task Create()
+    {
+        const string name = "test create playlist name";
+        var res = await CreatePlaylist(name);
+        dynamic resObj = JsonConvert.DeserializeObject(await res.Content.ReadAsStringAsync());
+        Assert.Equal(name, (string)resObj.name);
+    }
+
+    [Fact]
     public async Task CreateAndDeleteSure()
     {
-        var createResponse = await Create();
+        var createResponse = await CreatePlaylist();
         int id = (JsonConvert.DeserializeObject(await createResponse.Content.ReadAsStringAsync()) as dynamic).id;
         var request = new HttpRequestMessage(HttpMethod.Post, $"/Playlists/DeleteSure?id={id}")
             .AddTokenToHeaders(Client, Output);
