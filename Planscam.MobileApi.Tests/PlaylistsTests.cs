@@ -1,7 +1,6 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -10,7 +9,9 @@ namespace Planscam.MobileApi.Tests;
 
 public class PlaylistsTests : TestBase
 {
-    public PlaylistsTests(ITestOutputHelper output) : base(output) { }
+    public PlaylistsTests(ITestOutputHelper output) : base(output)
+    {
+    }
 
     [Fact]
     public async Task All() => await SimpleTest("/Playlists/All");
@@ -33,11 +34,17 @@ public class PlaylistsTests : TestBase
     [Fact]
     public async Task AddTrackToPlaylist()
     {
+        Exception? exception = null;
+        try
         {
             var request = new HttpRequestMessage(HttpMethod.Post,
                     "/Playlists/AddTrackToPlaylist?playlistId=31&trackId=7")
                 .AddTokenToHeaders(Client);
             await SimpleTest(request);
+        }
+        catch(Exception e)
+        {
+            exception = e;
         }
         {
             var request = new HttpRequestMessage(HttpMethod.Post,
@@ -45,26 +52,33 @@ public class PlaylistsTests : TestBase
                 .AddTokenToHeaders(Client);
             await SimpleTest(request);
         }
+        if (exception is { })
+            throw exception;
     }
 
     [Fact]
-    public async Task LikePlaylist()
+    public async Task LikeAndUnlikePlaylist()
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/LikePlaylist?id=1")
+        Exception? exception = null;
+        try
+        {
+            var likeRequest = new HttpRequestMessage(HttpMethod.Post, "/Playlists/LikePlaylist?id=1")
+                .AddTokenToHeaders(Client, Output);
+            await SimpleTest(likeRequest);
+        }
+        catch (Exception e)
+        {
+            exception = e;
+        }
+        var unlikeRequest = new HttpRequestMessage(HttpMethod.Post, "/Playlists/UnlikePlaylist?id=1")
             .AddTokenToHeaders(Client, Output);
-        await SimpleTest(request);
+        await SimpleTest(unlikeRequest);
+        if (exception is { })
+            throw exception;
     }
 
     [Fact]
-    public async Task UnlikePlaylist()
-    {
-        var request = new HttpRequestMessage(HttpMethod.Post, "/Playlists/UnlikePlaylist?id=1")
-            .AddTokenToHeaders(Client, Output);
-        await SimpleTest(request);
-    }
-
-    [Fact]
-    public async Task Liked() //todo тут тест валится по причине того что на тестируемом методе баг, то есть тест хороший
+    public async Task Liked()
     {
         var request = new HttpRequestMessage(HttpMethod.Get, "/Playlists/Liked")
             .AddTokenToHeaders(Client, Output);
