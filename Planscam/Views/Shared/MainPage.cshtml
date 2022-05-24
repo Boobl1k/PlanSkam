@@ -1,0 +1,43 @@
+@using Planscam.Extensions
+@model Planscam.Models.HomePageViewModel
+@{
+    Layout = "";
+}
+
+<div class="mainPage">
+    <div class="popularPlaylists">
+        <span class="mainSpan">Popular playlists</span>
+        <div class="popularPlaylistsListContainer">
+            <div class="popularPlaylistsList">
+                @foreach (var playlist in Model.BestPlaylists)
+                {
+                    <div class="popularPlaylist">
+                        <div class="popularPlaylistContainer">
+                            @Html.DrawSmallPlaylistPic(@playlist.Picture, "popularPlaylistImg")
+                            <div class="popularPlaylistBtns">
+                            
+                                <i onclick="likePlaylistHome(@playlist.Id)" style="font-size: 30px;" class="popularPlaylistBtn fi fi-rr-heart"></i>
+                                <i onclick="playPlaylist(@playlist.Id)" style="font-size: 45px;" class="popularPlaylistBtn fi fi-rr-play"></i>
+                                <i onclick="loadPage(`Playlists/Index/${@playlist.Id}`)" style="font-size: 28px;" class="popularPlaylistBtn fi fi-rr-indent"></i>
+                            </div>
+                        </div>
+                        <span onclick="loadPage(`Playlists/Index/${@playlist.Id}`)" class="popularPlaylistSpan">
+                            @playlist.Name
+                        </span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div b-4rrdvvqhni="" class="line glowing1 bcolor1" style="margin: 15px 0;">⠀</div>
+    <div class="subscribesContainer">
+        subscribes
+    </div>
+    <div b-4rrdvvqhni="" class="line glowing2 bcolor2" style="margin: 15px 0;">⠀</div>
+    <div class="popularTracks">
+        <span class="mainSpan">User's choice</span>
+        <div class="trackListContainer">
+            @await Html.PartialAsync("TrackListCustom", Model.BestTracks)
+        </div>
+    </div>
+</div>

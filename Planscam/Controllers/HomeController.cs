@@ -21,12 +21,12 @@ public class HomeController : PsmControllerBase
     {
         var playlists = await DataContext.Playlists
             .Include(playlist => playlist.Picture)
-            .OrderBy(playlist => DataContext.Users.Count(user => user.Playlists!.Contains(playlist)))
-            .Take(5)
+            .OrderByDescending(playlist => DataContext.Users.Count(user => user.Playlists!.Contains(playlist)))
+            .Take(15)
             .ToListAsync();
         var subs = await DataContext.Subscriptions.ToListAsync();
         var tracks = await DataContext.Tracks
-            .OrderBy(track => DataContext.Users.Count(user => user.FavouriteTracks!.Tracks!.Contains(track)))
+            .OrderByDescending(track => DataContext.Users.Count(user => user.FavouriteTracks!.Tracks!.Contains(track)))
             .Select(track => new Track
             {
                 Id = track.Id,
@@ -39,7 +39,7 @@ public class HomeController : PsmControllerBase
                         .First()
                     : null
             })
-            .Take(5)
+            .Take(15)
             .ToListAsync();
         return View(new HomePageViewModel
         {
