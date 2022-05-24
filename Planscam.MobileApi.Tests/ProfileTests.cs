@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -23,14 +24,14 @@ public class ProfileTests : TestBase
     public async Task Edit()
     {
         const string newName = "rew";
-        const string oldName = "qwe";
+        const string oldName = "testttt";
         var indexResponse = await SimpleTest(new HttpRequestMessage(HttpMethod.Get, "Profile/Index")
-            .AddTokenToHeaders(Client));
+            .AddTokenToHeaders(Client, null, oldName));
         dynamic index1Obj = JsonConvert.DeserializeObject(await indexResponse.Content.ReadAsStringAsync());
         string email = index1Obj.email;
         string id = index1Obj.id;
         var edit1Request = new HttpRequestMessage(HttpMethod.Post, "Profile/Edit")
-            .AddTokenToHeaders(Client);
+            .AddTokenToHeaders(Client, null, oldName);
         edit1Request.Content = JsonContent.Create(new {name = newName, email, id});
         var edit1Response = await SimpleTest(edit1Request);
         dynamic editObj = JsonConvert.DeserializeObject(await edit1Response.Content.ReadAsStringAsync());
