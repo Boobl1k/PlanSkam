@@ -61,15 +61,15 @@ public class HomeController : PsmControllerBase
     {
         var playlists = await (SignInManager.IsSignedIn(User)
                 ? DataContext.Playlists
-                    .Include(playlist => playlist.Picture)
-                : DataContext.Playlists
                     .Select(playlist => new Playlist
                     {
                         Id = playlist.Id,
                         Name = playlist.Name,
                         Picture = playlist.Picture,
                         IsLiked = CurrentUserQueryable.Select(user => user.Playlists!.Contains(playlist)).First()
-                    }))
+                    })
+                : DataContext.Playlists
+                    .Include(playlist => playlist.Picture))
             .OrderByDescending(playlist => DataContext.Users.Count(user => user.Playlists!.Contains(playlist)))
             .Take(15)
             .ToListAsync();

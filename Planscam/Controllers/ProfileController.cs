@@ -64,6 +64,6 @@ public class ProfileController : PsmControllerBase
         user.Email = model.Email;
         await UserManager.UpdateAsync(user);
         model.Picture = user.Picture;
-        return View(model);
+        return View("CloseAndRedict","Profile/Index");
     }
 }

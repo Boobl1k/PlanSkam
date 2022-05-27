@@ -28,9 +28,9 @@ public class SubscriptionsController : PsmControllerBase
         };
 
     [HttpPost]
-    public async Task<IActionResult> BuySub(int subId)
+    public async Task<IActionResult> BuySub(int id)
     {
-        var sub = await DataContext.Subscriptions.FindAsync(subId);
+        var sub = await DataContext.Subscriptions.FindAsync(id);
         if (sub is null) return BadRequest();
         await UserManager.AddToRoleAsync(CurrentUser, "Sub");
         CurrentUser.SubExpires = DateTime.Now + Subscription.SubscriptionDurationToTimeSpan(sub.Duration);

@@ -43,15 +43,15 @@
 <body>
     <div class="background"></div>
     <div class="formWindowContainer">
-        <form enctype="multipart/form-data" class="formWindow" asp-controller="Playlists" asp-action="Create">
+        <form enctype="multipart/form-data" class="formWindow" asp-controller="Profile" asp-action="Edit">
             @Html.EditorForModel()
             <div class="fileInputContainer">
-                <input class="fileInput" type="file" accept=".jpg" name="Picture" id="imgInput" />
+                <input class="fileInput" type="file" accept=".jpg" name="UploadImage" id="imgInput" />
                 <div class="inputLabel" id="imgInputLabel">
                     Picture <i class="fi fi-rr-download"></i>
                 </div>
             </div>
-            <input type="submit" value="Create" />
+            <input type="submit" value="Save" />
         </form>
     </div>
     <script>
@@ -59,42 +59,3 @@
         imgInput();
     </script>
 </body>
-
-
-<style>
-    .container {
-        display: block;
-        justify-content: space-between;
-        flex: 1;
-        font-size: 20px;
-        margin: 50px;
-        }
-    .edit_email_block, .edit_name_block, .edit_author_block {
-        display: flex;
-    }
-    .edit_author_label, .edit_email_label, .edit_name_label {
-        margin-right: 20px;
-    }
-    .edit_img_block img {
-        width: 200px !important;
-        height: 180px !important;
-    }
-    .edit_author_checkbox {
-        padding: 17px 0;
-    }
-    .edit_name_change input, .edit_email_change input{
-    border-bottom:  1px solid var(--color2);
-    border-top: 0;
-    border-left: 0;
-    border-right: 0;
-    size: 50px;
-    background-color: transparent;
-    margin: 25px 0;
-    }
-    .edit_email_label {
-    margin-right: 25px;
-    }
-    .upload_files_block {
-    margin-left: 50px;
-    }
-</style>
