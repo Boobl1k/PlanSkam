@@ -12,10 +12,12 @@ internal static class Seed
             new IdentityRole
             {
                 Name = "Author",
+                NormalizedName = "AUTHOR"
             },
             new IdentityRole
             {
-                Name = "Sub"
+                Name = "SUB",
+                NormalizedName = "SUB"
             });
         return modelBuilder;
     }

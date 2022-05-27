@@ -12,8 +12,8 @@ using Planscam.DataAccess;
 namespace Planscam.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220523222920_userSubExpires")]
-    partial class userSubExpires
+    [Migration("20220527203144_subs")]
+    partial class subs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -53,15 +53,17 @@ namespace Planscam.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2d912b43-84c4-460e-bbfd-9bb16d1bb4e3",
-                            ConcurrencyStamp = "4401abca-6ed9-4fbd-a073-b1ea46c29562",
-                            Name = "Author"
+                            Id = "d3347147-be2e-480e-ba0d-2f81045a8ca4",
+                            ConcurrencyStamp = "9053c27c-2f1f-40fd-bb20-7aaa94ee9e0e",
+                            Name = "Author",
+                            NormalizedName = "AUTHOR"
                         },
                         new
                         {
-                            Id = "1aa278af-7fd5-4d1f-9f15-51d4983eefb1",
-                            ConcurrencyStamp = "ca247a30-f436-4566-822a-835720a7678f",
-                            Name = "Sub"
+                            Id = "c86e25a1-8003-431b-8b91-4090dab4f1dd",
+                            ConcurrencyStamp = "59ef3d94-814d-4721-a27e-a0a3945d9507",
+                            Name = "SUB",
+                            NormalizedName = "SUB"
                         });
                 });
 
