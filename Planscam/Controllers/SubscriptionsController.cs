@@ -32,9 +32,20 @@ public class SubscriptionsController : PsmControllerBase
     {
         var sub = await DataContext.Subscriptions.FindAsync(id);
         if (sub is null) return BadRequest();
-        await UserManager.AddToRoleAsync(CurrentUser, "Sub");
+        await UserManager.AddToRoleAsync(CurrentUser, "SUB");
         CurrentUser.SubExpires = DateTime.Now + Subscription.SubscriptionDurationToTimeSpan(sub.Duration);
         await DataContext.SaveChangesAsync();
         return View("CloseAndReload");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UnSub()
+    {
+        if (!await UserManager.IsInRoleAsync(CurrentUser, "SUB"))
+            return BadRequest();
+        await UserManager.RemoveFromRoleAsync(CurrentUser, "SUB");
+        CurrentUser.SubExpires = null;
+        await UserManager.UpdateAsync(CurrentUser);
+        return Ok();
     }
 }
