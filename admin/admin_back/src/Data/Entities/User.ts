@@ -10,6 +10,9 @@ export class User {
 
     @Column()
     UserName: string;
+    
+    @Column()
+    NormalizedUserName: string;
 
     @ManyToMany(() => Playlist, playlist => playlist.Users)
     @JoinTable({
@@ -47,4 +50,25 @@ export class User {
     
     @Column()
     FavouriteTracksId: number;
+    
+    @Column()
+    PasswordHash: string;
+    
+    @Column()
+    EmailConfirmed: boolean;
+    
+    @Column()
+    PhoneNumberConfirmed: boolean;
+    
+    @Column()
+    TwoFactorEnabled: boolean;
+    
+    @Column()
+    LockoutEnabled: boolean;
+    
+    @Column()
+    AccessFailedCount: number;
+    
+    @Column()
+    OwnedPlaylistsId: number;
 }

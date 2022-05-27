@@ -10,6 +10,7 @@ import {Author} from "../Data/Entities/Author";
 import {AuthorsModule} from "./Authors.module";
 import {TracksModule} from "./Tracks.module";
 import {TrackData} from "../Data/Entities/TrackData";
+import {AuthModule} from "./auth.module";
 
 @Module({
     imports: [
@@ -25,7 +26,8 @@ import {TrackData} from "../Data/Entities/TrackData";
         UsersModule,
         PlaylistsModule,
         AuthorsModule,
-        TracksModule
+        TracksModule,
+        AuthModule
     ]
 })
 export class AppModule {
