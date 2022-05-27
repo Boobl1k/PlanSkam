@@ -15,4 +15,6 @@ public class UserViewModel
     
     [HiddenInput(DisplayValue = false)]
     public bool IsAuthor { get; set; } = false;
+
+    public DateTime? SubExpires;
 }

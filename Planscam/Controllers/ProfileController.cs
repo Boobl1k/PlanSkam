@@ -20,7 +20,8 @@ public class ProfileController : PsmControllerBase
         new()
         {
             Id = user.Id, Name = user.UserName, Email = user.Email, Picture = user.Picture,
-            IsAuthor = User.IsInRole("Author")
+            IsAuthor = User.IsInRole("Author"),
+            SubExpires = user.SubExpires
         };
 
     //я тут ультанул
