@@ -1,8 +1,0 @@
-{
-  "type": "mssql",
-  "host": "localhost",
-  "database": "planscam",
-  "port": 1433,
-  "username": "planscam_user",
-  "password": "planscam"
-}

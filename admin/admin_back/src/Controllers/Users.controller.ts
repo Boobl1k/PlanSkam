@@ -1,5 +1,6 @@
-import {Controller, Get, Post, Query, BadRequestException} from "@nestjs/common";
+import {Controller, Get, Post, Query, BadRequestException, UseGuards} from "@nestjs/common";
 import {UsersRepository} from "../Data/Repositories/Users.repository";
+import {JwtAuthGuard} from "../auth.guard";
 
 @Controller('users')
 export class UsersController {
@@ -7,6 +8,7 @@ export class UsersController {
     }
 
     @Get('getAll')
+    @UseGuards(JwtAuthGuard)
     async getAll() {
         return this.usersRepo.GetAll();
     }
