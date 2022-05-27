@@ -20,8 +20,14 @@ public class TracksController : PsmControllerBase
         id is null
             ? View()
             : await DataContext.Tracks
-                .Include(t => t.Picture)
-                .Include(t => t.Author)
+                .Select(t => new Track
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    Picture = t.Picture,
+                    Author = t.Author,
+                    IsLiked = CurrentUserQueryable.Select(user => user.FavouriteTracks!.Tracks!.Contains(t)).First()
+                })
                 .FirstOrDefaultAsync(t => t.Id == id) is { } track
                 ? View(new TrackIndexViewModel
                 {
