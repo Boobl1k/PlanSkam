@@ -33,7 +33,7 @@ export default class All extends Component {
                                 <td>{user.Id}</td>
                                 <td>{user.UserName}</td>
                                 <td>
-                                    <Button to={`../user/${user.Id}`}>OPEN</Button>
+                                    <NavLink to={`../user/${user.Id}`}>OPEN</NavLink>
                                 </td>
                             </tr>
                         })
