@@ -69,35 +69,17 @@ function Registration() {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Controller
-                            name="firstName"
+                            name="userName"
                             control={control}
                             defaultValue=""
                             render={({ field }) => (
                                 <TextField
                                     {...field}
-                                    error={Boolean(errors.firstName?.message)}
+                                    error={Boolean(errors.userName?.message)}
                                     fullWidth={true}
-                                    label="First name"
+                                    label="Username"
                                     variant="filled"
-                                    helperText={errors.firstName?.message}
-                                />
-                            )}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <Controller
-                            name="lastName"
-                            control={control}
-                            defaultValue=""
-                            render={({ field }) => (
-                                <TextField
-                                    {...field}
-                                    error={Boolean(errors.lastName?.message)}
-                                    fullWidth={true}
-                                    label="Last name"
-                                    variant="filled"
-                                    helperText={errors.lastName?.message}
+                                    helperText={errors.userName?.message}
                                 />
                             )}
                         />

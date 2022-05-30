@@ -6,7 +6,7 @@ export default class All extends Component {
         super(props);
 
         this.state = {
-            users: [{Id: ''}]
+            users: []
         }
         this.click = this.click.bind(this);
     }
@@ -14,12 +14,13 @@ export default class All extends Component {
     click() {
         fetch("http://localhost:3000/users/getAll")
             .then(res => {
-                res.text().then(text => this.setState({users: JSON.parse(text)}));
+                if(res.status === 200) res.text().then(text => this.setState({users: JSON.parse(text)}));
             })
     }
 
     render() {
         const renderUsers = (users) => {
+            console.log(users);
             return <div className="d-flex justify-content-center align-items-center py-3">
                 <table className="d-flex justify-content-center align-items-center py-3">
                     <tr className="nav nav-pills">

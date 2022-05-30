@@ -41,8 +41,7 @@ function Login() {
         try {
             setIsLoading(true);
             const { data: loginData } = await api.auth.login(data);
-
-            auth.setToken(loginData.token);
+            auth.setToken(loginData);
             auth.setUser(loginData.user);
         } catch (e) {
             if (e.response.status === 422) {
@@ -69,18 +68,18 @@ function Login() {
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Controller
-                            name="email"
+                            name="userName"
                             control={control}
                             defaultValue=""
                             render={({ field }) => (
                                 <TextField
                                     {...field}
-                                    error={Boolean(errors.email?.message)}
+                                    error={Boolean(errors.userName?.message)}
                                     fullWidth={true}
-                                    type="email"
-                                    label="Email"
+                                    type="text"
+                                    label="Username"
                                     variant="filled"
-                                    helperText={errors.email?.message}
+                                    helperText={errors.userName?.message}
                                 />
                             )}
                         />

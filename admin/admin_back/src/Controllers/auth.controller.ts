@@ -15,9 +15,10 @@ export class AuthController {
 
     @Post('login')
     async login(@Body() loginDto: LoginDto) {
+        console.log(loginDto)
         const user = await this.usersRepo.findOne({where: {UserName: loginDto.userName}})
         if (user == null) {
-            throw new HttpException('wrong email', HttpStatus.BAD_REQUEST);
+            throw new HttpException('wrong username', HttpStatus.BAD_REQUEST);
         }
         if (!bcryptjs.compareSync(loginDto.password, user.PasswordHash)) {
             throw new HttpException('wrong pass, the right one is AIF29fsjd', HttpStatus.BAD_REQUEST);
@@ -27,6 +28,8 @@ export class AuthController {
 
     @Post('register')
     async register(@Body() registerDto: RegisterDto) {
+        console.log(registerDto);
+        
         const normalizedUserName = registerDto.userName.toUpperCase();
         if (await this.usersRepo.findOne({where: {NormalizedUserName: normalizedUserName}}) != null) {
             throw new HttpException(`username ${registerDto.userName} already exists`, HttpStatus.BAD_REQUEST);

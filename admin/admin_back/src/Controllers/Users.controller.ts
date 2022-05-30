@@ -8,7 +8,7 @@ export class UsersController {
     }
 
     @Get('getAll')
-    //@UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     async getAll() {
         return this.usersRepo.GetAll();
     }
