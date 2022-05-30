@@ -5,9 +5,10 @@ import {
     Button,
     makeStyles,
 } from "@material-ui/core";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import "./App.css";
 import Routes from "./routes/Routes";
+import useAuth from "./hooks/useAuth";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -23,6 +24,14 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
     const classes = useStyles();
+    const auth = useAuth();
+    const navigate = useNavigate();
+
+    const onLogOut = () => {
+        auth.logOut();
+        navigate("/login");
+    };
+    
     return (
         <div className={classes.root}>
             <AppBar position="static">
@@ -44,6 +53,26 @@ function App() {
                             Authors
                         </Button>
                     </div>
+                    {auth.isLoaded &&
+                        (auth.user ? (
+                            <>
+                                <Button color="inherit" component={Link} to="/profile">
+                                    {auth.user.firstName} {auth.user.lastName}
+                                </Button>
+                                <Button color="inherit" onClick={onLogOut}>
+                                    Log out
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button color="inherit" component={Link} to="/login">
+                                    Login
+                                </Button>
+                                <Button color="inherit" component={Link} to="/registration">
+                                    Registration
+                                </Button>
+                            </>
+                        ))}
                 </Toolbar>
             </AppBar>
             <Routes/>
