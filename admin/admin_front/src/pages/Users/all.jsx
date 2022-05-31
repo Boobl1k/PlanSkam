@@ -1,5 +1,6 @@
 import {Component} from "react";
 import {NavLink} from "react-router-dom";
+import axios from "../../services/api/axios";
 
 export default class All extends Component {
     constructor(props) {
@@ -12,10 +13,10 @@ export default class All extends Component {
     }
 
     click() {
-        fetch("http://localhost:3000/users/getAll")
+        axios.get("http://localhost:3000/users/getAll")
             .then(res => {
-                if(res.status === 200) res.text().then(text => this.setState({users: JSON.parse(text)}));
-            })
+                if(res.status === 200) this.setState({users: res.data});
+            });
     }
 
     render() {

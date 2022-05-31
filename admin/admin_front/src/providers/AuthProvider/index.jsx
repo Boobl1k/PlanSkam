@@ -13,8 +13,6 @@ function AuthProvider(props) {
 
     if (tokenData) {
       Cookies.set("auth-token", tokenData);
-    } else {
-      Cookies.remove("auth-token");
     }
   }, []);
 
@@ -52,7 +50,7 @@ function AuthProvider(props) {
       setToken,
       logOut,
     }),
-    [isLoaded, user, token, setToken, logOut]
+    [isLoaded, user, token, setUser, setToken, logOut]
   );
 
   return (
