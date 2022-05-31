@@ -1,7 +1,9 @@
-import {BadRequestException, Controller, Get, Post, Query} from "@nestjs/common";
+import {BadRequestException, Controller, Get, Post, Query, UseGuards} from "@nestjs/common";
 import {TracksRepository} from "../Data/Repositories/Tracks.repository";
+import {JwtAuthGuard} from "../auth.guard";
 
 @Controller('tracks')
+@UseGuards(JwtAuthGuard)
 export class TracksController {
     constructor(private readonly tracksRepo: TracksRepository) {
     }

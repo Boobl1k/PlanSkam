@@ -1,4 +1,5 @@
 import {Component} from "react";
+import axios from "../services/api/axios";
 
 export default class Playlist extends Component {
     constructor(props) {
@@ -8,29 +9,23 @@ export default class Playlist extends Component {
     }
 
     removePlaylistFromLiked() {
-        const req = new XMLHttpRequest();
-        req.open('POST',
-            `http://localhost:3000/users/removePlaylistFromLiked?userId=${this.props.userId}&playlistId=${this.props.id}`);
-        req.addEventListener('readystatechange', () => {
-            if (req.readyState === 4 && req.status === 201) {
-                console.log(req.responseText);
-                this.props.move(this.props.id);
-            }
-        });
-        req.send();
+        axios.post(`/users/removePlaylistFromLiked?userId=${this.props.userId}&playlistId=${this.props.id}`)
+            .then(res => {
+                if (res.status === 201) {
+                    console.log(res.data);
+                    this.props.move(this.props.id);
+                }
+            });
     }
 
     addPlaylistToLiked() {
-        const req = new XMLHttpRequest();
-        req.open('POST',
-            `http://localhost:3000/users/addPlaylistToLiked?userId=${this.props.userId}&playlistId=${this.props.id}`);
-        req.addEventListener('readystatechange', () => {
-            if (req.readyState === 4 && req.status === 201) {
-                console.log(req.responseText);
-                this.props.move(this.props.id);
-            }
-        });
-        req.send();
+        axios.post(`/users/addPlaylistToLiked?userId=${this.props.userId}&playlistId=${this.props.id}`)
+            .then(res => {
+                if (res.status === 201) {
+                    console.log(res.data);
+                    this.props.move(this.props.id);
+                }
+            });
     }
 
     render() {

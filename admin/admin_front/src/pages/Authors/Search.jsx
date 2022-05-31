@@ -1,5 +1,6 @@
 import {Component} from "react";
 import Author from "../../components/Author";
+import axios from "../../services/api/axios";
 
 export default class Search extends Component {
     constructor(props) {
@@ -13,11 +14,11 @@ export default class Search extends Component {
 
     search() {
         if (this.state.query !== '')
-            fetch(`http://localhost:3000/authors/search?query=${this.state.query}`)
-                .then(res => res.text().then(text => {
-                    console.log(text);
-                    this.setState({authors: JSON.parse(text)});
-                }))
+            axios.get(`/authors/search?query=${this.state.query}`)
+                .then(res => {
+                    console.log(res.data);
+                    this.setState({authors: res.data});
+                })
     }
 
     render() {

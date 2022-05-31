@@ -1,6 +1,7 @@
 import {Component} from "react";
 import Track from "../../components/Track"
 import Playlist from "../../components/Playlist";
+import axios from "../../services/api/axios";
 
 export default class User extends Component {
     constructor(props) {
@@ -14,33 +15,33 @@ export default class User extends Component {
             playlists: [],
             availablePlaylists: []
         }
-        fetch(`http://localhost:3000/users?id=${props.id}`)
-            .then(res => res.text().then(text => {
-                console.log(text);
-                this.setState({user: JSON.parse(text)});
-            }))
-        fetch(`http://localhost:3000/users/isAuthor?id=${props.id}`)
-            .then(res => res.text().then(text => {
-                console.log(text);
-                this.setState({isAuthor: text === 'true'});
-            }))
-        fetch(`http://localhost:3000/users/getFavTracks?id=${props.id}`)
-            .then(res => res.text().then(text => {
-                console.log('fav tracks: ' + text);
-                const tracks = JSON.parse(text);
+        axios.get(`/users?id=${props.id}`)
+            .then(res => {
+                console.log(res.data);
+                this.setState({user: res.data});
+            })
+        axios.get(`/users/isAuthor?id=${props.id}`)
+            .then(res => {
+                console.log(res.data);
+                this.setState({isAuthor: res.data === 'true'});
+            })
+        axios.get(`/users/getFavTracks?id=${props.id}`)
+            .then(res => {
+                console.log('fav tracks: ' + res.data);
+                const tracks = res.data;
                 this.setState({tracks: tracks});
                 return tracks;
-            }));
-        fetch(`http://localhost:3000/playlists/getLikedPlaylists?userId=${props.id}`)
-            .then(res => res.text().then(text => {
-                console.log(text);
-                this.setState({playlists: JSON.parse(text)})
-            }))
-        fetch(`http://localhost:3000/playlists/getAvailablePlaylists?userId=${props.id}`)
-            .then(res => res.text().then(text => {
-                console.log(text);
-                this.setState({availablePlaylists: JSON.parse(text)})
-            }))
+            });
+        axios.get(`/playlists/getLikedPlaylists?userId=${props.id}`)
+            .then(res => {
+                console.log(res.data);
+                this.setState({playlists: res.data})
+            })
+        axios.get(`/playlists/getAvailablePlaylists?userId=${props.id}`)
+            .then(res => {
+                console.log(res.data);
+                this.setState({availablePlaylists: res.data})
+            })
         this.changeAuthorState = this.changeAuthorState.bind(this);
         this.changeEmail = this.changeEmail.bind(this);
         this.removeTrackFromFavourites = this.removeTrackFromFavourites.bind(this);
@@ -52,26 +53,19 @@ export default class User extends Component {
 
     changeAuthorState() {
         const isAuthor = this.state.isAuthor;
-        const req = new XMLHttpRequest();
-        const method = isAuthor ? "makeNotAuthor" : "makeAuthor"
-        req.open('POST', `http://localhost:3000/users/` + method + `?id=${this.state.user.Id}`);
-        req.send();
-        req.addEventListener('readystatechange', () => {
-            if (req.readyState === 4)
-                console.log(req.responseText);
-            if (req.readyState === 4 && req.status === 201)
-                this.setState({isAuthor: !isAuthor});
-        });
+        const method = isAuthor ? "makeNotAuthor" : "makeAuthor";
+        axios.post(`/users/` + method + `?id=${this.state.user.Id}`)
+            .then(res => {
+                if (res.status === 201)
+                    this.setState({isAuthor: !isAuthor})
+            });
     }
 
     changeEmail() {
-        const req = new XMLHttpRequest();
-        req.open('POST', `http://localhost:3000/users/changeEmail?id=${this.state.user.Id}&email=${this.state.user.Email}`);
-        req.addEventListener('readystatechange', () => {
-            if (req.readyState === 4)
-                console.log(req.responseText);
-        });
-        req.send();
+        axios.post(`/users/changeEmail?id=${this.state.user.Id}&email=${this.state.user.Email}`)
+            .then(res => {
+                console.log(res.data)
+            })
     }
 
     removeTrackFromFavourites(trackId) {
@@ -96,11 +90,11 @@ export default class User extends Component {
 
     setAvailableTracks() {
         const tracks = this.state.tracks;
-        fetch(`http://localhost:3000/tracks/searchTracks?query=${this.state.availableTracksQuery}`)
-            .then(res => res.text().then(text => {
-                console.log('available tracks: ' + text);
+        axios.get(`/tracks/searchTracks?query=${this.state.availableTracksQuery}`)
+            .then(res => {
+                console.log('available tracks: ' + res.data);
                 this.setState({
-                    availableTracks: JSON.parse(text).filter(track => {
+                    availableTracks: res.data.filter(track => {
                         let used = false;
                         tracks.forEach(t => {
                             used = used || t.Id === track.Id;
@@ -109,7 +103,7 @@ export default class User extends Component {
                         return !used;
                     })
                 })
-            }))
+            })
     }
 
     removePlaylistFromLiked(playlistId) {

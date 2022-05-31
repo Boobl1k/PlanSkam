@@ -3,12 +3,12 @@ import {UsersRepository} from "../Data/Repositories/Users.repository";
 import {JwtAuthGuard} from "../auth.guard";
 
 @Controller('users')
+@UseGuards(JwtAuthGuard)
 export class UsersController {
     constructor(private readonly usersRepo: UsersRepository) {
     }
 
     @Get('getAll')
-    @UseGuards(JwtAuthGuard)
     async getAll() {
         return this.usersRepo.GetAll();
     }

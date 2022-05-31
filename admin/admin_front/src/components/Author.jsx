@@ -1,4 +1,6 @@
 import {Component} from "react";
+import {NavLink} from "react-router-dom";
+import axios from "../services/api/axios";
 
 export default class Author extends Component {
     constructor(props) {
@@ -10,13 +12,10 @@ export default class Author extends Component {
     }
 
     changeName(){
-        const req = new XMLHttpRequest();
-        req.open('POST', `http://localhost:3000/authors/changeName?id=${this.props.id}&name=${this.state.name}`);
-        req.addEventListener('readystatechange', () => {
-            if (req.readyState === 4)
-                console.log(req.responseText);
-        });
-        req.send();
+        axios.post(`/authors/changeName?id=${this.props.id}&name=${this.state.name}`)
+            .then(res =>{
+                console.log(res.data);
+            });
     }
     
     render() {
@@ -30,6 +29,7 @@ export default class Author extends Component {
                 <button onClick={this.changeName}>
                     Change name
                 </button>
+                <NavLink to={`../author/${this.props.id}`}>Open</NavLink>
             </div>
         );
     }

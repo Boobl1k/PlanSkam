@@ -1,7 +1,9 @@
-import {Controller, Get, Post, Query} from "@nestjs/common";
+import {Controller, Get, Post, Query, UseGuards} from "@nestjs/common";
 import {PlaylistsRepository} from "../Data/Repositories/Playlists.repository";
+import {JwtAuthGuard} from "../auth.guard";
 
 @Controller('playlists')
+@UseGuards(JwtAuthGuard)
 export class PlaylistsController {
     constructor(private readonly playlistsRepository: PlaylistsRepository) {
     }

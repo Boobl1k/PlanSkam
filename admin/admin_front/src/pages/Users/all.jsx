@@ -13,7 +13,7 @@ export default class All extends Component {
     }
 
     click() {
-        axios.get("http://localhost:3000/users/getAll")
+        axios.get("/users/getAll")
             .then(res => {
                 if(res.status === 200) this.setState({users: res.data});
             });

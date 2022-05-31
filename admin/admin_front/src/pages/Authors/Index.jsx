@@ -1,5 +1,6 @@
 import {Component} from "react";
 import Track from "../../components/Track";
+import axios from "../../services/api/axios";
 
 export default class Index extends Component {
     constructor(props) {
@@ -10,11 +11,11 @@ export default class Index extends Component {
                 Tracks: []
             }
         }
-        fetch(`http://localhost:3000/authors/getWithTracks?id=${props.id}`)
-            .then(res => res.text().then(text => {
-                console.log(text);
-                this.setState({author: JSON.parse(text)});
-            }))
+        axios.get(`/authors/getWithTracks?id=${props.id}`)
+            .then(res => {
+                console.log(res.data);
+                this.setState({author: res.data});
+            })
 
     }
 
