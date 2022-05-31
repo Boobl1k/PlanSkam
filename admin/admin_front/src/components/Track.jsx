@@ -1,3 +1,4 @@
+import axios from "../services/api/axios";
 import {Component, Input} from "react";
 import {Button, InputGroup, FormControl} from "react-bootstrap";
 
@@ -14,54 +15,38 @@ export default class Track extends Component {
     }
 
     removeFromFavourites() {
-        const req = new XMLHttpRequest();
-        req.open('POST',
-            `http://localhost:3000/users/removeTrackFromFavourites?userId=${this.props.userId}&trackId=${this.props.id}`);
-        req.send();
-        req.addEventListener('readystatechange', () => {
-            if (req.readyState === 4) {
-                console.log(req.responseText);
+        axios.post(`/users/removeTrackFromFavourites?userId=${this.props.userId}&trackId=${this.props.id}`)
+            .then(res => {
+                console.log(res.data);
                 this.props.delete(this.props.id);
-            }
-        });
+            });
     }
-    
-    addToFavourites(){
-        const req = new XMLHttpRequest();
-        req.open('POST',
-            `http://localhost:3000/users/addTrackToFavourites?userId=${this.props.userId}&trackId=${this.props.id}`);
-        req.send();
-        req.addEventListener('readystatechange', () => {
-            if (req.readyState === 4) {
-                console.log(req.responseText);
+
+    addToFavourites() {
+        axios.post(`/users/addTrackToFavourites?userId=${this.props.userId}&trackId=${this.props.id}`)
+            .then(res => {
+                console.log(res.data);
                 this.props.delete(this.props.id);
-            }
-        });
+            });
     }
 
     delete() {
-        const req = new XMLHttpRequest();
-        req.open('POST',
-            `http://localhost:3000/tracks/removeTrack?userId=${this.props.id}`);
-        req.addEventListener('readystatechange', () => {
-            if (req.readyState === 4 && req.status === 201) {
-                console.log(req.responseText);
-                this.props.delete(this.props.id);
-            }
-        });
-        req.send();
+        axios.post(`/tracks/removeTrack?userId=${this.props.id}`)
+            .then(res => {
+                if (res.status === 201) {
+                    console.log(res.data);
+                    this.props.delete(this.props.id);
+                }
+            })
     }
 
     changeName() {
-        const req = new XMLHttpRequest();
-        req.open('POST',
-            `http://localhost:3000/tracks/changeName?id=${this.props.id}&name=${this.state.name}`);
-        req.addEventListener('readystatechange', () => {
-            if (req.readyState === 4 && req.status === 201) {
-                console.log(req.responseText);
-            }
-        });
-        req.send();
+        axios.post(`/tracks/changeName?id=${this.props.id}&name=${this.state.name}`)
+            .then(res => {
+                if (res.status === 201) {
+                    console.log(res.data);
+                }
+            });
     }
 
     render() {

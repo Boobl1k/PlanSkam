@@ -1,5 +1,6 @@
 import {Component} from "react";
 import Track from "../../components/Track";
+import axios from "../../services/api/axios";
 
 
 export default class Search extends Component {
@@ -15,11 +16,11 @@ export default class Search extends Component {
 
     search() {
         if (this.state.query !== '')
-            fetch(`http://localhost:3000/tracks/searchTracks?query=${this.state.query}`)
-                .then(res => res.text().then(text => {
-                    console.log(text);
-                    this.setState({tracks: JSON.parse(text)});
-                }))
+            axios.get(`/tracks/searchTracks?query=${this.state.query}`)
+                .then(res => {
+                    console.log(res.data);
+                    this.setState({tracks: res.data});
+                })
     }
 
     delete(trackId) {

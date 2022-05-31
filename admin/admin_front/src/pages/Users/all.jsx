@@ -3,6 +3,7 @@ import {NavLink} from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Container, Table} from "react-bootstrap";
 import Button from 'react-bootstrap/Button';
+import axios from "../../services/api/axios";
 
 export default class All extends Component {
     constructor(props) {
@@ -15,10 +16,10 @@ export default class All extends Component {
     }
 
     click() {
-        fetch("http://localhost:3000/users/getAll")
+        axios.get("/users/getAll")
             .then(res => {
-                if(res.status === 200) res.text().then(text => this.setState({users: JSON.parse(text)}));
-            })
+                if(res.status === 200) this.setState({users: res.data});
+            });
     }
 
     render() {

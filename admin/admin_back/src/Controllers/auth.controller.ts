@@ -1,4 +1,4 @@
-import {Controller, Post, Body, HttpException, HttpStatus} from "@nestjs/common";
+import {Controller, Post, Body, HttpException, HttpStatus, UseGuards} from "@nestjs/common";
 import {UsersRepository} from "../Data/Repositories/Users.repository";
 import {LoginDto} from "../Dto/login.dto";
 import * as bcryptjs from 'bcryptjs';
@@ -6,6 +6,7 @@ import {JwtService} from '@nestjs/jwt'
 import {RegisterDto} from "../Dto/register.dto";
 import {randomUUID} from 'crypto';
 import {User} from "../Data/Entities/User";
+import {JwtAuthGuard} from "../auth.guard";
 
 @Controller('auth')
 export class AuthController {
@@ -27,6 +28,7 @@ export class AuthController {
     }
 
     @Post('register')
+    @UseGuards(JwtAuthGuard)
     async register(@Body() registerDto: RegisterDto) {
         console.log(registerDto);
         
