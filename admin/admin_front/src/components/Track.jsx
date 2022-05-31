@@ -1,4 +1,5 @@
-import {Component} from "react";
+import {Component, Input} from "react";
+import {Button, InputGroup, FormControl} from "react-bootstrap";
 
 export default class Track extends Component {
     constructor(props) {
@@ -65,18 +66,23 @@ export default class Track extends Component {
 
     render() {
         return <div className="track">
-            <p>Id: {this.props.id}</p>
-            {this.props.userId != null
-                ? this.props.fav
-                    ? <button onClick={this.removeFromFavourites}>remove from favourites</button>
-                    : <button onClick={this.addToFavourites}>add to favourites</button>
-                : null}
-            Name: <input type="text" value={this.state.name} onChange={e => {
-            this.setState({name: e.target.value});
-        }}/>
-            <button onClick={this.changeName}>Change</button>
+            <h6>Id: {this.props.id}</h6>
+            {this.props.userId != null ? 
+                this.props.fav ? 
+                    <Button variant="outline-light" onClick={this.removeFromFavourites}>remove from favourites</Button> : 
+                    <Button variant="outline-light" onClick={this.addToFavourites}>add to favourites</Button> : 
+                null}
+            Name: <InputGroup className="mb-3" type="text" value={this.state.name} onChange={e => {
+            this.setState({name: e.target.value});}}>
+            <FormControl
+                placeholder="Recipient's username"
+                aria-label="Recipient's username"
+                aria-describedby="basic-addon2"
+            />
+        </InputGroup>
+            <Button variant="outline-light" onClick={this.changeName}>Change</Button>{' '}
             <br/>
-            <button onClick={this.delete}>delete</button>
+            <Button variant="outline-light" onClick={this.delete}>delete</Button>{' '}
         </div>;
     }
 }

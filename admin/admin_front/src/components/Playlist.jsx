@@ -1,4 +1,5 @@
 import {Component} from "react";
+import {Button} from "react-bootstrap";
 
 export default class Playlist extends Component {
     constructor(props) {
@@ -35,10 +36,10 @@ export default class Playlist extends Component {
 
     render() {
         return <div className="playlist">
-            <p>{this.props.id} {this.props.name}</p>
-            <button onClick={this.props.isLiked ? this.removePlaylistFromLiked : this.addPlaylistToLiked}>
-                {this.props.isLiked ? "remove" : "add"}
-            </button>
+            <h6>
+                {this.props.id} {this.props.name}
+            </h6>
+            <Button variant="outline-light" onClick={this.props.isLiked ? this.removePlaylistFromLiked : this.addPlaylistToLiked}>{this.props.isLiked ? "remove" : "add"}</Button>{' '}
         </div>
     }
 }

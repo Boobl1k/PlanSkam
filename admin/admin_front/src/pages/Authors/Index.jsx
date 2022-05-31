@@ -1,12 +1,13 @@
 import {Component} from "react";
 import Track from "../../components/Track";
+import {Container, Col, Row} from 'react-bootstrap'
 
 export default class Index extends Component {
     constructor(props) {
         super(props);
         this.state = {
             author: {
-                Name: '', 
+                Name: '',
                 Tracks: []
             }
         }
@@ -18,12 +19,19 @@ export default class Index extends Component {
 
     }
 
-    render() {
-        return (<div>
-            <h1>{this.state.author.Name}</h1>
-                {this.state.author.Tracks.map(track => {
-                    return <Track id={track.Id} name={track.Name} delete={this.delete}/>
-                })}
-            </div>)
+    function App() {
+        render()
+        {
+            return (
+                <div>
+                    <h1>{this.state.author.Name}</h1>
+                    {this.state.author.Tracks.map(track => {
+                        return <Track id={track.Id}/>
+                        return <Track name={track.Name}/>
+                        return <Track delete={this.delete}/>
+                    })}
+                </div>
+            )
+        }
     }
 }

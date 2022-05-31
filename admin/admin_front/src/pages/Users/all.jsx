@@ -1,5 +1,8 @@
 import {Component} from "react";
 import {NavLink} from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {Container, Table} from "react-bootstrap";
+import Button from 'react-bootstrap/Button';
 
 export default class All extends Component {
     constructor(props) {
@@ -21,13 +24,18 @@ export default class All extends Component {
     render() {
         const renderUsers = (users) => {
             console.log(users);
-            return <div className="d-flex justify-content-center align-items-center py-3">
-                <table className="d-flex justify-content-center align-items-center py-3">
-                    <tr className="nav nav-pills">
+                return (
+                    <Container>
+                    <div className="d-flex justify-content-center align-items-center py-3">
+                <Table striped bordered hover>
+                    <thead>
+                    <tr>
                         <th>Id</th>
                         <th>UserName</th>
                         <th></th>
                     </tr>
+                    </thead>
+                    <tbody>
                     {
                         users.map(user => {
                             return <tr className="nav nav-pills">
@@ -39,15 +47,22 @@ export default class All extends Component {
                             </tr>
                         })
                     }
-                </table>
+                    </tbody>
+                </Table>
             </div>
+                    </Container>)
+            
         }
+            
 
         this.click();
 
-        return <div>
-            {renderUsers(this.state.users)}
-            <button onClick={this.click}>Update</button>
-        </div>
+         
+            return <Container>
+            <div>
+                {renderUsers(this.state.users)}
+                <Button variant="outline-light" onClick={this.click}>Update</Button>{' '}
+            </div>
+        </Container>
     }
 }

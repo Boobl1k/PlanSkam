@@ -1,4 +1,7 @@
 import {Component} from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 
 export default class Author extends Component {
     constructor(props) {
@@ -27,9 +30,7 @@ export default class Author extends Component {
                 Name: <input type="text" value={this.state.name} onChange={e => {
                 this.setState({name: e.target.value});
             }}/>
-                <button onClick={this.changeName}>
-                    Change name
-                </button>
+                <Button variant="outline-light" onClick={this.changeName}>Change name</Button>{' '}
             </div>
         );
     }
