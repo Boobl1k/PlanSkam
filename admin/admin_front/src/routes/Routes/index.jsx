@@ -2,7 +2,6 @@ import {Routes, Route, Navigate, useParams} from "react-router-dom";
 import Home from "../../pages/Home";
 import Login from "../../pages/Login";
 import Registration from "../../pages/Registration";
-import Profile from "../../pages/Profile";
 import NotFound from "../../pages/NotFound";
 import useAuth from "../../hooks/useAuth";
 import PrivateRoute from "../components/PrivateRoute";
@@ -41,14 +40,6 @@ function AppRoutes() {
         <Routes>
             <Route path="/" element={<Home/>}/>
             <Route
-                path="/profile"
-                element={
-                    <PrivateRoute>
-                        <Profile/>
-                    </PrivateRoute>
-                }
-            />
-            <Route
                 path="/login"
                 element={
                     <GuestRoute>
@@ -59,16 +50,16 @@ function AppRoutes() {
             <Route
                 path="/registration"
                 element={
-                    <GuestRoute>
+                    <PrivateRoute>
                         <Registration/>
-                    </GuestRoute>
+                    </PrivateRoute>
                 }
             />
-            <Route path="/users" element={<GuestRoute><All/></GuestRoute>}/>
-            <Route path="/user/:id" element={<GuestRoute><WrappedUser/></GuestRoute>}/>
-            <Route path="/tracks/search" element={<GuestRoute><TracksSearch/></GuestRoute>}/>
-            <Route path="/authors/search" element={<GuestRoute><AuthorsSearch/></GuestRoute>}/>
-            <Route path="/author/:id" element={<GuestRoute><WrappedAuthor/></GuestRoute>}/>
+            <Route path="/users" element={<PrivateRoute><All/></PrivateRoute>}/>
+            <Route path="/user/:id" element={<PrivateRoute><WrappedUser/></PrivateRoute>}/>
+            <Route path="/tracks/search" element={<PrivateRoute><TracksSearch/></PrivateRoute>}/>
+            <Route path="/authors/search" element={<PrivateRoute><AuthorsSearch/></PrivateRoute>}/>
+            <Route path="/author/:id" element={<PrivateRoute><WrappedAuthor/></PrivateRoute>}/>
 
             <Route path="/not-found-404" element={<NotFound/>}/>
             <Route path="*" element={<Navigate to="/not-found-404"/>}/>

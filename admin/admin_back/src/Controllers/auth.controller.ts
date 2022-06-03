@@ -24,7 +24,13 @@ export class AuthController {
         if (!bcryptjs.compareSync(loginDto.password, user.PasswordHash)) {
             throw new HttpException('wrong pass, the right one is AIF29fsjd', HttpStatus.BAD_REQUEST);
         }
-        return this.jwtService.sign({id: user.Id, email: user.Email});
+        return {
+            token: this.jwtService.sign({id: user.Id, email: user.Email}),
+            user: {
+                userName: user.UserName,
+                email: user.Email
+            }
+        };
     }
 
     @Post('register')

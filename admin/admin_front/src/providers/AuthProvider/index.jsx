@@ -24,17 +24,7 @@ function AuthProvider(props) {
   const loadData = useCallback(async () => {
     const tokenData = Cookies.get("auth-token");
     setTokenData(tokenData);
-
-    try {
-      if (tokenData) {
-        const { data } = await api.auth.getProfile();
-        setUser(data);
-      }
-    } catch {
-      setToken(null);
-    } finally {
-      setIsLoaded(true);
-    }
+    setIsLoaded(true);
   }, [setToken]);
 
   useEffect(() => {

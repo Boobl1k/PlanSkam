@@ -56,20 +56,20 @@ function App() {
                     {auth.isLoaded &&
                         (auth.user ? (
                             <>
-                                <Button color="inherit" component={Link} to="/profile">
-                                    {auth.user.firstName} {auth.user.lastName}
+                                <Button color="inherit">
+                                    {auth.user.userName}
                                 </Button>
                                 <Button color="inherit" onClick={onLogOut}>
                                     Log out
+                                </Button>
+                                <Button color="inherit" component={Link} to="/registration">
+                                    Registration
                                 </Button>
                             </>
                         ) : (
                             <>
                                 <Button color="inherit" component={Link} to="/login">
                                     Login
-                                </Button>
-                                <Button color="inherit" component={Link} to="/registration">
-                                    Registration
                                 </Button>
                             </>
                         ))}
