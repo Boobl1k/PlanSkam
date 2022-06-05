@@ -34,7 +34,7 @@ export default class Playlist extends Component {
             <h6>
                 {this.props.id} {this.props.name}
             </h6>
-            <Button variant="outline-light" onClick={this.props.isLiked ? this.removePlaylistFromLiked : this.addPlaylistToLiked}>{this.props.isLiked ? "remove" : "add"}</Button>{' '}
+            <Button variant="outline-primary" onClick={this.props.isLiked ? this.removePlaylistFromLiked : this.addPlaylistToLiked}>{this.props.isLiked ? "remove" : "add"}</Button>{' '}
         </div>
     }
 }

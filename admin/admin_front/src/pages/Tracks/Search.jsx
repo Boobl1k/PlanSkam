@@ -32,10 +32,15 @@ export default class Search extends Component {
 
     render() {
         return <div>
-            <input type="text" value={this.state.query} onChange={e => {
+            <InputGroup className="mb-3" type="text" value={this.state.query} onChange={e => {
                 this.setState({query: e.target.value});
-            }}/>
-            <button onClick={this.search}>search</button>
+            }}>
+                <FormControl
+                    aria-label="Example text with button addon"
+                    aria-describedby="basic-addon1"
+                />
+            </InputGroup>
+            <Button variant="outline-primary"  onClick={this.search}>search</Button>{' '}
             {this.state.tracks.map(track => {
                 return <Track id={track.Id} name={track.Name} delete={this.delete}/>
             })}
