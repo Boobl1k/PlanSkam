@@ -54,8 +54,8 @@ export default class Track extends Component {
             <h6>Id: {this.props.id}</h6>
             {this.props.userId != null ? 
                 this.props.fav ? 
-                    <Button variant="outline-light" onClick={this.removeFromFavourites}>remove from favourites</Button> : 
-                    <Button variant="outline-light" onClick={this.addToFavourites}>add to favourites</Button> : 
+                    <Button variant="outline-primary" onClick={this.removeFromFavourites}>remove from favourites</Button> : 
+                    <Button variant="outline-primary" onClick={this.addToFavourites}>add to favourites</Button> : 
                 null}
             Name: <InputGroup className="mb-3" type="text" value={this.state.name} onChange={e => {
             this.setState({name: e.target.value});}}>
@@ -65,9 +65,9 @@ export default class Track extends Component {
                 aria-describedby="basic-addon2"
             />
         </InputGroup>
-            <Button variant="outline-light" onClick={this.changeName}>Change</Button>{' '}
+            <Button variant="outline-primary" onClick={this.changeName}>Change</Button>{' '}
             <br/>
-            <Button variant="outline-light" onClick={this.delete}>delete</Button>{' '}
+            <Button variant="outline-primary" onClick={this.delete}>delete</Button>{' '}
         </div>;
     }
 }

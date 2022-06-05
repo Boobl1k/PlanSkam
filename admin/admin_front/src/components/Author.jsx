@@ -29,7 +29,7 @@ export default class Author extends Component {
                 Name: <input type="text" value={this.state.name} onChange={e => {
                 this.setState({name: e.target.value});
             }}/>
-                <Button variant="outline-light" onClick={this.changeName}>Change name</Button>{' '}
+                <Button variant="outline-primary" onClick={this.changeName}>Change name</Button>{' '}
                 <NavLink to={`../author/${this.props.id}`}>Open</NavLink>
             </div>
         );

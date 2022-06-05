@@ -28,7 +28,7 @@ export default class Search extends Component {
             <input type="text" value={this.state.query} onChange={e => {
                 this.setState({query: e.target.value});
             }}/>
-            <Button variant="outline-light" onClick={this.search}>search</Button>{' '}
+            <Button variant="outline-primary" onClick={this.search}>search</Button>{' '}
             {this.state.authors.map(author => {
                 return <Author id={author.Id} name={author.Name}/>
             })}
