@@ -1,6 +1,7 @@
 import {Component} from "react";
 import Track from "../../components/Track";
 import axios from "../../services/api/axios";
+import {Form, Button, FormControl} from 'react-bootstrap';
 
 
 export default class Search extends Component {
@@ -31,15 +32,11 @@ export default class Search extends Component {
     }
 
     render() {
-        return <div>
-            <InputGroup className="mb-3" type="text" value={this.state.query} onChange={e => {
+        return <div className="m-lg-5">
+            <FormControl className="mb-3 w-25 mt-5" type="text" value={this.state.query} onChange={e => {
                 this.setState({query: e.target.value});
             }}>
-                <FormControl
-                    aria-label="Example text with button addon"
-                    aria-describedby="basic-addon1"
-                />
-            </InputGroup>
+            </FormControl>
             <Button variant="outline-primary"  onClick={this.search}>search</Button>{' '}
             {this.state.tracks.map(track => {
                 return <Track id={track.Id} name={track.Name} delete={this.delete}/>

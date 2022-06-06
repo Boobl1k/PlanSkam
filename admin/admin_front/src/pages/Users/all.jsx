@@ -1,7 +1,7 @@
 import {Component} from "react";
 import {NavLink} from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Container, Table} from "react-bootstrap";
+import {Col, Container, Row, Table} from "react-bootstrap";
 import Button from 'react-bootstrap/Button';
 import axios from "../../services/api/axios";
 
@@ -18,48 +18,50 @@ export default class All extends Component {
     click() {
         axios.get("/users/getAll")
             .then(res => {
-                if(res.status === 200) this.setState({users: res.data});
+                if (res.status === 200) this.setState({users: res.data});
             });
     }
 
     render() {
         const renderUsers = (users) => {
             console.log(users);
-                return (
-                    <Container>
+            return (
+                <Container>
                     <div className="d-flex justify-content-center align-items-center py-3">
-                <Table striped bordered hover>
-                    <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>UserName</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {
-                        users.map(user => {
-                            return <tr className="nav nav-pills">
-                                <td>{user.Id}</td>
-                                <td>{user.UserName}</td>
-                                <td>
-                                    <NavLink to={`../user/${user.Id}`}>open</NavLink>
-                                </td>
-                            </tr>
-                        })
-                    }
-                    </tbody>
-                </Table>
-            </div>
-                    </Container>)
-            
+                        <Table striped bordered hover>
+                            <thead  >
+                            <Row className='ml-10'>
+                                <Col>Id</Col>
+                                <Col>UserName</Col>
+                                <Col></Col>
+                            </Row>
+                            </thead>
+                            <tbody>
+                            <Container>
+                                {
+                                    users.map(user => {
+                                        return <Row className="nav nav-pills">
+                                            <Col>{user.Id}</Col>
+                                            <Col>{user.UserName}</Col>
+                                            <Col>
+                                                <NavLink to={`../user/${user.Id}`}>open</NavLink>
+                                            </Col>
+                                        </Row>
+                                    })
+                                }
+                            </Container>
+                            </tbody>
+                        </Table>
+                    </div>
+                </Container>)
+
         }
-            
+
 
         this.click();
 
-         
-            return <Container>
+
+        return <Container>
             <div>
                 {renderUsers(this.state.users)}
                 <Button variant="outline-primary" onClick={this.click}>Update</Button>{' '}

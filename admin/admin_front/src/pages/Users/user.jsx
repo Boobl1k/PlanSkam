@@ -2,6 +2,7 @@ import {Component} from "react";
 import Track from "../../components/Track"
 import Playlist from "../../components/Playlist";
 import axios from "../../services/api/axios";
+import {Row, Col, Button, FormControl} from "react-bootstrap";
 
 export default class User extends Component {
     constructor(props) {
@@ -127,43 +128,50 @@ export default class User extends Component {
     }
 
     render() {
-        return <div>
-            <p>Id: {this.state.user.Id}</p>
-            <p>UserName: {this.state.user.UserName}</p>
-            <p>{this.state.isAuthor ? 'Author' : 'Not author'}</p>
-            <button onClick={this.changeAuthorState}>
+        return <div className="justify-content-center">
+            <Row>
+                <Col>
+                    <p>Id: {this.state.user.Id}</p>
+                </Col>
+                <Col>
+                    <p>UserName: {this.state.user.UserName}</p>
+                </Col>
+                <Col>
+                    <p>{this.state.isAuthor ? 'Author' : 'Not author'}</p>
+                </Col>
+            </Row>
+            <Button  className="ms-3" variant="light" size="sm" onClick={this.changeAuthorState}>
                 {this.state.isAuthor ? 'Make not author' : 'Make author'}
-            </button>
-            <br/>
-            <input type="text" name="email" value={this.state.user.Email} onChange={e => {
+            </Button>
+            <FormControl className="w-25 mt-3 ms-3" type="text" name="email" value={this.state.user.Email} onChange={e => {
                 const user = this.state.user;
                 user.Email = e.target.value;
                 this.setState({user});
             }}/>
             <br/>
-            <button onClick={this.changeEmail}>Change email</button>
-            <h1>Tracks:</h1>
+            <Button className="mb-5 ms-3" variant="light" size="sm" onClick={this.changeEmail}>Change email</Button>
+            <h6 >Tracks:</h6>
             {this.state.tracks.map(track => {
                 return <Track id={track.Id} name={track.Name} userId={this.state.user.Id}
                               delete={this.removeTrackFromFavourites}
                               fav={true}/>;
             })}
-            <h1>Available tracks:</h1>
-            <input type="text" name="email" value={this.state.availableTracksQuery} onChange={e => {
+            <h6>Available tracks:</h6>
+            <FormControl className="w-25 mt-3 ms-3" type="text" name="email" value={this.state.availableTracksQuery} onChange={e => {
                 this.setState({availableTracksQuery: e.target.value});
             }}/>
-            <button onClick={this.setAvailableTracks}>Update</button>
+            <Button className="mb-5 ms-3" variant="light" size="sm" onClick={this.setAvailableTracks}>Update</Button>
             {this.state.availableTracks.map(track => {
                 return <Track id={track.Id} name={track.Name} userId={this.state.user.Id}
                               delete={this.addTrackToFavourites}
                               fav={false}/>;
             })}
-            <h1>Liked playlists:</h1>
+            <h6>Liked playlists:</h6>
             {this.state.playlists.map(playlist => {
                 return <Playlist id={playlist.Id} name={playlist.Name} userId={this.state.user.Id}
                                  isLiked={true} move={this.removePlaylistFromLiked}/>
             })}
-            <h1>Available playlists:</h1>
+            <h6>Available playlists:</h6>
             {this.state.availablePlaylists.map(playlist => {
                 return <Playlist id={playlist.Id} name={playlist.Name} userId={this.state.user.Id}
                                  isLiked={false} move={this.addPlaylistToLiked}/>
