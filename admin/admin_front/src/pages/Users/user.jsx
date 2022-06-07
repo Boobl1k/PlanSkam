@@ -128,7 +128,7 @@ export default class User extends Component {
     }
 
     render() {
-        return <div className="justify-content-center">
+        return <div className="my-5">
             <Row>
                 <Col>
                     <p>Id: {this.state.user.Id}</p>

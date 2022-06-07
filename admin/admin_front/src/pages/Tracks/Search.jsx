@@ -37,7 +37,7 @@ export default class Search extends Component {
                 this.setState({query: e.target.value});
             }}>
             </FormControl>
-            <Button variant="outline-primary"  onClick={this.search}>search</Button>{' '}
+            <Button variant="light"  onClick={this.search}>search</Button>{' '}
             {this.state.tracks.map(track => {
                 return <Track id={track.Id} name={track.Name} delete={this.delete}/>
             })}

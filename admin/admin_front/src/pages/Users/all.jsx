@@ -64,7 +64,7 @@ export default class All extends Component {
         return <Container>
             <div>
                 {renderUsers(this.state.users)}
-                <Button variant="outline-primary" onClick={this.click}>Update</Button>{' '}
+                <Button variant="light" onClick={this.click}>Update</Button>{' '}
             </div>
         </Container>
     }

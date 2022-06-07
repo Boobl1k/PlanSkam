@@ -30,8 +30,8 @@ export default class Search extends Component {
                 this.setState({query: e.target.value});
             }}>
             </FormControl>
-            <Button variant="outline-primary"  onClick={this.search}>search</Button>{' '}
-            {this.state.authors .map(author => {
+            <Button variant="light"  onClick={this.search}>search</Button>{' '}
+            {this.state.authors.map(author => {
                 return <Author id={author.Id} name={author.Name} delete={this.delete}/>
             })}
         </div>
