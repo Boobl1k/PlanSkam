@@ -44,7 +44,7 @@ export default class All extends Component {
                                             <Col>{user.Id}</Col>
                                             <Col>{user.UserName}</Col>
                                             <Col>
-                                                <NavLink to={`../user/${user.Id}`}>open</NavLink>
+                                                <Button variant="light" className="mb-5 ms-3" size="sm"><NavLink className="text-decoration-none text-black" to={`../user/${user.Id}`}>open</NavLink></Button>
                                             </Col>
                                         </Row>
                                     })

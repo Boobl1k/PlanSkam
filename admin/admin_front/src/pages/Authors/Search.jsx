@@ -1,7 +1,7 @@
 import {Component} from "react";
 import Author from "../../components/Author";
 import axios from "../../services/api/axios";
-import {Button, FormControl} from 'react-bootstrap';
+import {Button, FormControl, Container} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Track from "../../components/Track";
 
@@ -25,15 +25,17 @@ export default class Search extends Component {
     }
     
     render() {
-        return <div className="m-lg-5">
-            <FormControl className="mb-3 w-25 mt-5" type="text" value={this.state.query} onChange={e => {
-                this.setState({query: e.target.value});
-            }}>
-            </FormControl>
-            <Button variant="light"  onClick={this.search}>search</Button>{' '}
-            {this.state.authors.map(author => {
-                return <Author id={author.Id} name={author.Name} delete={this.delete}/>
-            })}
-        </div>
+        return <Container className="justify-content-center">
+            <div className="m-lg-5">
+                <FormControl className="mb-3 w-50 mt-5" type="text" value={this.state.query} onChange={e => {
+                    this.setState({query: e.target.value});
+                }}>
+                </FormControl>
+                <Button variant="light"  onClick={this.search}>search</Button>{' '}
+                {this.state.authors.map(author => {
+                    return <Author id={author.Id} name={author.Name} delete={this.delete}/>
+                })}
+            </div>
+        </Container>
     }
 }

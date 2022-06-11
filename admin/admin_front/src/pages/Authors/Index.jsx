@@ -21,13 +21,14 @@ export default class Index extends Component {
     }
 
     render() {
-        return (
+        return <Container>
             <div>
                 <h1>{this.state.author.Name}</h1>
                 {this.state.author.Tracks.map(track => {
                     return <Track id={track.Id} name={track.Name} delete={this.delete}/>
                 })}
             </div>
-        )
+        </Container>
+            
     }
 }
