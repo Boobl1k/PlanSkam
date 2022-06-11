@@ -1,4 +1,7 @@
 import {Component} from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Form from 'react-bootstrap/Form';
+import {Button, Col, Container, Row} from 'react-bootstrap';
 import {NavLink} from "react-router-dom";
 import axios from "../services/api/axios";
 
@@ -19,18 +22,24 @@ export default class Author extends Component {
     }
     
     render() {
-        return (
-            <div className="author">
-                {this.props.id}
-                <br/>
-                Name: <input type="text" value={this.state.name} onChange={e => {
-                this.setState({name: e.target.value});
-            }}/>
-                <button onClick={this.changeName}>
-                    Change name
-                </button>
-                <NavLink to={`../author/${this.props.id}`}>Open</NavLink>
+        return <Container className="justify-content-center">
+            <div className="author w-100 m-3 border-0 border-bottom">
+                <Row className="h-50">
+                    <Col > <p> {this.props.id}  </p>
+                    </Col>
+                    <Col>
+                        Name: <input type="text" value={this.state.name} onChange={e => {
+                        this.setState({name: e.target.value});
+                    }}/>
+                    </Col>
+                    <Col>
+                        <Button variant="light" className="mb-5 ms-3" size="sm" onClick={this.changeName}>Change name</Button>{' '}
+                    </Col>
+                    <Col>
+                        <Button variant="light" className="mb-5 ms-3" size="sm"><NavLink className="text-decoration-none text-black" to={`../author/${this.props.id}`}>Open</NavLink></Button>
+                    </Col>
+                </Row>
             </div>
-        );
+        </Container>
     }
 }

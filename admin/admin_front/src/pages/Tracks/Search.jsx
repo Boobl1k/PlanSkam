@@ -1,6 +1,7 @@
 import {Component} from "react";
 import Track from "../../components/Track";
 import axios from "../../services/api/axios";
+import {Form, Button, FormControl, Container} from 'react-bootstrap';
 
 
 export default class Search extends Component {
@@ -31,14 +32,17 @@ export default class Search extends Component {
     }
 
     render() {
-        return <div>
-            <input type="text" value={this.state.query} onChange={e => {
-                this.setState({query: e.target.value});
-            }}/>
-            <button onClick={this.search}>search</button>
-            {this.state.tracks.map(track => {
-                return <Track id={track.Id} name={track.Name} delete={this.delete}/>
-            })}
-        </div>
+        return <Container className="justify-content-center">
+            <div className="m-lg-5">
+                <FormControl className="mb-3 w-50 mt-5" type="text" value={this.state.query} onChange={e => {
+                    this.setState({query: e.target.value});
+                }}>
+                </FormControl>
+                <Button variant="light"  onClick={this.search}>search</Button>{' '}
+                {this.state.tracks.map(track => {
+                    return <Track id={track.Id} name={track.Name} delete={this.delete}/>
+                })}
+            </div>
+        </Container>
     }
 }

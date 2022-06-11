@@ -1,5 +1,6 @@
-import {Component} from "react";
 import axios from "../services/api/axios";
+import {Component, Input} from "react";
+import {Button, InputGroup, FormControl, Row, Col, Container} from "react-bootstrap";
 
 export default class Track extends Component {
     constructor(props) {
@@ -30,7 +31,7 @@ export default class Track extends Component {
     }
 
     delete() {
-        axios.post(`/tracks/removeTrack?userId=${this.props.id}`)
+        axios.post(`/tracks/removeTrack?id=${this.props.id}`)
             .then(res => {
                 if (res.status === 201) {
                     console.log(res.data);
@@ -49,19 +50,22 @@ export default class Track extends Component {
     }
 
     render() {
-        return <div className="track">
-            <p>Id: {this.props.id}</p>
-            {this.props.userId != null
-                ? this.props.fav
-                    ? <button onClick={this.removeFromFavourites}>remove from favourites</button>
-                    : <button onClick={this.addToFavourites}>add to favourites</button>
-                : null}
-            Name: <input type="text" value={this.state.name} onChange={e => {
-            this.setState({name: e.target.value});
-        }}/>
-            <button onClick={this.changeName}>Change</button>
-            <br/>
-            <button onClick={this.delete}>delete</button>
-        </div>;
+            return <Container className="justify-content-md-center">
+                <div className="track w-75 m-3 border-0 border-bottom ">
+            <Row xs="auto">
+                <Col><p>Id: {this.props.id}</p></Col>
+                <Col><FormControl className="mb-3" type="text" value={this.state.name} onChange={e => {
+                    this.setState({name: e.target.value});}}>
+                </FormControl></Col>
+                <Col className="me-5"><Button variant="light" onClick={this.changeName} size="sm">Change</Button>{' '}</Col>
+                <Col className="ms-5">{this.props.userId != null ?
+                    this.props.fav ?
+                        <Button variant="light" size="sm" onClick={this.removeFromFavourites}>remove from favourites</Button> :
+                        <Button variant="light" size="sm" onClick={this.addToFavourites}>add to favourites</Button> :
+                    null}</Col>
+                <Col ><Button variant="light" size="sm" onClick={this.delete}>delete</Button>{' '}</Col>
+            </Row>
+        </div>
+        </Container>
     }
 }

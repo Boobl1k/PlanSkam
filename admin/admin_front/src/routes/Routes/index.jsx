@@ -17,6 +17,8 @@ import User from "../../pages/Users/user";
 import TracksSearch from "../../pages/Tracks/Search";
 import AuthorsSearch from "../../pages/Authors/Search";
 import Author from "../../pages/Authors/Index";
+import Index from "../../pages/Authors/Index";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const useStyles = makeStyles((theme) => ({
     root: {

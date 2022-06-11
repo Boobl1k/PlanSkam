@@ -1,4 +1,5 @@
 import {Component} from "react";
+import {Button, Col, Row, FormControl, Container } from "react-bootstrap";
 import axios from "../services/api/axios";
 
 export default class Playlist extends Component {
@@ -29,11 +30,14 @@ export default class Playlist extends Component {
     }
 
     render() {
-        return <div className="playlist">
-            <p>{this.props.id} {this.props.name}</p>
-            <button onClick={this.props.isLiked ? this.removePlaylistFromLiked : this.addPlaylistToLiked}>
-                {this.props.isLiked ? "remove" : "add"}
-            </button>
-        </div>
+        return <Container className="justify-content-center">
+            <div className="playlist w-50 m-3 border-0 border-bottom">
+                <Row className="h-50">
+                    <Col > <p> {this.props.id} {this.props.name} </p>
+                    </Col>
+                    <Col ><Button className="mb-5 ms-3" variant="light"  size="sm" onClick={this.props.isLiked ? this.removePlaylistFromLiked : this.addPlaylistToLiked}>{this.props.isLiked ? "remove" : "add"}</Button>{' '}</Col>
+                </Row>
+            </div>
+        </Container>
     }
 }
