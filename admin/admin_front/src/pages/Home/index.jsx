@@ -14,10 +14,10 @@ function Home() {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Typography variant="h2" gutterBottom>
-            This is Admin Panel
+            Planscam
           </Typography>
           <Typography variant="h4" gutterBottom>
-            have a fun!
+            Admin panel
           </Typography>
         </Grid>
       </Grid>

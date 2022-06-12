@@ -37,7 +37,7 @@ function App() {
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" className={classes.title}>
-                        Admin Panel
+                        PSM Admin
                     </Typography>
                     <div className={classes.rightToolbar}>
                         <Button variant="h4" color="inherit" component={Link} to="/">

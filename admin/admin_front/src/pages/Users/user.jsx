@@ -130,7 +130,7 @@ export default class User extends Component {
     render() {
         return <Container className="justify-content-center">
             <div className="">
-            <Row>
+            <Col>
                 <Col>
                     <p>Id: {this.state.user.Id}</p>
                 </Col>
@@ -140,7 +140,7 @@ export default class User extends Component {
                 <Col>
                     <p>{this.state.isAuthor ? 'Author' : 'Not author'}</p>
                 </Col>
-            </Row>
+            </Col>
             <Button className="ms-3" variant="light" size="sm" onClick={this.changeAuthorState}>
                 {this.state.isAuthor ? 'Make not author' : 'Make author'}
             </Button>
