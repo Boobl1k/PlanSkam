@@ -11,9 +11,7 @@ namespace Planscam.MobileApi.Tests;
 
 public class PlaylistsTests : TestBase
 {
-    public PlaylistsTests(ITestOutputHelper output) : base(output)
-    {
-    }
+    public PlaylistsTests(ITestOutputHelper output) : base(output) { }
 
     [Fact]
     public async Task All() => await SimpleTest("/Playlists/All");
@@ -95,11 +93,11 @@ public class PlaylistsTests : TestBase
     public async Task Liked()
     {
         var request = new HttpRequestMessage(HttpMethod.Get, "/Playlists/Liked")
-            .AddTokenToHeaders(Client); 
+            .AddTokenToHeaders(Client);
         var response = await SimpleTest(request);
         dynamic resObj = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
-        Assert.Equal("ddd", (string)resObj.playlists[0].name);
-        Assert.Equal("fff", (string)resObj.playlists[1].name);
+        Assert.Equal("ddd", (string) resObj.playlists[0].name);
+        Assert.Equal("fff", (string) resObj.playlists[1].name);
     }
 
     private async Task<HttpResponseMessage> CreatePlaylist(string name = "fff")
@@ -118,7 +116,7 @@ public class PlaylistsTests : TestBase
         const string name = "test create playlist name";
         var res = await CreatePlaylist(name);
         dynamic resObj = JsonConvert.DeserializeObject(await res.Content.ReadAsStringAsync());
-        Assert.Equal(name, (string)resObj.name);
+        Assert.Equal(name, (string) resObj.name);
     }
 
     [Fact]
@@ -134,13 +132,22 @@ public class PlaylistsTests : TestBase
     [Fact]
     public async Task AddAndRemoveTrackFromPlaylist()
     {
+        var indexRes1 = await SimpleTest("Playlists/Index?id=31");
+        dynamic indexRes1Obj = JsonConvert.DeserializeObject(await indexRes1.Content.ReadAsStringAsync());
+        Assert.DoesNotContain((JArray) indexRes1Obj.tracks, t => ((dynamic) t).id == 2);
         var addRequest =
             new HttpRequestMessage(HttpMethod.Post, "Playlists/AddTrackToPlaylist?playlistId=31&trackId=2")
                 .AddTokenToHeaders(Client);
         await SimpleTest(addRequest);
+        var indexRes2 = await SimpleTest("Playlists/Index?id=31");
+        dynamic indexRes2Obj = JsonConvert.DeserializeObject(await indexRes2.Content.ReadAsStringAsync());
+        Assert.Contains((JArray) indexRes2Obj.tracks, t => ((dynamic) t).id == 2);
         var removeRequest =
             new HttpRequestMessage(HttpMethod.Post, "/Playlists/RemoveTrackFromPlaylist?playlistId=31&trackId=2")
-                .AddTokenToHeaders(Client, Output);
+                .AddTokenToHeaders(Client);
         await SimpleTest(removeRequest);
+        var indexRes3 = await SimpleTest("Playlists/Index?id=31");
+        dynamic indexRes3Obj = JsonConvert.DeserializeObject(await indexRes3.Content.ReadAsStringAsync());
+        Assert.DoesNotContain((JArray) indexRes3Obj.tracks, t => ((dynamic) t).id == 2);
     }
 }

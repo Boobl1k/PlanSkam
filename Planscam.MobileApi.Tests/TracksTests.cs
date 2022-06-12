@@ -17,8 +17,8 @@ public class TracksTests : TestBase
         var response = await SimpleTest("/Tracks/Index?id=2");
         dynamic parsed = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
         Assert.NotNull(parsed);
-        Assert.Equal(2, (int)parsed.track.id);
-        Assert.Equal(1, (int)parsed.track.author.id);
+        Assert.Equal(2, (int) parsed.track.id);
+        Assert.Equal(1, (int) parsed.track.author.id);
     }
 
     [Fact]
@@ -30,8 +30,14 @@ public class TracksTests : TestBase
         await SimpleTest("/Tracks/Search?Query=t&Page=1&byAuthors=true");
 
     [Fact]
-    public async Task GetTrackData() =>
-        await SimpleTest("/Tracks/GetTrackData?id=2");
+    public async Task GetTrackData()
+    {
+        var res = await SimpleTest("/Tracks/GetTrackData?id=2");
+        dynamic resObj = JsonConvert.DeserializeObject(await res.Content.ReadAsStringAsync());
+        Assert.Equal(2, (int) resObj.id);
+        Assert.Equal("Author1", (string) resObj.author);
+        Assert.Equal(string.Empty, (string) resObj.data);
+    }
 
     [Fact]
     public async Task AddTrackToFavourite()
@@ -47,6 +53,7 @@ public class TracksTests : TestBase
         {
             exception = e;
         }
+
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "Tracks/RemoveTrackFromFavourite?id=9")
                 .AddTokenToHeaders(Client, Output);
